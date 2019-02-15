@@ -10,6 +10,7 @@ import { LoginComponent } from './login/login.component';
 import { CoffeeComponent } from './coffee/coffee.component';
 import { MapComponent } from './map/map.component';
 import { SERVICE_PROVIDERS } from 'src/services/service.export';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SERVICE_PROVIDERS } from 'src/services/service.export';
     AboutComponent,
     LoginComponent,
     CoffeeComponent,
-    MapComponent
+    MapComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
