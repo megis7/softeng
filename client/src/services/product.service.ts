@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BASE_URL } from './service.export'
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { Product } from 'src/models/product';
+import { environment as env } from '../environments/environment';
 
 import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ProductService {
 
-    private url = `${BASE_URL}/products`;
+    private url = `${env.baseURL}/products`;
 
     constructor(
         private http: HttpClient
@@ -41,28 +41,9 @@ export class ProductService {
     }
 
     patchProduct(product: Product, field: string) {
-        return this.http.patch<Product>(`${this.url}/${product.id}`, JSON.parse(`{ ${field}: ${product[field]} }`));
+        const toSend = JSON.parse(`{"${field}": "${product[field]}"}`);
+        return this.http.patch<Product>(`${this.url}/${product.id}`, toSend);
     }
-
-    // patchProductName(product: Product): Observable<Product> {
-    //     const { id, name, ...other } = product;
-    //     return this.http.patch<Product>(`${this.url}/${id}`, { name: name });
-    // }
-
-    // patchProductDescription(product: Product): Observable<Product> {
-    //     const { id, description, ...other } = product;
-    //     return this.http.patch<Product>(`${this.url}/${id}`, { description: description});
-    // }
-
-    // patchProductCategory(product: Product): Observable<Product> {
-    //     const { id, category, ...other } = product;
-    //     return this.http.patch<Product>(`${this.url}/${id}`, { category: category});
-    // }
-
-    // patchProductTags(product: Product): Observable<Product> {
-    //     const { id, category, ...other } = product;
-    //     return this.http.patch<Product>(`${this.url}/${id}`, { category: category});
-    // }
 
     deleteProduct(id: string): Observable<string> {
         return this.http.delete<string>(`${this.url}/${id}`);
