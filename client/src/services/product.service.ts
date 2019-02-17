@@ -30,18 +30,18 @@ export class ProductService {
     }
 
     postProduct(newProduct: Product): Observable<Product> {
-        const { _id, ...toSend } = newProduct;
+        const { id, ...toSend } = newProduct;
         return this.http.post<Product>(this.url, toSend);
     }
 
     putProduct(product: Product): Observable<Product> {
-        const { _id, ...toSend } = product;
-        return this.http.put<Product>(`${this.url}/${product._id}`, toSend);
+        const { id, ...toSend } = product;
+        return this.http.put<Product>(`${this.url}/${product.id}`, toSend);
     }
 
-    patchProduct(product: Product, field: string) {
+    patchProduct(product: Product, field: string): Observable<Product> {
         const toSend = JSON.parse(`{"${field}": ${JSON.stringify(product[field])}}`);
-        return this.http.patch<Product>(`${this.url}/${product._id}`, toSend);
+        return this.http.patch<Product>(`${this.url}/${product.id}`, toSend);
     }
 
     deleteProduct(id: string): Observable<{message: string}> {

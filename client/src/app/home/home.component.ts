@@ -10,6 +10,15 @@ export class HomeComponent implements OnInit {
 
 	constructor(private router: Router) { }
 
+	Hovering: boolean = false;
+	mouseEnter(): void{
+		this.Hovering = true;
+	 }
+  
+	mouseLeave(): void{
+		this.Hovering = false;
+	}
+
 	ngOnInit() {
 	}
 }

@@ -30,18 +30,18 @@ export class ShopService {
     }
 
     postShop(newShop: Shop): Observable<Shop> {
-        const {_id, ...rest} = newShop;
+        const {id, ...rest} = newShop;
         return this.http.post<Shop>(`${this.url}`,rest);
     }
 
     putShop(shop: Shop): Observable<Shop> {
-        const {_id, ...rest} = shop;
-        return this.http.put<Shop>(`${this.url}/${_id}`,rest);
+        const {id, ...rest} = shop;
+        return this.http.put<Shop>(`${this.url}/${id}`,rest);
     }
 
     patchShop(shop: Shop,field: string): Observable<Shop> {
         const toSend = JSON.parse(`{"${field}": ${JSON.stringify(shop[field])}}`);
-        return this.http.patch<Shop>(`${this.url}/${shop._id}`,toSend);
+        return this.http.patch<Shop>(`${this.url}/${shop.id}`,toSend);
     }
 
     deleteShop(id: string): Observable<{message: string}> {

@@ -7,3 +7,25 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
   }
+
+.coloredBg{
+  background-color: #683b12 !important;/*ffc107*/
+}
+
+.coloredBg:hover{
+  background-color: #884d16 !important;/*ffc107*/
+}
+
+.coloredBgNoHover{
+  background-color: #683b12 !important;/*ffc107*/
+}
+
+.coloredTxt{
+  color: #ffc107 !important;/* 845e3a */
+}
+.coloredTxt:hover{
+  color: #fdda6e !important;/*683b12*/
+}
+.coloredTxtNoHover{
+  color: #ffc107 !important;/* 845e3a */
+}
