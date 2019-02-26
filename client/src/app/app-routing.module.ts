@@ -11,6 +11,11 @@ const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'coffee', component: CoffeeComponent },
   { path: 'login', component: LoginComponent },
+
+  {
+    path: 'admin',
+    loadChildren: './admin/admin.module#AdminModule'
+  },
 ];
 
 @NgModule({
