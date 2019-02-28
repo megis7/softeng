@@ -1,0 +1,28 @@
+{{activeProduct|json}}
+<form [formGroup]="productForm" (ngSubmit) = "onSubmit()">
+  
+    <label>
+      Όνομα:
+      <input type="text" formControlName="name">
+    </label>
+  
+    <label>
+      Περιγραφή προϊόντος:
+      <input type="text" formControlName="description">
+    </label>
+
+    <label>
+        Κατηγορία:
+        <input type="text" formControlName="category">
+    </label>
+    <div formArrayName="tags">
+      <div *ngFor="let tag of tags.controls ; let i=index">
+        <label>
+            Ετικέτες:
+            <input type="text" [formControlName]="i">
+        </label>
+      </div>
+    </div>
+    <button type="submit" [disabled] = "!productForm.valid">Submit</button>
+  
+  </form>

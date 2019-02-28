@@ -1,3 +1,19 @@
-<p>
-  products works!
-</p>
+<table class = "row-border hover" datatable>
+  <thead>
+    <tr>
+      <th>Όνομα</th>
+      <th>Περιγραφή προϊόντος</th>
+      <th>Κατηγορία</th>
+      <th>Ενέργειες</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor = "let product of products">
+          <td>{{product.name}}</td>
+          <td>{{product.description}}</td>
+          <td>{{product.category}}</td>
+          <td><a class = "btn btn-warning" [routerLink] = "['/admin/edit-product',product.id]"><span class = "fa fa-edit"></span></a>
+              <button class = "btn btn-danger" (click)="deleteProduct(product)"><span class = "fa fa-trash"></span></button></td>
+      </tr>
+  </tbody>
+</table>
