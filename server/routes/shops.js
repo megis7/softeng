@@ -8,6 +8,20 @@ require('../models/shop')
 
 const Shop = mongoose.model('Shop')
 
+function cleanseInput(req, res, next) {
+    if (!('lng' in req.body) || !('lat' in req.body)) {
+        res.status(400).send({
+            message: 'eeeee prosexe filos'
+        })
+        return next('eeeee prosexe filos')
+    }
+    req.body.location = {
+        type: 'Point',
+        coordinates: [req.body.lng, req.body.lat]
+    }
+    return req
+}
+
 router.route('/')
 
     .get((req, res, next) => {
@@ -55,19 +69,15 @@ router.route('/')
             )
     })
 
-    .post((req, res, next) => {
-        req.body.location = {
-            type: 'Point',
-            coordinates: [req.body.lng, req.body.lat]
-        }
-        Shop.create(req.body)
-            .then(shop =>
-                res.json(shop)
-            )
-            .catch(err =>
-                next(err)
-            )
-    })
+    .post((req, res, next) =>
+        Shop.create(cleanseInput(req, res, next).body)
+        .then(shop =>
+            res.json(shop)
+        )
+        .catch(err =>
+            next(err)
+        )
+    )
 
 router.route('/:id')
 
@@ -81,37 +91,29 @@ router.route('/:id')
         )
     )
 
-    .put((req, res, next) => {
-        req.body.location = {
-            type: 'Point',
-            coordinates: [req.body.lng, req.body.lat]
-        }
-        Shop.findByIdAndUpdate(req.params.id, req.body, {
-                new: true
-            }).exec()
-            .then(shop =>
-                res.json(shop)
-            )
-            .catch(err =>
-                next(err)
-            )
-    })
+    .put((req, res, next) =>
+        Shop.findByIdAndUpdate(req.params.id, cleanseInput(req, res, next).body, {
+            new: true
+        }).exec()
+        .then(shop =>
+            res.json(shop)
+        )
+        .catch(err =>
+            next(err)
+        )
+    )
 
-    .patch((req, res, next) => {
-        req.body.location = {
-            type: 'Point',
-            coordinates: [req.body.lng, req.body.lat]
-        }
-        Shop.findByIdAndUpdate(req.params.id, req.body, {
-                new: true
-            }).exec()
-            .then(shop =>
-                res.json(shop)
-            )
-            .catch(err =>
-                next(err)
-            )
-    })
+    .patch((req, res, next) =>
+        Shop.findByIdAndUpdate(req.params.id, cleanseInput(req, res, next).body, {
+            new: true
+        }).exec()
+        .then(shop =>
+            res.json(shop)
+        )
+        .catch(err =>
+            next(err)
+        )
+    )
 
     .delete((req, res, next) => {
         const token = req.get('x-observatory-auth')

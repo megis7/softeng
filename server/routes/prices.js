@@ -27,7 +27,7 @@ function checkDate(req, next) {
         if (!dateFormat.test(req.query.dateFrom) || !dateFormat.test(req.query.dateTo))
             return next('date format')
     } else if (!('dateFrom' in req.query) && !('dateTo' in req.query))
-        req.query.dateFrom = req.query.dateTo = new Date() // FIX
+        req.query.dateFrom = req.query.dateTo = new Date()
     else
         return next('bad request')
 }
@@ -169,32 +169,6 @@ router.route('/')
                 next(err)
             )
     })
-
-
-    // query.populate('shopId', null, 'Shop', {
-    //     location: {
-    //         $nearSphere: {
-    //             $geometry: {
-    //                 type: 'Point',
-    //                 coordinates: [req.query.geoLng, req.query.geoLat]
-    //             },
-    //             $maxDistance: req.query.geoDist * 1000
-    //         }
-    //     }
-    // })
-
-    // query.circle('shopId.location', {
-    //     center: [req.query.geoLng, req.query.geoLat],
-    //     radius: req.query.geoDist / 6378.1,
-    //     unique: true,
-    //     spherical: true
-    // })
-
-    // query.near('shopId.location', {
-    //     center: [req.query.geoLng, req.query.geoLat],
-    //     maxDistance: req.query.geoDist * 1000,
-    //     spherical: true
-    // })
 
     .post((req, res, next) => {
         const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
