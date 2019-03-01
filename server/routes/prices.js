@@ -21,108 +21,188 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
+function checkDate(req, next) {
+    const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
+    if ('dateFrom' in req.query && 'dateTo' in req.query) {
+        if (!dateFormat.test(req.query.dateFrom) || !dateFormat.test(req.query.dateTo))
+            return next('date format')
+    } else if (!('dateFrom' in req.query) && !('dateTo' in req.query))
+        req.query.dateFrom = req.query.dateTo = new Date() // FIX
+    else
+        return next('bad request')
+}
+
+function checkGeo(req, res, next) {
+    if ('geoLng' in req.query && 'geoLat' in req.query && 'geoDist' in req.query) {
+        req.query.geoLng = Number(req.query.geoLng)
+        req.query.geoLat = Number(req.query.geoLat)
+        req.query.geoDist = Number(req.query.geoDist)
+
+
+    } else if ('geoLng' in req.query || 'geoLat' in req.query || 'geoDist' in req.query) {
+        res.status(400).json({
+            message: 'geoLng, geoLat, geoDist'
+        })
+        // return next('bad request')
+    }
+}
+
+function flatten(req, prices) {
+    prices = prices.filter(price =>
+        price.shopId !== null
+    )
+
+    prices.map(price => {
+        price.productName = price.productId.name
+        price.productTags = price.productId.tags
+        price.productId = price.productId._id
+        price.shopName = price.shopId.name
+        price.shopTags = price.shopId.tags
+        price.shopAddress = price.shopId.address
+        price.shopDist = 'geoLng' in req.query ?
+            getGeoDist(req.query.geoLng, req.query.geoLat, ...price.shopId.location.coordinates) :
+            null
+        price.shopId = price.shopId._id
+        delete price._id
+        delete price.__v
+    })
+
+    if ('tags' in req.query)
+        prices = prices.filter(price => {
+            for (tag of req.query.tags.split(','))
+                if (price.productTags.indexOf(tag) >= 0 || price.shopTags.indexOf(tag) >= 0)
+                    return true
+            return false
+        })
+
+    if ('sort' in req.query) {
+        const [sortKey, sortValue] = req.query.sort.split(/\|/)
+        if (sortKey === 'geoDist') {
+            prices = prices.sort((p1, p2) =>
+                sortValue === 'ASC' ?
+                p1.shopDist - p2.shopDist :
+                p2.shopDist - p1.shopDist
+            )
+        }
+    }
+
+    return prices
+}
+
+function conditionBuilder(req) {
+    const conditions = {
+        date: {
+            $gte: req.query.dateFrom,
+            $lte: req.query.dateTo
+        }
+    }
+    if ('products' in req.query)
+        conditions.productId = {
+            $in: req.query.products.split(',')
+        }
+    if ('shops' in req.query)
+        conditions.shopId = {
+            $in: req.query.shops.split(',')
+        }
+    return conditions
+}
+
 router.route('/')
 
     .get((req, res, next) => {
         const start = Number(req.query.start) || 0
         const count = Number(req.query.count) || 20
-        const [sortKey, sortValue] = req.query.sort !== undefined ? req.query.sort.split(/\|/) : ['price', 'DESC']
-        // /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
+        const [sortKey, sortValue] = 'sort' in req.query ?
+            req.query.sort.split(/\|/) : ['price', 'ASC']
 
-        const dateFrom = req.query.dateFrom !== undefined ? new Date(req.query.dateFrom) : new Date() // FIX
-        const dateTo = req.query.dateTo !== undefined ? new Date(req.query.dateTo) : new Date() // FIX
+        if ('sort' in req.query && sortKey === 'geoDist' && !('geoDist' in req.query))
+            return next('how can i sort, if i don\'t know where you are, duh')
 
-        if (req.query.geoLng !== undefined && req.query.geoLat !== undefined && req.query.geoDist !== undefined) {
-            var geoLng = Number(req.query.geoLng)
-            var geoLat = Number(req.query.geoLat)
-            var geoDist = Number(req.query.geoDist)
-        }
+        checkDate(req, next)
+        checkGeo(req, res, next)
 
-        const query = Price.find({
-            // date: {
-            //     $gte: dateFrom,
-            //     $lte: dateTo
-            // }
-        }, null, {
-            lean: true,
-            skip: start,
-            limit: count,
-            sort: JSON.parse(`{"${sortKey}": "${sortValue}"}`)
-        })
-
-        // point -> location
-
-        query.populate('shopId', '-withdrawn', 'Shop', {
-            point: {
-                $geoWithin: {
-                    $centerSphere: [
-                        [geoLng, geoLat], geoDist / 6378.1
-                    ]
-                }
-            }
-        })
-
-        // query.populate('shopId', null, 'Shop', {
-        //     point: {
-        //         $nearSphere: {
-        //             $geometry: {
-        //                 type: 'Point',
-        //                 coordinates: [geoLng, geoLat]
-        //             },
-        //             $maxDistance: geoDist * 1000
-        //         }
-        //     }
-        // })
-
-        // if (req.query.geoLng !== undefined && req.query.geoLat !== undefined && req.query.geoDist !== undefined)
-        // query.circle('shopId.point', {
-        //     center: [geoLng, geoLat],
-        //     radius: geoDist / 6378.1,
-        //     unique: true,
-        //     spherical: true
-        // })
-
-        // query.near('shopId.point', {
-        //     center: [geoLng, geoLat],
-        //     maxDistance: geoDist * 1000,
-        //     spherical: true
-        // })
-
-        query.populate('productId', '_id name tags').exec()
-            .then(prices => {
-                prices = prices.filter(price => price.shopId !== null)
-                prices.map(price => {
-                    price.productName = price.productId.name
-                    price.productTags = price.productId.tags
-                    price.productId = price.productId._id
-                    price.shopName = price.shopId.name
-                    price.shopTags = price.shopId.tags
-                    price.shopAddress = price.shopId.address
-                    price.shopDist = getGeoDist(geoLng, geoLat, ...price.shopId.point.coordinates)
-                    price.shopId = price.shopId._id
-                    delete price._id
-                    delete price.__v
-                    return price
+        Price.find(conditionBuilder(req), null, {
+                lean: true,
+                skip: start,
+                limit: count,
+                sort: JSON.parse(`{"${sortKey}": "${sortValue}"}`)
+            }).exec()
+            .then(prices =>
+                Price.populate(prices, [{
+                    path: 'shopId',
+                    select: '-withdrawn',
+                    match: 'geoDist' in req.query ? {
+                        location: {
+                            $geoWithin: {
+                                $centerSphere: [
+                                    [req.query.geoLng, req.query.geoLat], req.query.geoDist / 6378.1
+                                ]
+                            }
+                        }
+                    } : true
+                }, {
+                    path: 'productId',
+                    select: '_id name tags',
+                }])
+                // .execPopulate()
+                .then(prices => {
+                    prices = flatten(req, prices)
+                    Price.countDocuments()
+                        .then(total =>
+                            res.json({
+                                start: start,
+                                count: prices.length,
+                                total: total,
+                                prices: prices
+                            })
+                        )
+                        .catch(err =>
+                            next(err)
+                        )
                 })
-                Price.countDocuments()
-                    .then(total =>
-                        res.json({
-                            start: start,
-                            count: prices.length,
-                            total: total,
-                            prices: prices
-                        })
-                    )
-                    .catch(err =>
-                        next(err)
-                    )
-            })
+                .catch(err =>
+                    next(err)
+                )
+            )
             .catch(err =>
                 next(err)
             )
     })
 
+
+    // query.populate('shopId', null, 'Shop', {
+    //     location: {
+    //         $nearSphere: {
+    //             $geometry: {
+    //                 type: 'Point',
+    //                 coordinates: [req.query.geoLng, req.query.geoLat]
+    //             },
+    //             $maxDistance: req.query.geoDist * 1000
+    //         }
+    //     }
+    // })
+
+    // query.circle('shopId.location', {
+    //     center: [req.query.geoLng, req.query.geoLat],
+    //     radius: req.query.geoDist / 6378.1,
+    //     unique: true,
+    //     spherical: true
+    // })
+
+    // query.near('shopId.location', {
+    //     center: [req.query.geoLng, req.query.geoLat],
+    //     maxDistance: req.query.geoDist * 1000,
+    //     spherical: true
+    // })
+
     .post((req, res, next) => {
+        const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
+        if ('dateFrom' in req.body && 'dateTo' in req.body) {
+            if (!dateFormat.test(req.body.dateFrom) || !dateFormat.test(req.body.dateTo))
+                return next('date format')
+        } else
+            return next('bad request')
+
         let prices = []
         const dateFrom = new Date(req.body.dateFrom)
         const dateTo = new Date(req.body.dateTo)
@@ -133,6 +213,20 @@ router.route('/')
         Price.insertMany(prices)
             .then(result =>
                 res.json(result)
+            )
+            .catch(err =>
+                next(err)
+            )
+    })
+
+router.route('/:id')
+
+    .delete((req, res, next) => {
+        Price.findByIdAndDelete(req.params.id).exec()
+            .then(() =>
+                res.json({
+                    message: 'OK'
+                })
             )
             .catch(err =>
                 next(err)

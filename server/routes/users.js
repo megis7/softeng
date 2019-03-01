@@ -14,7 +14,9 @@ router.route('/')
     .get((req, res, next) => {
         const start = Number(req.query.start) || 0
         const count = Number(req.query.count) || 20
-        const [sortKey, sortValue] = req.query.sort !== undefined ? req.query.sort.split(/\|/) : ['_id', 'DESC']
+        const [sortKey, sortValue] = 'sort' in req.query ?
+            req.query.sort.split(/\|/) :
+            ['_id', 'DESC']
 
         Model.find(null, null, {
                 skip: start,

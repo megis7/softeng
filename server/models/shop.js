@@ -1,19 +1,28 @@
 const mongoose = require('mongoose')
 
 const shopSchema = new mongoose.Schema({
-    name: String,
-    address: String,
-    point: {
+    name: {
+        required: true,
+        type: String
+    },
+    address: {
+        required: true,
+        type: String
+    },
+    location: { // required
+        coordinates: [Number],
         type: {
             type: String,
             enum: ['Point']
-        },
-        coordinates: [Number]
+        }
     },
-    tags: [String],
+    tags: {
+        required: true,
+        type: [String]
+    },
     withdrawn: {
-        type: Boolean,
-        default: false
+        default: false,
+        type: Boolean
     }
 }, {
     // id: true

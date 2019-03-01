@@ -3,18 +3,18 @@ const mongooseUniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = new mongoose.Schema({
     username: {
-        type: String,
         required: true,
+        type: String,
         unique: true
     },
     hash: {
-        type: String,
-        required: true
+        required: true,
+        type: String
     },
     role: {
+        required: true,
         type: String,
-        enum: ['volunteer', 'administrator'],
-        required: true
+        enum: ['volunteer', 'administrator']
     }
 }, {
     toJSON: {

@@ -6,32 +6,33 @@ const router = express.Router()
 
 require('../models/shop')
 
-const model = 'Shop'
-const Model = mongoose.model(model)
+const Shop = mongoose.model('Shop')
 
 router.route('/')
 
     .get((req, res, next) => {
         const start = Number(req.query.start) || 0
         const count = Number(req.query.count) || 20
-        const [sortKey, sortValue] = req.query.sort !== undefined ? req.query.sort.split(/\|/) : ['_id', 'DESC']
+        const [sortKey, sortValue] = 'sort' in req.query ?
+            req.query.sort.split(/\|/) :
+            ['_id', 'DESC']
 
-        let query = Model.find(null, null, {
+        let query = Shop.find(null, null, {
             skip: start,
             limit: count,
             sort: JSON.parse(`{"${sortKey}": "${sortValue}"}`)
         })
 
-        if (req.query.status === undefined || req.query.status === 'ACTIVE')
+        if (!('status' in req.query) || req.query.status === 'ACTIVE')
             query.where('withdrawn', false)
         else if (req.query.status === 'WITHDRAWN')
             query.where('withdrawn', true)
 
         query.exec()
             .then(result => {
-                query = Model.countDocuments()
+                query = Shop.countDocuments()
 
-                if (req.query.status === undefined || req.query.status === 'ACTIVE')
+                if (!('status' in req.query) || req.query.status === 'ACTIVE')
                     query.where('withdrawn', false)
                 else if (req.query.status === 'WITHDRAWN')
                     query.where('withdrawn', true)
@@ -55,11 +56,11 @@ router.route('/')
     })
 
     .post((req, res, next) => {
-        req.body.point = {
+        req.body.location = {
             type: 'Point',
             coordinates: [req.body.lng, req.body.lat]
         }
-        Model.create(req.body)
+        Shop.create(req.body)
             .then(model =>
                 res.json(model)
             )
@@ -71,7 +72,7 @@ router.route('/')
 router.route('/:id')
 
     .get((req, res, next) =>
-        Model.findById(req.params.id).exec()
+        Shop.findById(req.params.id).exec()
         .then(result =>
             res.json(result)
         )
@@ -81,11 +82,11 @@ router.route('/:id')
     )
 
     .put((req, res, next) => {
-        req.body.point = {
+        req.body.location = {
             type: 'Point',
             coordinates: [req.body.lng, req.body.lat]
         }
-        Model.findByIdAndUpdate(req.params.id, req.body, {
+        Shop.findByIdAndUpdate(req.params.id, req.body, {
                 new: true
             }).exec()
             .then(result =>
@@ -97,11 +98,11 @@ router.route('/:id')
     })
 
     .patch((req, res, next) => {
-        req.body.point = {
+        req.body.location = {
             type: 'Point',
             coordinates: [req.body.lng, req.body.lat]
         }
-        Model.findByIdAndUpdate(req.params.id, req.body, {
+        Shop.findByIdAndUpdate(req.params.id, req.body, {
                 new: true
             }).exec()
             .then(result =>
@@ -116,7 +117,7 @@ router.route('/:id')
         const token = req.get('x-observatory-auth')
         const decoded = jsonwebtoken.decode(token)
         if (decoded.role === 'volunteer')
-            Model.findByIdAndUpdate(req.params.id, {
+            Shop.findByIdAndUpdate(req.params.id, {
                 withdrawn: true
             }).exec()
             .then(() =>
@@ -128,7 +129,7 @@ router.route('/:id')
                 next(err)
             )
         else if (decoded.role === 'administrator')
-            Model.findByIdAndDelete(req.params.id).exec()
+            Shop.findByIdAndDelete(req.params.id).exec()
             .then(() =>
                 res.json({
                     message: 'OK'

@@ -63,15 +63,29 @@ app.use((req, res, next) => {
         next()
 })
 
-app.post(/\/product|\/shops|\/prices/, (req, res, next) =>
+function cleanseInput(req) {
+    delete req.body.withdrawn
+    delete req.body._id
+}
+
+app.get('*', (req, res, next) => {
+    if ('sort' in req.query)
+        req.query.sort = req.query.sort.replace(/id/, '_id')
+    next()
+})
+
+app.post(/\/product|\/shops|\/prices/, (req, res, next) => {
+    cleanseInput(req)
     authenticatedUser(req, res, next)
-)
-app.put('*', (req, res, next) =>
+})
+app.put('*', (req, res, next) => {
+    cleanseInput(req)
     authenticatedUser(req, res, next)
-)
-app.patch('*', (req, res, next) =>
+})
+app.patch('*', (req, res, next) => {
+    cleanseInput(req)
     authenticatedUser(req, res, next)
-)
+})
 app.delete('*', (req, res, next) =>
     authenticatedUser(req, res, next)
 )

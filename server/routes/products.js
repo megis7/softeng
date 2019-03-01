@@ -14,7 +14,9 @@ router.route('/')
     .get((req, res, next) => {
         const start = Number(req.query.start) || 0
         const count = Number(req.query.count) || 20
-        const [sortKey, sortValue] = req.query.sort !== undefined ? req.query.sort.split(/\|/) : ['_id', 'DESC']
+        const [sortKey, sortValue] = 'sort' in req.query ?
+            req.query.sort.split(/\|/) :
+            ['_id', 'DESC']
 
         let query = Model.find(null, null, {
             skip: start,
@@ -22,7 +24,7 @@ router.route('/')
             sort: JSON.parse(`{"${sortKey}": "${sortValue}"}`)
         })
 
-        if (req.query.status === undefined || req.query.status === 'ACTIVE')
+        if (!('status' in req.query) || req.query.status === 'ACTIVE')
             query.where('withdrawn', false)
         else if (req.query.status === 'WITHDRAWN')
             query.where('withdrawn', true)
@@ -31,7 +33,7 @@ router.route('/')
             .then(result => {
                 query = Model.countDocuments()
 
-                if (req.query.status === undefined || req.query.status === 'ACTIVE')
+                if (!('status' in req.query) || req.query.status === 'ACTIVE')
                     query.where('withdrawn', false)
                 else if (req.query.status === 'WITHDRAWN')
                     query.where('withdrawn', true)
