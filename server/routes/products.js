@@ -12,8 +12,8 @@ const Model = mongoose.model(model)
 router.route('/')
 
     .get((req, res, next) => {
-        const start = Number(req.query.start) || 0
-        const count = Number(req.query.count) || 20
+        const start = parseInt(req.query.start, 10) || 0
+        const count = parseInt(req.query.count, 10) || 20
         const [sortKey, sortValue] = 'sort' in req.query ?
             req.query.sort.split(/\|/) :
             ['_id', 'DESC']

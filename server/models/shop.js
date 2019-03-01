@@ -9,8 +9,11 @@ const shopSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    location: { // required
-        coordinates: [Number],
+    location: {
+        coordinates: {
+            // required: true,
+            type: [Number]
+        },
         type: {
             type: String,
             enum: ['Point']
@@ -25,17 +28,10 @@ const shopSchema = new mongoose.Schema({
         type: Boolean
     }
 }, {
-    // id: true
-    toObject: {
-        transform: (doc, ret) => {
-            ret.id = ret._id
-            delete ret._id
-            delete ret.__v
-            return ret
-        }
-    },
     toJSON: {
         transform: (doc, ret) => {
+            [ret.lng, ret.lat] = ret.location.coordinates
+            delete ret.location
             ret.id = ret._id
             delete ret._id
             delete ret.__v

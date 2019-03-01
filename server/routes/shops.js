@@ -14,10 +14,10 @@ router.route('/')
         const start = Number(req.query.start) || 0
         const count = Number(req.query.count) || 20
         const [sortKey, sortValue] = 'sort' in req.query ?
-            req.query.sort.split(/\|/) :
-            ['_id', 'DESC']
+            req.query.sort.split(/\|/) : ['_id', 'DESC']
 
         let query = Shop.find(null, null, {
+            // lean: true,
             skip: start,
             limit: count,
             sort: JSON.parse(`{"${sortKey}": "${sortValue}"}`)
@@ -29,7 +29,7 @@ router.route('/')
             query.where('withdrawn', true)
 
         query.exec()
-            .then(result => {
+            .then(shops => {
                 query = Shop.countDocuments()
 
                 if (!('status' in req.query) || req.query.status === 'ACTIVE')
@@ -41,9 +41,9 @@ router.route('/')
                     .then(total =>
                         res.json({
                             start: start,
-                            count: result.length,
+                            count: shops.length,
                             total: total,
-                            shops: result
+                            shops: shops
                         })
                     )
                     .catch(err =>
@@ -61,8 +61,8 @@ router.route('/')
             coordinates: [req.body.lng, req.body.lat]
         }
         Shop.create(req.body)
-            .then(model =>
-                res.json(model)
+            .then(shop =>
+                res.json(shop)
             )
             .catch(err =>
                 next(err)
@@ -73,8 +73,8 @@ router.route('/:id')
 
     .get((req, res, next) =>
         Shop.findById(req.params.id).exec()
-        .then(result =>
-            res.json(result)
+        .then(shop =>
+            res.json(shop)
         )
         .catch(err =>
             next(err)
@@ -89,8 +89,8 @@ router.route('/:id')
         Shop.findByIdAndUpdate(req.params.id, req.body, {
                 new: true
             }).exec()
-            .then(result =>
-                res.json(result)
+            .then(shop =>
+                res.json(shop)
             )
             .catch(err =>
                 next(err)
@@ -105,8 +105,8 @@ router.route('/:id')
         Shop.findByIdAndUpdate(req.params.id, req.body, {
                 new: true
             }).exec()
-            .then(result =>
-                res.json(result)
+            .then(shop =>
+                res.json(shop)
             )
             .catch(err =>
                 next(err)

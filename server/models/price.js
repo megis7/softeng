@@ -27,14 +27,6 @@ const priceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId
     }
 }, {
-    toObject: {
-        transform: (doc, ret) => {
-            ret.id = ret._id
-            delete ret._id
-            delete ret.__v
-            return ret
-        }
-    },
     toJSON: {
         transform: (doc, ret) => {
             ret.id = ret._id
