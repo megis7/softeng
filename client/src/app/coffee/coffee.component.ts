@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Point } from 'src/models/point';
-import { MapComponent } from '../map/map.component';
+import { MapComponent } from '../shared/map/map.component';
 
 @Component({
 	selector: 'app-coffee',

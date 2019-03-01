@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Shop } from '../../../models/shop';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormArray } from '@angular/forms';
 import { ShopService } from '../../../services/shop.service';
+import { MapComponent } from '../../shared/map/map.component';
+import { Point } from '../../../models/point';
 
 @Component({
   selector: 'app-edit-shop',
   templateUrl: './edit-shop.component.html',
   styleUrls: ['./edit-shop.component.scss']
 })
-export class EditShopComponent implements OnInit {
+export class EditShopComponent implements OnInit, AfterViewInit {
 
+  @ViewChild(MapComponent) mapDisplay;
 
   private subscription
   private activeShop: Shop
@@ -50,6 +53,13 @@ export class EditShopComponent implements OnInit {
         });
       })
     })
+  }
+  ngAfterViewInit(){
+    this.mapDisplay.addPoint(new Point(this.activeShop.lng,this.activeShop.lat))
+  }
+  displayMap(){
+    console.log(this.mapDisplay.map.geocode(this.activeShop.address))
+    console.log(this.activeShop.lat,this.activeShop.lng)
   }
 
   removeTag(i: number){

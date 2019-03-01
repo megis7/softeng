@@ -1,5 +1,6 @@
 <div class="container">
-    <form [formGroup]="shopForm" (ngSubmit) = "onSubmit()">
+  <button (click) = "displayMap()">Click Me</button>  
+  <form [formGroup]="shopForm" (ngSubmit) = "onSubmit()">
         <div class = "form-inline">
         <label>
           Όνομα: &nbsp;
@@ -11,7 +12,7 @@
         <label>
           Διεύθυνση: &nbsp;
         </label>
-        <input class="form-control" type="text" formControlName="address">
+        <input class="form-control" type="text" formControlName="address" [attr.disabled] = "true">
         </div>
     
         <label>
