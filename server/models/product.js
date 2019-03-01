@@ -9,6 +9,23 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    toObject: {
+        transform: (doc, ret) => {
+            ret.id = ret._id
+            delete ret._id
+            delete ret.__v
+            return ret
+        }
+    },
+    toJSON: {
+        transform: (doc, ret) => {
+            ret.id = ret._id
+            delete ret._id
+            delete ret.__v
+            return ret
+        }
+    }
 })
 
 mongoose.model('Product', productSchema)

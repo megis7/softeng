@@ -63,7 +63,7 @@ app.use((req, res, next) => {
         next()
 })
 
-app.post(/\/users|\/product|\/shops|\/prices/, (req, res, next) =>
+app.post(/\/product|\/shops|\/prices/, (req, res, next) =>
     authenticatedUser(req, res, next)
 )
 app.put('*', (req, res, next) =>

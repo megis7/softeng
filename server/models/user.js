@@ -7,11 +7,23 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    hash: String,
+    hash: {
+        type: String,
+        required: true
+    },
     role: {
         type: String,
-        required: true,
-        enum: ['volunteer', 'administrator']
+        enum: ['volunteer', 'administrator'],
+        required: true
+    }
+}, {
+    toJSON: {
+        transform: (doc, ret) => {
+            ret.id = ret._id
+            delete ret._id
+            delete ret.__v
+            return ret
+        }
     }
 })
 

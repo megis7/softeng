@@ -7,6 +7,20 @@ const router = express.Router()
 
 const Price = mongoose.model('Price')
 
+function getGeoDist(lng1, lat1, lng2, lat2) {
+    const R = 6371
+    const dLat = deg2rad(lat2 - lat1)
+    const dLng = deg2rad(lng2 - lng1)
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    const d = R * c
+    return d
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
+
 router.route('/')
 
     .get((req, res, next) => {
@@ -18,9 +32,11 @@ router.route('/')
         const dateFrom = req.query.dateFrom !== undefined ? new Date(req.query.dateFrom) : new Date() // FIX
         const dateTo = req.query.dateTo !== undefined ? new Date(req.query.dateTo) : new Date() // FIX
 
-        const geoLng = Number(req.query.geoLng)
-        const geoLat = Number(req.query.geoLat)
-        const geoDist = Number(req.query.geoDist)
+        if (req.query.geoLng !== undefined && req.query.geoLat !== undefined && req.query.geoDist !== undefined) {
+            var geoLng = Number(req.query.geoLng)
+            var geoLat = Number(req.query.geoLat)
+            var geoDist = Number(req.query.geoDist)
+        }
 
         const query = Price.find({
             // date: {
@@ -28,50 +44,79 @@ router.route('/')
             //     $lte: dateTo
             // }
         }, null, {
+            lean: true,
             skip: start,
             limit: count,
             sort: JSON.parse(`{"${sortKey}": "${sortValue}"}`)
         })
 
-        if (req.query.geoLng !== undefined && req.query.geoLat !== undefined && req.query.geoDist !== undefined)
-            // query.populate({
-            //     path: 'shopId',
-            //     match: {
-            //         point: {
-            //             $near: {
-            //                 $geometry: {
-            //                     type: "Point",
-            //                     coordinates: [geoLng, geoLat]
-            //                 },
-            //                 $maxDistance: geoDist
-            //             }
-            //         }
-            //     }
-            // })
-        // else
-        query.populate('shopId')
-        query.where('shopId.point').within({
-            center: [geoLng, geoLat],
-            radius: geoDist,
-            unique: true,
-            spherical: true
+        // point -> location
+
+        query.populate('shopId', '-withdrawn', 'Shop', {
+            point: {
+                $geoWithin: {
+                    $centerSphere: [
+                        [geoLng, geoLat], geoDist / 6378.1
+                    ]
+                }
+            }
         })
 
+        // query.populate('shopId', null, 'Shop', {
+        //     point: {
+        //         $nearSphere: {
+        //             $geometry: {
+        //                 type: 'Point',
+        //                 coordinates: [geoLng, geoLat]
+        //             },
+        //             $maxDistance: geoDist * 1000
+        //         }
+        //     }
+        // })
+
+        // if (req.query.geoLng !== undefined && req.query.geoLat !== undefined && req.query.geoDist !== undefined)
+        // query.circle('shopId.point', {
+        //     center: [geoLng, geoLat],
+        //     radius: geoDist / 6378.1,
+        //     unique: true,
+        //     spherical: true
+        // })
+
+        // query.near('shopId.point', {
+        //     center: [geoLng, geoLat],
+        //     maxDistance: geoDist * 1000,
+        //     spherical: true
+        // })
+
         query.populate('productId', '_id name tags').exec()
-            .then(result =>
+            .then(prices => {
+                prices = prices.filter(price => price.shopId !== null)
+                prices.map(price => {
+                    price.productName = price.productId.name
+                    price.productTags = price.productId.tags
+                    price.productId = price.productId._id
+                    price.shopName = price.shopId.name
+                    price.shopTags = price.shopId.tags
+                    price.shopAddress = price.shopId.address
+                    price.shopDist = getGeoDist(geoLng, geoLat, ...price.shopId.point.coordinates)
+                    price.shopId = price.shopId._id
+                    delete price._id
+                    delete price.__v
+                    return price
+                })
                 Price.countDocuments()
-                .then(total =>
-                    res.json({
-                        start: start,
-                        count: result.length,
-                        total: total,
-                        prices: result
-                    })
-                )
-                .catch(err =>
-                    next(err)
-                )
-            )
+                    .then(total =>
+                        res.json({
+                            start: start,
+                            count: prices.length,
+                            total: total,
+                            prices: prices
+                        })
+                    )
+                    .catch(err =>
+                        next(err)
+                    )
+            })
             .catch(err =>
                 next(err)
             )
