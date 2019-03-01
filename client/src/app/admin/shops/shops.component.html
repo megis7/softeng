@@ -1,0 +1,28 @@
+<div class = "container">
+    <table class = "row-border hover" datatable>
+      <thead>
+        <tr>
+          <th>Όνομα</th>
+          <th>Διεύθυνση Καταστήματος</th>
+          <th>Ενέργειες</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor = "let shop of shops">
+              <td>{{shop.name}}</td>
+              <td>{{shop.address}}</td>
+              <td>
+                <ul>
+                    <li>
+                      <a class = "btn btn-warning" [routerLink] = "['/admin/edit-shop',shop.id]"><span class = "fa fa-edit"></span></a>
+                    </li>
+                    <li>
+                      <button class = "btn btn-danger" (click)="deleteShop(shop)"><span class = "fa fa-trash"></span></button>
+                    </li>
+                </ul>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+    <a class = "btn btn-success" [routerLink] = "['/admin/create-shop']"><span class = "fa fa-plus-square"></span>&nbsp; Νέο Κατάστημα</a>
+    </div>

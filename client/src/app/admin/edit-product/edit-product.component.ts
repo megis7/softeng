@@ -41,6 +41,7 @@ export class EditProductComponent implements OnInit {
           category: [this.activeProduct.category],
           tags: this.fb.array([])
         });
+        if(id == "0")(this.productForm.get("tags") as FormArray).push(this.fb.control(''))
         this.activeProduct.tags.forEach(tag => {
           (this.productForm.get("tags") as FormArray).push(this.fb.control(tag))
         });
@@ -48,6 +49,15 @@ export class EditProductComponent implements OnInit {
     })
   }
 
+  removeTag(i: number){
+    (this.productForm.get("tags") as FormArray).removeAt(i)
+    return false
+  }
+
+  addTag(){
+    (this.productForm.get("tags") as FormArray).push(this.fb.control(''))
+    return false
+  }
   get tags() {
     return this.productForm.get('tags') as FormArray;
   }

@@ -19,8 +19,10 @@ export class ProductsComponent implements OnInit {
   }
 
   deleteProduct(product: Product){
+    this.products.splice(this.products.indexOf(product),1)
     this.productService.deleteProduct(product.id).subscribe(msg => {
-      if(msg.message == "OK")this.productService.getProducts().subscribe(res => this.products = res,err => console.log(err))
+      //if(msg.message == "OK")this.productService.getProducts().subscribe(res => this.products = res,err => console.log(err))
+      console.log(msg.message)
     },err => console.log(err));
   }
 }

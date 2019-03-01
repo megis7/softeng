@@ -8,9 +8,9 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { LoginComponent } from './login/login.component';
 import { CoffeeComponent } from './coffee/coffee.component';
-import { MapComponent } from './map/map.component';
 import { SERVICE_PROVIDERS } from 'src/services/service.export';
 import { LogoutComponent } from './logout/logout.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -19,13 +19,13 @@ import { LogoutComponent } from './logout/logout.component';
     AboutComponent,
     LoginComponent,
     CoffeeComponent,
-    MapComponent,
     LogoutComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    SharedModule
   ],
   providers: [
     SERVICE_PROVIDERS

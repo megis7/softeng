@@ -29,12 +29,12 @@ export class ProductService {
 
         /*return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
                         .pipe(map(res => res.products));*/
-        return of(this.products);
+        return of(this.products.map(x => Object.assign({}, x)));
     }
 
     getProduct(id: string): Observable<Product> {
         // return this.http.get<Product>(`${this.url}/${id}`);
-        return of(this.products[(+id)-1])
+        return of(this.products.find(x => x.id == id))
     }
 
     postProduct(newProduct: Product): Observable<Product> {
