@@ -8,6 +8,7 @@ import { AuthService } from '../services/auth.service';
 import { PriceService } from '../services/price.service';
 import { PriceLite } from '../models/price';
 import { detachEmbeddedView } from '@angular/core/src/view';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { detachEmbeddedView } from '@angular/core/src/view';
 })
 export class AppComponent {
 
-	constructor(private router: Router, private prodService: ProductService,
+	constructor(private router: Router, private prodService: ProductService, private http: HttpClient,
 		private shopService: ShopService, private authService: AuthService, private priceService: PriceService) { }
 
 	public isActive(route: string): boolean {
@@ -42,11 +43,14 @@ export class AppComponent {
 		this.authService.login("hello","world").subscribe(x => this.authService.Token = x.token);
 	}
 	test5(){
-		this.priceService.getPrices().subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14).subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14,3.45,21.56).subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24)).subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24),["1","2","3"],null,["diaskedastiko!"]).subscribe(x => console.log(x));
-		this.priceService.postPrice(new PriceLite(1.56,new Date(), new Date(), "2","3")).subscribe(x => console.log(x));
+		// this.priceService.getPrices().subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14).subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14,3.45,21.56).subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24)).subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24),["1","2","3"],null,["diaskedastiko!"]).subscribe(x => console.log(x));
+		// this.priceService.postPrice(new PriceLite(1.56,new Date(), new Date(), "2","3")).subscribe(x => console.log(x));
+		console.log("sendind request");
+		let params = new HttpParams().set('key', "TlOzDikpKPLO5jhzFburuxsvWNH1GNPi").set("location",'Γρηγοριου Αυξεντίου 18, Άλιμος').set('outFormat', "json")
+		this.http.get('http://www.mapquestapi.com/geocoding/v1/address', {params: params}).subscribe(res => console.log(res))
 	}
 }
