@@ -17,7 +17,6 @@ export class CoffeeComponent implements OnInit {
 
 	ngOnInit() {
 		this.getLocation();
-		
 	}
 
 	add() {

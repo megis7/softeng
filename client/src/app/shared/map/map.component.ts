@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import * as ol from 'openlayers';
 import { Point } from 'src/models/point';
 
@@ -15,8 +15,8 @@ export class MapComponent implements OnInit {
 	vectorLayer: ol.layer.Vector;
 	vectorSource: ol.source.Vector;
 
-	initialPosition: [number, number] = [23, 38];
-	initialZoom = 7;
+	@Input() initialPosition: [number, number] = [23, 38];
+	@Input() initialZoom = 7;
 
 	private coordinates: Point[] = new Array<Point>();
 	private coffeeShopIconPath = "assets/images/coffee-shop.png"
@@ -60,6 +60,7 @@ export class MapComponent implements OnInit {
 	}
 
 	public addPoint(coordinates : Point) {
+		console.log(coordinates);
 		this.coordinates.push(coordinates);
 
 		const coords: [number, number] = ol.proj.fromLonLat([coordinates.lon, coordinates.lat]);
@@ -69,6 +70,11 @@ export class MapComponent implements OnInit {
 		feature.setProperties({ name: 'test point', value: 15 });
 
 		this.vectorSource.addFeature(feature);
+	}
+
+	public setPosition(point: Point) {
+		const position: [number, number] = [point.lon, point.lat]
+		this.map.setView(new ol.View({ center: ol.proj.fromLonLat(position), zoom: this.initialZoom }))
 	}
 
 	private createIconStyle(src: string, img: any): ol.style.Style {

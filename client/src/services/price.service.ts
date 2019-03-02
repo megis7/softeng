@@ -28,7 +28,7 @@ export class PriceService {
         private http: HttpClient
     ){}
 
-    toDateString(date: Date) {
+    private toDateString(date: Date) {
         let d = date,
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
