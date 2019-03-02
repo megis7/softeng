@@ -15,6 +15,7 @@
 					Παρακαλώ εισάγετε έγκυρη τιμή στον καφέ
 				</div>
 			</div>
+<<<<<<< Updated upstream
 		</div>
 
 		<div class="form-group">
@@ -73,6 +74,63 @@
 		<button class="btn btn-primary" type="submit"
 			[disabled]="!priceForm.valid || !productFlag || !shopFlag">Υποβολή</button>
 	</form>
+=======
+    </div>
+  
+    
+    <h6>Όνομα καφέ:</h6>
+    <div class = "container form-inline">
+      <table class = "row-border hover" datatable>
+        <thead>
+          <tr>
+            <th>Όνομα</th>
+            <th>Περιγραφή προϊόντος</th>
+            <th>Κατηγορία</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor = "let product of products" (click) = "productSelection(product)">
+                <td>{{product.name}}</td>
+                <td>{{product.description}}</td>
+                <td>{{product.category}}</td>
+                <td>
+                  <div class="fa fa-check-square btn btn-success" *ngIf = "selectedProduct(product)" ></div>
+                  <div class="fa fa-square btn btn-success" *ngIf = "!selectedProduct(product)"></div>
+                </td>
+            </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h6>Όνομα καταστήματος:</h6>
+      <div class = "container form-inline">
+        <table class = "row-border hover" datatable>
+          <thead>
+            <tr>
+              <th>Όνομα</th>
+              <th>Διεύθυνση Καταστήματος</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor = "let shop of shops" (click) = "shopSelection(shop)">
+                  <td>{{shop.name}}</td>
+                  <td>{{shop.address}}</td>
+                  <td>
+                    <div class="fa fa-check-square btn btn-success" *ngIf = "selectedShop(shop)" ></div>
+                    <div class="fa fa-square btn btn-success" *ngIf = "!selectedShop(shop)"></div>
+                  </td>
+              </tr>
+          </tbody>
+        </table>
+        </div>
+		<button class="btn btn-primary" type="submit" [disabled]="!priceForm.valid || !productFlag || !shopFlag">Submit</button>
+  </form>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 	<!-- <app-map [initialZoom]='18'></app-map> -->
 </div>
 

@@ -12,6 +12,7 @@ import { SERVICE_PROVIDERS } from 'src/services/service.export';
 import { LogoutComponent } from './logout/logout.component';
 import { SharedModule } from './shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     CoffeeComponent,
     LogoutComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
