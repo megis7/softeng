@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <h2>Log In</h2>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div class="form-inline">
@@ -15,7 +15,45 @@
       <input class="form-control" type="password" formControlName="password">
     </div>
     <button class="btn btn-primary" type="submit" >Submit</button>
-    <!-- href="#" [routerLink]="['/home']" -->
+     href="#" [routerLink]="['/home']"
   </form>
   <div><a class="link" href="#" [routerLink]="['/register']">register</a></div>
+</div> -->
+
+
+<div class="container h-100">
+  <div class="d-flex justify-content-center h-100">
+    <div class="user_card">
+      <div class="d-flex justify-content-center">
+        <div class="brand_logo_container">
+          <img src="https://cdn.freebiesupply.com/logos/large/2x/pinterest-circle-logo-png-transparent.png" class="brand_logo" alt="Logo">
+        </div>
+      </div>
+      <div class="d-flex justify-content-center form_container">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="input-group mb-3">
+            <div class="input-group-append">
+              <span class="input-group-text"><i class="fa fa-user"></i></span>
+            </div>
+            <input type="text" class="form-control input_user" formControlName="username" placeholder="Όνομα Χρήστη">
+          </div>
+          <div class="input-group mb-2">
+            <div class="input-group-append">
+              <span class="input-group-text"><i class="fa fa-key"></i></span>
+            </div>
+            <input type="password" class="form-control input_pass" formControlName="password" placeholder="Κωδικός">
+          </div>
+          <div class="d-flex justify-content-center mt-3 login_container">
+            <button type="submit" class="btn login_btn">Σύνδεση</button>
+          </div>
+        </form>
+      </div>
+      
+      <div class="mt-4">
+        <div class="d-flex justify-content-center links">
+          Δεν έχετε λογαριασμό;<a href="#" [routerLink]="['/register']" class="link ml-2">Εγγραφείτε τώρα!</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

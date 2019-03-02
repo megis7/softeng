@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder,FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss', '../login/login.component.scss']
 })
 export class RegisterComponent {
 
@@ -15,7 +15,7 @@ export class RegisterComponent {
     username: ['',Validators.required],
     password1: ['',Validators.required],
     password2: ['',{Validators:[Validators.required, this.passwordValidator], updateOn: 'blur'}],
-    role: ["volunteer"]
+    role: [false]
   });
 
   get password2(){
@@ -25,7 +25,7 @@ export class RegisterComponent {
     return this.registerForm.get("password1")
   }
 
-  constructor(private route: ActivatedRoute, private authService: AuthService, private fb: FormBuilder) { }
+  constructor(private route: ActivatedRoute, private authService: AuthService, private router: Router, private fb: FormBuilder) { }
 
   private passwordValidator(password1: AbstractControl): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
@@ -38,7 +38,9 @@ export class RegisterComponent {
 
   onSubmit() {
     const user: { username: string, password1: string , password2: string, role: string} = this.registerForm.value
-    console.log(user.role)
+    user.role = this.registerForm.value.role?"administrator":"volunteer";
+    console.log(user)
+    //this.router.navigate(["/"])
   }
 
 }

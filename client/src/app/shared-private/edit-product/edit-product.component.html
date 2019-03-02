@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
 	<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
 		<div class="form-inline">
 			<label>Όνομα: &nbsp;</label>
@@ -39,4 +39,67 @@
 		</div>
 		<button class="btn btn-primary" type="submit" [disabled]="!productForm.valid">Submit</button>
 	</form>
+</div> -->
+
+<div class="container">
+	<div class="col-md-6 mx-auto text-center">
+		<div class="header-title">
+			<h1 class="wv-heading--title">
+				Επεξεργασία Προϊόντος
+			</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4 mx-auto">
+			<div class="myform form ">
+				<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+					<div class="form-group">
+						<input type="text" class="form-control my-input" placeholder="Όνομα" required
+							formControlName="name"
+							[ngClass]="{ 'is-invalid': name.invalid && (name.dirty || name.touched) }">
+						<div *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required"
+							class="invalid-feedback">
+							<p>Παρακαλώ εισάγετε όνομα στον καφέ</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control my-input" placeholder="Περιγραφή προϊόντος" required
+							formControlName="description"
+							[ngClass]="{ 'is-invalid': description.invalid && (description.dirty || description.touched) }">
+						<div *ngIf="description.invalid && (description.dirty || description.touched) && description.errors.required"
+							class="invalid-feedback">
+							<p>Παρακαλώ εισάγετε περιγραφή του καφέ</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control my-input" placeholder="Κατηγορία" required
+							formControlName="category"
+							[ngClass]="{ 'is-invalid': category.invalid && (category.dirty || category.touched) }">
+						<div *ngIf="category.invalid && (category.dirty || category.touched) && category.errors.required"
+							class="invalid-feedback">
+							<p>Παρακαλώ εισάγετε κατηγορία για τον καφέ</p>
+						</div>
+					</div>
+					<label>Ετικέτες: &nbsp;</label><button class="btn btn-success btn-sm" (click)="addTag()"><span class="fa fa-plus"></span></button>
+					<div class="form-groop" formArrayName="tags">
+						<div *ngFor="let tag of tags.controls ; let i=index">
+							<div class="form-inline">
+								<input class="form-control" required type="text" [formControlName]="i"
+									[ngClass]="{ 'is-invalid': tag.invalid && (tag.dirty || tag.touched) }">&nbsp;
+								<button class="btn btn-danger btn-sm" (click)="removeTag(i)"><span
+										class="fa fa-trash"></span></button>
+								<div *ngIf="tag.invalid && (tag.dirty || tag.touched) && tag.errors.required"
+									class="invalid-feedback">
+									<p>Παρακαλώ εισάγετε όνομα ετικέτας</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="text-center ">
+						<button type="submit" class=" btn btn-block send-button tx-tfm" [disabled]="!productForm.valid">Υποβολή</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>

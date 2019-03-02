@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
     <h2>Register</h2>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div class="form-inline">
@@ -43,6 +43,49 @@
             </div>
         </div>
         <button class="btn btn-primary" type="submit"  [disabled]="!registerForm.valid">Submit</button>
-      <!-- href="#" [routerLink]="['/home']" required passwordValidator(password1)-->
+       href="#" [routerLink]="['/home']" required passwordValidator(password1)
     </form>
+  </div> -->
+
+  <div class="container h-100">
+    <div class="d-flex justify-content-center h-100">
+      <div class="user_card">
+        <div class="d-flex justify-content-center">
+          <div class="brand_logo_container">
+            <img src="https://cdn.freebiesupply.com/logos/large/2x/pinterest-circle-logo-png-transparent.png" class="brand_logo" alt="Logo">
+          </div>
+        </div>
+        <div class="d-flex justify-content-center form_container">
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="input-group mb-3">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fa fa-user"></i></span>
+              </div>
+              <input type="text" class="form-control input_user" formControlName="username" placeholder="Όνομα Χρήστη">
+            </div>
+            <div class="input-group mb-2">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fa fa-key"></i></span>
+              </div>
+              <input type="password" class="form-control input_pass" formControlName="password1" placeholder="Κωδικός">
+            </div>
+            <div class="input-group mb-2">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fa fa-key"></i></span>
+              </div>
+              <input type="password" class="form-control input_pass" formControlName="password2" placeholder="Ξαναγράψε τον κωδικό">
+            </div>
+            <div class="form-group">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" formControlName="role" class="custom-control-input" id="customControlInline">
+								<label class="custom-control-label" for="customControlInline">Διαχειριστής</label>
+							</div>
+						</div>
+            <div class="d-flex justify-content-center mt-3 login_container">
+              <button type="submit" class="btn login_btn">Εγγραφή</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
