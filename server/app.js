@@ -13,6 +13,8 @@ const productsRouter = require('./routes/products')
 const shopsRouter = require('./routes/shops')
 const pricesRouter = require('./routes/prices')
 
+const InternalServerError = require('./error')
+
 mongoose.connect('mongodb://localhost/server', {
     useCreateIndex: true,
     useFindAndModify: false,
@@ -31,34 +33,20 @@ app.use(express.urlencoded({
 }))
 app.use(express.static(path.join(__dirname, 'public')))
 
-function authenticatedUser(req, res, next) {
-    const token = req.get('x-observatory-auth')
-    if (!token)
-        res.status(403).json({
-            message: 'Incorrect token.'
-        })
-    else
-        readFile(path.resolve(__dirname, 'routes/secret'))
-        .then(data =>
-            verify(token, data)
-            .then(() =>
-                next()
-            )
-            .catch(err =>
-                res.status(403).json({
-                    message: err
-                })
-            )
-        )
-        .catch(err =>
-            next(err)
-        )
-
+async function authenticatedUser(req, res, next) {
+    try {
+        const token = req.get('x-observatory-auth')
+        const data = await readFile(path.resolve(__dirname, 'controllers/secret'))
+        await verify(token, data)
+        next()
+    } catch (err) {
+        next(err)
+    }
 }
 
 app.use((req, res, next) => {
     if (req.query.format == 'xml')
-        res.status(400).send()
+        next(new Error('xml'))
     else
         next()
 })
@@ -96,5 +84,19 @@ app.use('/observatory/api/users', usersRouter)
 app.use('/observatory/api/products', productsRouter)
 app.use('/observatory/api/shops', shopsRouter)
 app.use('/observatory/api/prices', pricesRouter)
+
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    if (err instanceof InternalServerError)
+        res.status(500).json({
+            name: err.name,
+        })
+    else
+        res.status(400).json({
+            // constructor: err.constructor,
+            name: err.name,
+            message: err.message
+        })
+})
 
 module.exports = app
