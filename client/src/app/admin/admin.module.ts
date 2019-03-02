@@ -10,6 +10,7 @@ import { SharedModule } from '../shared/shared.module';
 import { EditProductComponent } from '../shared-private/edit-product/edit-product.component'
 import { SharedPrivateModule } from '../shared-private/shared-private.module';
 import { EditPriceComponent } from './edit-price/edit-price.component';
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 
 const routes: Routes = [
 	{ path: 'products', component: ProductsComponent },
@@ -33,7 +34,8 @@ const routes: Routes = [
 		FormsModule,
 		ReactiveFormsModule,
 		SharedModule,
-		SharedPrivateModule
+		SharedPrivateModule,
+		NgbDatepickerModule
 	]
 })
 export class AdminModule { }
