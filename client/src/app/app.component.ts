@@ -5,6 +5,9 @@ import { Product } from 'src/models/product';
 import { ShopService } from '../services/shop.service';
 import { Shop } from '../models/shop';
 import { AuthService } from '../services/auth.service';
+import { PriceService } from '../services/price.service';
+import { PriceLite } from '../models/price';
+import { detachEmbeddedView } from '@angular/core/src/view';
 
 
 @Component({
@@ -14,7 +17,8 @@ import { AuthService } from '../services/auth.service';
 })
 export class AppComponent {
 
-	constructor(private router: Router, private prodService: ProductService, private shopService: ShopService, private authService: AuthService) { }
+	constructor(private router: Router, private prodService: ProductService,
+		private shopService: ShopService, private authService: AuthService, private priceService: PriceService) { }
 
 	public isActive(route: string): boolean {
 		return this.router.url.includes(route);
@@ -36,5 +40,13 @@ export class AppComponent {
 	}
 	test4(){
 		this.authService.login("hello","world").subscribe(x => this.authService.Token = x.token);
+	}
+	test5(){
+		this.priceService.getPrices().subscribe(x => console.log(x));
+		this.priceService.getPrices(2,3,3.14).subscribe(x => console.log(x));
+		this.priceService.getPrices(2,3,3.14,3.45,21.56).subscribe(x => console.log(x));
+		this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24)).subscribe(x => console.log(x));
+		this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24),["1","2","3"],null,["diaskedastiko!"]).subscribe(x => console.log(x));
+		this.priceService.postPrice(new PriceLite(1.56,new Date(), new Date(), "2","3")).subscribe(x => console.log(x));
 	}
 }

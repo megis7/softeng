@@ -1,5 +1,5 @@
 
-export class Price {
+export class PriceLite {
     constructor(
         public price: number,
         public dateFrom: Date,

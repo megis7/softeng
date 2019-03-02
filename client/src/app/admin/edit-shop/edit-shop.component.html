@@ -1,5 +1,4 @@
 <div class="container">
-  <button (click) = "displayMap()">Click Me</button>  
   <form [formGroup]="shopForm" (ngSubmit) = "onSubmit()">
         <div class = "form-inline">
         <label>
@@ -8,18 +7,12 @@
         <input class="form-control" type="text" formControlName="name">
         </div>
     
-        <div class = "form-inline" *ngIf = "activeShop.id == '0'">
+        <div class = "form-inline">
         <label>
           Διεύθυνση: &nbsp;
         </label>
-        <input class="form-control" type="text" formControlName="address">
-        </div>
-
-        <div class = "form-inline" *ngIf = "!(activeShop.id == '0')">
-            <label>
-              Διεύθυνση: &nbsp;
-            </label>
-            <input class="form-control" type="text" formControlName="address" [attr.disabled] = "true">
+        <input class="form-control" type="text" *ngIf = "activeShop.id == '0'" formControlName="address">
+        <input class="form-control" type="text" *ngIf = "!(activeShop.id == '0')" formControlName="address" [attr.disabled] = "true">
         </div>
     
         <label>
