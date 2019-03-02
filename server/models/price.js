@@ -29,6 +29,7 @@ const priceSchema = new mongoose.Schema({
 }, {
     toJSON: {
         transform: (doc, ret) => {
+            ret.date = ret.date.toISOString().split('T')[0]
             ret.id = ret._id
             delete ret._id
             delete ret.__v

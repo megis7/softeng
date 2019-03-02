@@ -37,7 +37,6 @@ function conditionsBuilder(req) {
 }
 
 function optionsBuilder(req) {
-
     const options = {
         skip: req.query.start,
         limit: req.query.count,
@@ -57,7 +56,7 @@ async function getController(req, res, next) {
             start: req.query.start,
             count: shops.length,
             total: total,
-            products: shops
+            shops: shops
         })
     } catch (err) {
         next(err)
@@ -94,6 +93,7 @@ async function putController(req, res, next) {
         next(err)
     }
 }
+
 async function deleteController(req, res, next) {
     const token = req.get('x-observatory-auth')
     const decoded = jsonwebtoken.decode(token)

@@ -18,26 +18,6 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-function checkDate(req, next) {
-    const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
-    if ('dateFrom' in req.query && 'dateTo' in req.query) {
-        if (!dateFormat.test(req.query.dateFrom) || !dateFormat.test(req.query.dateTo))
-            return next('date format')
-    } else if (!('dateFrom' in req.query) && !('dateTo' in req.query))
-        req.query.dateFrom = req.query.dateTo = new Date()
-    else
-        return next('bad request')
-}
-
-function checkGeo(req, res, next) {
-    if ('geoLng' in req.query && 'geoLat' in req.query && 'geoDist' in req.query) {
-        req.query.geoLng = Number(req.query.geoLng)
-        req.query.geoLat = Number(req.query.geoLat)
-        req.query.geoDist = Number(req.query.geoDist)
-    } else if ('geoLng' in req.query || 'geoLat' in req.query || 'geoDist' in req.query)
-        return next(new Error('geoLng, geoLat, geoDist'))
-}
-
 function flatten(req, prices) {
     prices = prices.filter(price =>
         price.shopId !== null
@@ -54,6 +34,7 @@ function flatten(req, prices) {
             getGeoDist(req.query.geoLng, req.query.geoLat, ...price.shopId.location.coordinates) :
             null
         price.shopId = price.shopId._id
+        price.date = price.date.toISOString().split('T')[0]
         delete price._id
         delete price.__v
     })
@@ -80,12 +61,41 @@ function flatten(req, prices) {
     return prices
 }
 
+function checkDate(req, next) {
+    if ('dateFrom' in req.query && 'dateTo' in req.query) {
+        const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
+        if (!dateFormat.test(req.query.dateFrom) || !dateFormat.test(req.query.dateTo))
+            return next(new Error('date format'))
+    } else if (!('dateFrom' in req.query) && !('dateTo' in req.query))
+        req.query.dateFrom = req.query.dateTo = new Date()
+    else
+        return next(new Error('bad request'))
+}
+
+function checkGeo(req, res, next) {
+    if ('geoLng' in req.query && 'geoLat' in req.query && 'geoDist' in req.query) {
+        req.query.geoLng = Number(req.query.geoLng)
+        req.query.geoLat = Number(req.query.geoLat)
+        req.query.geoDist = Number(req.query.geoDist)
+    } else if ('geoLng' in req.query || 'geoLat' in req.query || 'geoDist' in req.query)
+        return next(new Error('geoLng, geoLat, geoDist'))
+}
+
+function extendedQueryCleanser(req, res, next) {
+    queryCleanser(req)
+
+    if (req.query.sortKey === 'geoDist' && !('geoDist' in req.query))
+        return next(new Error('geoDist'))
+
+    checkDate(req, next)
+    checkGeo(req, res, next)
+}
+
 function queryCleanser(req) {
     req.query.start = parseInt(req.query.start, 10) || 0
     req.query.count = parseInt(req.query.count, 10) || 20;
     [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
         req.query.sort.split(/\|/) : ['price', 'ASC']
-    delete req.query.sort
 }
 
 function bodyCleanser(req) {
@@ -125,6 +135,7 @@ function conditionsBuilder(req) {
 
 function optionsBuilder(req) {
     const options = {
+        lean: true,
         skip: req.query.start,
         limit: req.query.count,
         sort: JSON.parse(`{"${req.query.sortKey}": "${req.query.sortValue}"}`)
@@ -134,16 +145,11 @@ function optionsBuilder(req) {
 
 async function getController(req, res, next) {
     try {
-        queryCleanser(req)
-
-        if ('sort' in req.query && sortKey === 'geoDist' && !('geoDist' in req.query))
-            return next(new Error('geoDist'))
-
-        checkDate(req, next)
-        checkGeo(req, res, next)
+        extendedQueryCleanser(req, res, next)
 
         const conditions = conditionsBuilder(req)
         const options = optionsBuilder(req)
+
         const populateArgument = [{
             path: 'shopId',
             select: '-withdrawn',
@@ -163,10 +169,25 @@ async function getController(req, res, next) {
 
         let prices = await Price.find(conditions, null, options).populate(populateArgument)
         prices = flatten(req, prices)
+
+        // const prices = await Price.aggregate([{
+        //     $lookup: {
+        //         from: 'shops',
+        //         localField: 'shopId',
+        //         foreignField: '_id',
+        //         as: 'peos',
+        //         pipeline: [{
+        //             $match: {
+
+        //             }
+        //         }]
+        //     }
+        // }]).match()
+
         const total = await Price.countDocuments(conditions)
         res.json({
             start: req.query.start,
-            count: prices.length,
+            count: req.query.count,
             total: total,
             prices: prices
         })
@@ -179,7 +200,12 @@ async function postManyController(req, res, next) {
     try {
         bodyCleanser(req)
         const prices = await Price.insertMany(req.body.prices)
-        res.json(prices)
+        res.json({
+            start: 0,
+            count: prices.length,
+            total: prices.length,
+            prices: prices
+        })
     } catch (err) {
         next(err)
     }

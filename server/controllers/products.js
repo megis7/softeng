@@ -43,7 +43,7 @@ async function getController(req, res, next) {
         const total = await Product.countDocuments(conditions).exec()
         res.json({
             start: req.query.start,
-            count: products.length,
+            count: req.query.count,
             total: total,
             products: products
         })
