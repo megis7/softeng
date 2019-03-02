@@ -1,0 +1,39 @@
+<div class="container">
+	<form [formGroup]="shopForm" (ngSubmit)="onSubmit()">
+		<div class="form-inline">
+			<label>Όνομα: &nbsp;</label>
+			<input class="form-control" type="text" requried formControlName="name" [ngClass]="{ 'is-invalid': name.invalid && (name.dirty || name.touched) }">
+			<div *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required" class="invalid-feedback">
+				<p>Παρακαλώ εισάγετε όνομα στο κατάστημα</p>
+			</div>
+		</div>
+
+		<div class="form-inline">
+			<label>Διεύθυνση: &nbsp;</label>
+			<input class="form-control" type="text" *ngIf="activeShop.id == '0'" requried formControlName="address" [ngClass]="{ 'is-invalid': address.invalid && (address.dirty || address.touched) }">
+			<div *ngIf="address.invalid && (address.dirty || address.touched) && address.errors.required" class="invalid-feedback">
+				<p>Παρακαλώ εισάγετε διεύθυνση καταστήματος</p>
+			</div>
+			<input class="form-control" type="text" *ngIf="!(activeShop.id == '0')" formControlName="address"
+				[attr.disabled]="true">
+		</div>
+
+		<label>Ετικέτες: &nbsp;</label>
+		<div class="form-groop" formArrayName="tags">
+			<div *ngFor="let tag of tags.controls ; let i=index">
+				<div class="form-inline">
+					<input class="form-control" type="text" [formControlName]="i" requried [ngClass]="{ 'is-invalid': tag.invalid && (tag.dirty || tag.touched) }">&nbsp;
+					<button class="btn btn-danger btn-sm" (click)="removeTag(i)"><span class="fa fa-trash"></span></button>
+					<div *ngIf="tag.invalid && (tag.dirty || tag.touched) && tag.errors.required" class="invalid-feedback">
+						<p>Παρακαλώ εισάγετε όνομα στην ετικέτα</p>
+					</div>
+				</div>
+			</div>
+			<button class="btn btn-success btn-sm" (click)="addTag()"><span class="fa fa-plus"></span></button>
+		</div>
+		<button class="btn btn-primary" type="submit" [disabled]="!shopForm.valid">Submit</button>
+	</form>
+
+	<h2>Το κατάστημα βρίσκεται εδώ</h2>
+	<app-map [initialZoom]='18'></app-map>
+</div>

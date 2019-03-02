@@ -1,0 +1,6 @@
+
+<app-edit-product [activeProduct]="activeProduct" *ngIf="showEditProduct"></app-edit-product>
+
+<button class="btn btn-primary" *ngIf="createShop && createProduct && canMoveNext" (click)="updateState('shop')">Επόμενο</button>
+
+<app-edit-shop [activeShop]="activeShop" *ngIf="showEditShop"></app-edit-shop>

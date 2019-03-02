@@ -1,0 +1,15 @@
+<div class="modal-header">
+	<h4 class="modal-title">Σφάλμα</h4>
+	<button type="button" class="close" aria-label="Close" (click)="activeModal.close('cross-click')">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<div class="modal-body">
+	<p *ngIf="productNotFound && shopNotFound">Το προϊόν και το κατάστημα που εισάγαγατε δεν βρέθηκαν. Θέλετε να τα δημιουργήσετε?</p>
+	<p *ngIf="productNotFound && !shopNotFound">Το προϊόν που εισάγαγατε δεν βρέθηκε. Θέλετε να το δημιουργήσετε?</p>
+	<p *ngIf="!productNotFound && shopNotFound">Το κατάστημα που εισάγαγατε δεν βρέθηκε. Θέλετε να το δημιουργήσετε?</p>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-outline-dark btn-success" ngbAutofocus (click)="activeModal.close('accept')">Ναί</button>
+	<button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close-click')">Όχι</button>
+</div>

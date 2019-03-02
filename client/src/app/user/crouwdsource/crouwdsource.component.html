@@ -23,9 +23,9 @@
 				<div *ngIf="product.errors.required">
 					Παρακαλώ εισάγετε όνομα καφέ
 				</div>
-				<div *ngIf="product.errors.name">
+				<!-- <div *ngIf="product.errors.name">
 					Παρακαλώ εισάγετε έγκυρο όνομα καφέ
-				</div>
+				</div> -->
 			</div>
 		</div>
 
@@ -36,14 +36,20 @@
 					<div *ngIf="shop.errors.required">
 						Παρακαλώ εισάγετε όνομα καταστήματος
 					</div>
-					<div *ngIf="shop.errors.name">
+					<!-- <div *ngIf="shop.errors.name">
 						Παρακαλώ εισάγετε έγκυρο όνομα καταστήματος
-					</div>
+					</div> -->
 				</div>
 		</div>
-		<button class="btn btn-primary" type="submit" [disabled]="!priceForm.valid">Submit</button>
-		
+		<button class="btn btn-primary" type="submit" >Υποβολή</button>
+		<!-- [disabled]="!priceForm.valid" -->
 	</form>
 
 	<!-- <app-map [initialZoom]='18'></app-map> -->
+
+	<app-create-entity *ngIf="shouldCreateEntity" 
+						[activeProduct]="tempActiveProduct" 
+						[activeShop]="tempActiveShop" 
+						[createProduct]="productNotFound" 
+						[createShop]="shopNotFound"></app-create-entity>
 </div>
