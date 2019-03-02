@@ -1,7 +1,13 @@
 ul {
     list-style: none
 }
+
 ul > li{
     display: inline;
     margin-right: 5px
+}
+
+th, td {
+    text-align: center;
+    vertical-align: middle;
 }

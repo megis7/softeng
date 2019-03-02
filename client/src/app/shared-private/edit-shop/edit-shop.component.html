@@ -10,7 +10,7 @@
 
 		<div class="form-inline">
 			<label>Διεύθυνση: &nbsp;</label>
-			<input class="form-control" type="text" *ngIf="activeShop.id == '0'" requried formControlName="address" [ngClass]="{ 'is-invalid': address.invalid && (address.dirty || address.touched) }">
+			<input class="form-control" type="text" (blur)="addressLostFocus()" *ngIf="activeShop.id == '0'" requried formControlName="address" [ngClass]="{ 'is-invalid': address.invalid && (address.dirty || address.touched) }">
 			<div *ngIf="address.invalid && (address.dirty || address.touched) && address.errors.required" class="invalid-feedback">
 				<p>Παρακαλώ εισάγετε διεύθυνση καταστήματος</p>
 			</div>
@@ -34,6 +34,6 @@
 		<button class="btn btn-primary" type="submit" [disabled]="!shopForm.valid">Submit</button>
 	</form>
 
-	<h2>Το κατάστημα βρίσκεται εδώ</h2>
-	<app-map [initialZoom]='18'></app-map>
+	<p *ngIf="showMapHelp">Το κατάστημα δεν βρέθηκε σωστά? Κάντε κλικ στο επιθυμητό σημείο στο χάρτη</p>
+	<app-map (clicked)='updateShopCoords($event)' style="margin-bottom: 40px"></app-map>
 </div>

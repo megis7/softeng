@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import * as ol from 'openlayers';
 import { Point } from 'src/models/point';
 
@@ -17,9 +17,11 @@ export class MapComponent implements OnInit {
 
 	@Input() initialPosition: [number, number] = [23, 38];
 	@Input() initialZoom = 7;
+	@Output() clicked = new EventEmitter<Point>();
 
 	private coordinates: Point[] = new Array<Point>();
 	private coffeeShopIconPath = "assets/images/coffee-shop.png"
+	private isClickable = false;
 
 	ngOnInit() {
 		this.vectorSource = new ol.source.Vector();
@@ -31,36 +33,14 @@ export class MapComponent implements OnInit {
 			layers: [
 				new ol.layer.Tile({ source: new ol.source.OSM() }),
 				this.vectorLayer
-			]
+			],
+			controls: []
 		})
 
-		// this.map.on('click', this.handleMapClick)
-
-		// let style = new ol.style.Style(
-		// 	{
-		// 		image: new ol.style.Circle({
-		// 			radius: 7,
-		// 			fill: new ol.style.Fill({
-		// 				color: 'yellow'
-		// 			}),
-		// 			stroke: new ol.style.Stroke({
-		// 		 		color: 'blue'
-		// 		 	})
-
-		// 	 })
-		// 	}
-		// )
-
-		// add favicon feature
-		// let feature = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([23, 38])));
-		// feature.setStyle(this.createIconStyle(this.coffeeShopIconPath, undefined));
-		// feature.setProperties({ name: 'test point', value: 15 });
-
-		// this.vectorSource.addFeature(feature);
+		this.map.on('click', this.handleMapClick)
 	}
 
 	public addPoint(coordinates : Point) {
-		console.log(coordinates);
 		this.coordinates.push(coordinates);
 
 		const coords: [number, number] = ol.proj.fromLonLat([coordinates.lon, coordinates.lat]);
@@ -74,7 +54,22 @@ export class MapComponent implements OnInit {
 
 	public setPosition(point: Point) {
 		const position: [number, number] = [point.lon, point.lat]
-		this.map.setView(new ol.View({ center: ol.proj.fromLonLat(position), zoom: this.initialZoom }))
+		const zoomLevel = this.map.getView().getZoom();
+
+		this.map.setView(new ol.View({ center: ol.proj.fromLonLat(position), zoom: zoomLevel }))
+	}
+
+	public setZoom(level: number) {
+		const center = this.map.getView().getCenter();
+		this.map.setView(new ol.View({ center: center, zoom: level }))
+	}
+
+	public setClickable(state: boolean) {
+		this.isClickable = state;
+	}
+
+	public removeAllPoints() {
+		this.vectorSource.clear();
 	}
 
 	private createIconStyle(src: string, img: any): ol.style.Style {
@@ -93,26 +88,27 @@ export class MapComponent implements OnInit {
 	}
 
 	// TODO: no longer needed
-	// private handleMapClick = (evt: any) => {
-	// 	const coords = this.map.getCoordinateFromPixel(evt.pixel);
+	private handleMapClick = (evt: any) => {
+		if(this.isClickable == false)
+			return;
 
-	// 	// check if an icon already exists at the pixel given
-	// 	let found = false;
-	// 	this.map.forEachFeatureAtPixel(evt.pixel, f => { found = true });
+		const coords = this.map.getCoordinateFromPixel(evt.pixel);
+		const point = new Point(...ol.proj.toLonLat(coords));
 
-	// 	if(found) {
-	// 		console.log("cannot add icon. Already exists")
-	// 		return;
-	// 	}
+		// check if an icon already exists at the pixel given
+		let found = false;
+		this.map.forEachFeatureAtPixel(evt.pixel, f => { found = true });
 
-	// 	let feature = new ol.Feature(new ol.geom.Point(coords));
-	// 	feature.setStyle(this.createIconStyle(this.coffeeShopIconPath, undefined));
-	// 	feature.setProperties({ name: 'test point', value: 15 });
+		if(found)
+			return;
 
-	// 	this.vectorSource.addFeature(feature);
-	// }
+		this.removeAllPoints();
 
-	
+		let feature = new ol.Feature(new ol.geom.Point(coords));
+		feature.setStyle(this.createIconStyle(this.coffeeShopIconPath, undefined));
+		feature.setProperties({ name: 'test point', value: 15 });
 
-
+		this.vectorSource.addFeature(feature);
+		this.clicked.next(point)
+	}
 }

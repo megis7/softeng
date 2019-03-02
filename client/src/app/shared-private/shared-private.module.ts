@@ -13,7 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 		CommonModule,
 		FormsModule,
 		ReactiveFormsModule,
-		SharedModule
+		SharedModule,
 	],
 	exports: [
 		EditProductComponent,

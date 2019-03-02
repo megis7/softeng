@@ -32,6 +32,11 @@ export class ProductService {
         return of(this.products.map(x => Object.assign({}, x)));
     }
 
+    getProductsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
+        Observable<{start: number, count: number, total: number, products: Product[]}> {
+            return of({start: start, count: count, total: this.products.length, products: this.products.slice(start, start + count).map(x => Object.assign({}, x))});
+    }
+
     getProduct(id: string): Observable<Product> {
         // return this.http.get<Product>(`${this.url}/${id}`);
         return of(this.products.find(x => x.id == id))

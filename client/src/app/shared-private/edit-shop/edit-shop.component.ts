@@ -6,6 +6,7 @@ import { FormBuilder, FormArray, Validators } from '@angular/forms';
 import { ShopService } from '../../../services/shop.service';
 import { MapComponent } from '../../shared/map/map.component';
 import { Point } from '../../../models/point';
+import { GeocodeService } from 'src/services/geocode.service';
 
 @Component({
 	selector: 'app-edit-shop',
@@ -15,9 +16,11 @@ import { Point } from '../../../models/point';
 export class EditShopComponent implements OnInit, AfterViewInit {
 
 	@ViewChild(MapComponent) mapDisplay;
-
-	private subscription
 	@Input() private activeShop: Shop = null;
+
+	private subscription;
+	private showMapHelp = false;
+
 	shopForm = this.fb.group({
 		id: [''],
 		name: [''],
@@ -26,15 +29,19 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 		lng: [''],
 		tags: this.fb.array([this.fb.control('')])
 	});
-	private currentLocation: Point = { 'lon': -1, 'lat': -1 };
-	constructor(private route: ActivatedRoute, private shopService: ShopService, private fb: FormBuilder) { }
+
+	constructor(
+		private route: ActivatedRoute,
+		private shopService: ShopService,
+		private geocodeService: GeocodeService,
+		private fb: FormBuilder) { }
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
 			const id = params["id"] || "0"
 
 			if (id == "0") {
-				this.subscription = (this.activeShop && of(this.activeShop)) || of(new Shop("0", "", "", this.currentLocation.lon, this.currentLocation.lat, []))
+				this.subscription = (this.activeShop && of(this.activeShop)) || of(new Shop("0", "", "", -1, -1, []))
 			}
 			else
 				this.subscription = this.shopService.getShop(id)
@@ -46,7 +53,7 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 					name: [this.activeShop.name, Validators.required],
 					address: [this.activeShop.address, Validators.required],
 					lat: [this.activeShop.lat],
-					lon: [this.activeShop.lng],
+					lng: [this.activeShop.lng],
 					tags: this.fb.array([])
 				});
 				if (id == "0") (this.shopForm.get("tags") as FormArray).push(this.fb.control('', Validators.required))
@@ -56,33 +63,32 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 			})
 		})
 	}
+
 	ngAfterViewInit() {
 		if (this.activeShop.id != "0"){
 			this.mapDisplay.addPoint(new Point(this.activeShop.lng, this.activeShop.lat))
 			this.mapDisplay.setPosition(new Point(this.activeShop.lng, this.activeShop.lat))
 		}
-		else {
-			this.getLocation();
-		}
 	}
 
-	private canGetLocation(): boolean {
-		return navigator.geolocation != null;
+	public addressLostFocus() {
+		this.geocodeService.geocode(this.shopForm.value.address)
+						   .subscribe(
+							l => { 
+									this.mapDisplay.removeAllPoints();
+									this.mapDisplay.addPoint(l[0]);
+									this.mapDisplay.setPosition(l[0]);
+									this.mapDisplay.setZoom(18);
+									this.mapDisplay.setClickable(true);
+									this.updateShopCoords(l[0]);
+									this.showMapHelp = true;
+							}
+							,err => console.log(err));
 	}
 
-	private getLocation(): void {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(pos => {
-				this.currentLocation.lon = pos.coords.longitude;
-				this.currentLocation.lat = pos.coords.latitude;
-
-				this.activeShop.lng = this.currentLocation.lon
-				this.activeShop.lat = this.currentLocation.lat
-
-				this.mapDisplay.addPoint(new Point(this.currentLocation.lon, this.currentLocation.lat))
-				this.mapDisplay.setPosition(new Point(this.currentLocation.lon, this.currentLocation.lat))
-			})
-		}
+	public updateShopCoords(evt: Point) {
+		this.shopForm.get('lng').setValue(evt.lon)
+		this.shopForm.get('lat').setValue(evt.lat)
 	}
 
 	get name() {
@@ -109,11 +115,12 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 
 	onSubmit() {
 		const shop = this.shopForm.value
-		console.log(shop)
 		if (shop.id == "0")
-			this.shopService.postShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop) }, err => console.log(err))
+		this.shopService.postShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop) }, err => console.log(err))
 		else
-			this.shopService.putShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop) }, err => console.log(err))
+		this.shopService.putShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop) }, err => console.log(err))
+
+		console.log(shop)
 	}
 
 }
