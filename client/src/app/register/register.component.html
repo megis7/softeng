@@ -73,7 +73,12 @@
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fa fa-key"></i></span>
               </div>
-              <input type="password" class="form-control input_pass" formControlName="password2" placeholder="Ξαναγράψε τον κωδικό">
+              <input type="password" class="form-control input_pass" formControlName="password2" placeholder="Ξαναγράψε τον κωδικό" [ngClass]="{ 'is-invalid': password2.invalid && (password2.dirty || password2.touched) }">
+              <div *ngIf="password2.invalid && (password2.dirty || password2.touched)" class="invalid-feedback">
+                <div *ngIf="password2.errors.name">
+                  Οι κωδικοί δεν ταιριάζουν
+                </div>
+              </div>
             </div>
             <div class="form-group">
 							<div class="custom-control custom-checkbox">
@@ -82,7 +87,7 @@
 							</div>
 						</div>
             <div class="d-flex justify-content-center mt-3 login_container">
-              <button type="submit" class="btn login_btn">Εγγραφή</button>
+              <button type="submit" class="btn login_btn" [disabled]="!registerForm.valid">Εγγραφή</button>
             </div>
           </form>
         </div>

@@ -39,8 +39,9 @@ export class RegisterComponent {
   onSubmit() {
     const user: { username: string, password1: string , password2: string, role: string} = this.registerForm.value
     user.role = this.registerForm.value.role?"administrator":"volunteer";
-    console.log(user)
-    //this.router.navigate(["/"])
+    this.authService.register(user.username,user.password1,user.role).subscribe(x => {
+      this.authService.login(user.username,user.password1).subscribe(x => { this.authService.Token = x.token; this.router.navigate(["/"]) });
+    },err => console.log(err))
   }
 
 }
