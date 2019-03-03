@@ -11,7 +11,6 @@ import { map } from 'rxjs/operators';
 })
 export class ProductsComponent implements OnInit {
 
-	products: Product[];
 	products$: Observable<Product[]>;
 	start$: Observable<number>
 	total$: Observable<number>
@@ -36,15 +35,15 @@ export class ProductsComponent implements OnInit {
 	}
 
 	deleteProduct(product: Product) {
-		this.products.splice(this.products.indexOf(product), 1)
 		this.productService.deleteProduct(product.id).subscribe(msg => {
-			//if(msg.message == "OK")this.productService.getProducts().subscribe(res => this.products = res,err => console.log(err))
-			console.log(msg.message)
+			if(msg.message == "OK") this.loadPage(this.page)
 		}, err => console.log(err));
 	}
 
 	loadPage(page: number) {
 		const temp = this.productService.getProductsPaged((page - 1) * this.pageSize, this.pageSize);
 		this.products$ = temp.pipe(map(res => res.products))
+		this.total$ = temp.pipe(map(res => res.total))
+		this.count$ = temp.pipe(map(res => res.count))
 	}
 }

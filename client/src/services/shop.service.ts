@@ -38,6 +38,11 @@ export class ShopService {
         return of(this.shops.map(x => Object.assign({}, x)))
     }
 
+    getShopsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
+        Observable<{start: number, count: number, total: number, shops: Shop[]}> {
+        return of({start: start, count: count, total: this.shops.length, shops: this.shops.slice(start, start + count).map(x => Object.assign({}, x))});
+}   
+
     getShop(id: string): Observable<Shop> {
         //return this.http.get<Shop>(`${this.url}/${id}`);
         return of(this.shops.find(x => x.id == id))
@@ -59,6 +64,8 @@ export class ShopService {
     }
 
     deleteShop(id: string): Observable<{message: string}> {
-        return this.http.delete<{message: string}>(`${this.url}/${id}`);
+        // return this.http.delete<{message: string}>(`${this.url}/${id}`);
+        this.shops.splice(this.shops.findIndex(x => x.id == id), 1)
+        return of({"message":"OK"})
     }
 }

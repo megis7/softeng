@@ -59,6 +59,7 @@ export class ProductService {
 
     deleteProduct(id: string): Observable<{message: string}> {
         //return this.http.delete<{message: string}>(`${this.url}/${id}`);
+        this.products.splice(this.products.findIndex(x => x.id == id), 1)
         return of({"message":"OK"})
     }
 }
