@@ -21,9 +21,12 @@ export class CoffeeComponent implements OnInit {
 	private currentLocation: Point = { 'lon': -1, 'lat': -1 };
 	private prices: PriceResult[];
 	private availableProducts: Product[];
+	private maxDistance = 5;
+	private maxPrice = 10;
 	public showAdvancedSearch = false;
 	public showForm = true;
 	public showMapEdit = false;
+
 
 	private coffeeForm = this.fb.group({
 		address: [''],
@@ -53,9 +56,16 @@ export class CoffeeComponent implements OnInit {
 
 	processFormChange(): void {
 		// TODO: after filtering, set points on map
-		// this.prices.filter(p => p.productName.indexOf(this.coffeeForm.value.coffee) >= 0)
-		// 	.filter(p => p.shopDist < +this.coffeeForm.value.maxDistance)
-		// 	.filter(p => p.price < this.coffeeForm.value.maxPrice);
+		const newPrices = this.prices.filter(p => p.productName.indexOf(this.coffeeForm.value.coffee) >= 0)
+									.filter(p => p.shopDist < +this.coffeeForm.value.maxDistance)
+									.filter(p => p.price < this.coffeeForm.value.maxPrice);
+									
+		console.log(this.prices)
+		console.log(newPrices);
+
+		this.mapDisplay.removeAllPoints();
+		this.mapDisplay.addPoint(new Point(this.currentLocation.lon, this.currentLocation.lat));
+		newPrices.forEach(p => this.mapDisplay.addPoint(new Point(p.shopLng, p.shopLat)));
 
 		if(this.coffeeForm.value.address.trim() != '')
 			this.showMapEdit = true;
@@ -73,7 +83,7 @@ export class CoffeeComponent implements OnInit {
 		this.geocodeService.geocode(this.coffeeForm.value.address)
 			.subscribe(
 				l => {
-					this.getPricesForLocation(this.currentLocation);
+					this.getPricesForLocation(l[0], this.maxDistance);
 					this.mapDisplay.removeAllPoints();
 					this.mapDisplay.addPoint(l[0]);
 					this.mapDisplay.setPosition(l[0]);
@@ -99,13 +109,13 @@ export class CoffeeComponent implements OnInit {
 					this.coffeeForm.get("addressCopy").setValue(x[0])
 				})
 
-				this.getPricesForLocation(this.currentLocation);
+				this.getPricesForLocation(this.currentLocation, this.maxDistance);
 			})
 		}
 	}
 
-	private getPricesForLocation(location: Point) {
-		this.priceService.getPrices(0, 1000, 1, location.lon, location.lat, new Date(), new Date()).subscribe(x => this.prices = x, err => console.log(err))
+	private getPricesForLocation(location: Point, distance: number) {
+		this.priceService.getPrices(0, 1000, distance, location.lon, location.lat, new Date(2000, 1, 1), new Date(2100, 1, 1)).subscribe(x => this.prices = x, err => console.log(err))
 	}
 
 	public allowEditMap() {

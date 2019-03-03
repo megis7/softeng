@@ -8,8 +8,6 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class GeocodeService{
 
-    private url = `${env.baseURL}`;
-
     constructor(private http: HttpClient){}
 
     public geocode(address: string): Observable<Point[]> {

@@ -1,0 +1,7 @@
+{
+  "/observatory/api/*": {
+    "target": "https://localhost:8765",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

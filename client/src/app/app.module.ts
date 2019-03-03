@@ -17,6 +17,7 @@ import { TokenInterceptor } from 'src/infrastructure/token.interceptor';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { NgbTypeaheadModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+import { UnauthorizedInterceptor } from 'src/infrastructure/unauthorized.interceptor';
 
 @NgModule({
 	declarations: [
@@ -45,6 +46,11 @@ import { NgbTypeaheadModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstra
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: TokenInterceptor,
+			multi: true
+		},
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: UnauthorizedInterceptor,
 			multi: true
 		},
 	],

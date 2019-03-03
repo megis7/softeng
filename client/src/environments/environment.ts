@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  baseURL: 'observatory/api',
-  geocodeURL: 'http://www.mapquestapi.com/geocoding/v1/address',
-  revGeocodeURL: 'http://www.mapquestapi.com/geocoding/v1/reverse',
+  baseURL: '/observatory/api',
+  geocodeURL: 'https://www.mapquestapi.com/geocoding/v1/address',
+  revGeocodeURL: 'https://www.mapquestapi.com/geocoding/v1/reverse',
   geocodeKey: 'TlOzDikpKPLO5jhzFburuxsvWNH1GNPi',
   mapZoomed: 17
 };

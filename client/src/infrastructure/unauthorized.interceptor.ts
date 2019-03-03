@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 
 @Injectable()
-export class TokenInterceptor implements HttpInterceptor {
+export class UnauthorizedInterceptor implements HttpInterceptor {
 
     constructor(private authService: AuthService, private router: Router) {}
 
@@ -15,20 +15,20 @@ export class TokenInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(tap(
             (event: HttpEvent<any>) => { },
             err => {
-                if (err instanceof HttpErrorResponse) {
-                    if (err.status === 400) {
-                        this.router.navigate(['/unauthorized']);
-                    }
-                    if (err.status === 401) {
-                        this.router.navigate(['/unauthorized']);
-                    }
-                    if (err.status === 403) {
-                        this.router.navigate(['/unauthorized']);
-                    }
-                    if (err.status === 404) {
-                        this.router.navigate(['/notfound']);
-                    }
-                }
+                // if (err instanceof HttpErrorResponse) {
+                //     if (err.status === 400) {
+                //         this.router.navigate(['/unauthorized']);
+                //     }
+                //     if (err.status === 401) {
+                //         this.router.navigate(['/unauthorized']);
+                //     }
+                //     if (err.status === 403) {
+                //         this.router.navigate(['/unauthorized']);
+                //     }
+                //     if (err.status === 404) {
+                //         this.router.navigate(['/notfound']);
+                //     }
+                // }
             }));
     }
 }

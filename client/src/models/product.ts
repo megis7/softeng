@@ -6,7 +6,7 @@ export class Product {
         public name: string,
         public description: string,
         public category: string,
-        public tags: string[]
-        // TODO: withdrawn
+        public tags: string[],
+        public withdrawn: boolean = false
     ){}
 }

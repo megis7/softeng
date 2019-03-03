@@ -47,10 +47,12 @@ export class PriceService {
                                        .set('dateFrom',this.toDateString(dateFrom))
                                        .set('dateTo',this.toDateString(dateTo))
                                        .set('sort', sort);
+
         if(geoDist != -1 && geoLng != -1 && geoLat != -1)
             params = params.set('geoDist',geoDist.toString())
                             .set('geoLng',geoLng.toString())
                             .set('geoLat',geoLat.toString())
+                            
         shops && shops.forEach( shop => params = params.append('shops',shop))
         products && products.forEach( product => params = params.append('products',product))
         tags && tags.forEach( tag => params = params.append('tags',tag))

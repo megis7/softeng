@@ -52,3 +52,5 @@ export class AppComponent {
 		this.geocodeService.reverseGeocode(new Point(23.710409, 37.913213)).subscribe(x => console.log(x));
 	}
 }
+
+// "start": "ng serve --ssl --ssl-key ~/server.key --ssl-cert ~/server.crt --proxy-config proxy.conf.json",

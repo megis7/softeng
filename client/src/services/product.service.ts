@@ -10,9 +10,9 @@ import { map } from 'rxjs/operators';
 export class ProductService {
 
     private products =  [
-        {"id":"1","name":  "Προϊόν 1", "description":  "Περιγραφή προϊόντος 1", "category":  "Κατηγορία Πρώτη", "tags": ["Υπολογιστές"]},
-        {"id":"2","name":  "Προϊόν 2", "description":  "Περιγραφή προϊόντος 2", "category":  "Κατηγορία Δεύτερη", "tags": ["Μουσική"]},
-        {"id":"3","name":  "Προϊόν 3", "description":  "Περιγραφή προϊόντος 3", "category":  "Κατηγορία Πρώτη", "tags": ["Μουσική", "Διασκέδαση"]}
+        {"id":"1","name":  "Προϊόν 1", "description":  "Περιγραφή προϊόντος 1", "category":  "Κατηγορία Πρώτη", "tags": ["Υπολογιστές"], "withdrawn": false},
+        {"id":"2","name":  "Προϊόν 2", "description":  "Περιγραφή προϊόντος 2", "category":  "Κατηγορία Δεύτερη", "tags": ["Μουσική"], "withdrawn": false},
+        {"id":"3","name":  "Προϊόν 3", "description":  "Περιγραφή προϊόντος 3", "category":  "Κατηγορία Πρώτη", "tags": ["Μουσική", "Διασκέδαση"], "withdrawn": false}
       ]
 
     private url = `${env.baseURL}/products`;
@@ -27,9 +27,9 @@ export class ProductService {
                                        .set('status', status)
                                        .set('sort', sort);
 
-        /*return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
-                        .pipe(map(res => res.products));*/
-        return of(this.products.map(x => Object.assign({}, x)));
+        return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
+                        .pipe(map(res => res.products));
+        // return of(this.products.map(x => Object.assign({}, x)));
     }
 
     getProductsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
