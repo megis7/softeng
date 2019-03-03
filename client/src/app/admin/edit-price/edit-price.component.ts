@@ -58,18 +58,22 @@ export class EditPriceComponent implements OnInit {
 	ngOnInit() {
 		// this.getLocation();
 
-		this.shopService.getShops(0, 1000, 'ACTIVE')
-			// .subscribe(shops => { this.shops = shops; this.shops.map(s => new Point(s.lng, s.lat)).forEach(x => this.mapDisplay.addPoint(x)) });
-			.subscribe(shops => this.shops = shops)
+		// this.shopService.getShops(0, 1000, 'ACTIVE')
+		// 	// .subscribe(shops => { this.shops = shops; this.shops.map(s => new Point(s.lng, s.lat)).forEach(x => this.mapDisplay.addPoint(x)) });
+		// 	.subscribe(shops => this.shops = shops)
 
-		this.productService.getProducts(0, 1000, 'ACTIVE')
-			.subscribe(products => this.products = products)
+		// this.productService.getProducts(0, 1000, 'ACTIVE')
+		// 	.subscribe(products => this.products = products)
 
 		this.priceForm = this.fb.group({
 			price: ['', { validators: [Validators.required, this.currencyValidator], updateOn: 'blur' }],
 			dateFrom: [this.calendar.getToday()],
 			dateTo: [this.calendar.getToday()],
 		});
+
+		this.loadPageProduct(1)
+
+		this.loadPageShop(1)
 
 	}
 
@@ -137,6 +141,33 @@ export class EditPriceComponent implements OnInit {
 			this.priceForm.get('dateFrom').setValue(date)
 			fromDate = date;
 		}
+	}
+
+	products$: Observable<Product[]>;
+	startProd$: Observable<number>
+	totalProd$: Observable<number>
+	countProd$: Observable<number>
+	pageProd: number = 0
+	pageSizeProd: number = 2;
+
+	shops$: Observable<Shop[]>;
+	startSho$: Observable<number>
+	totalSho$: Observable<number>
+	countSho$: Observable<number>
+	pageSho: number = 0
+	pageSizeSho: number = 2;
+
+	loadPageProduct(page: number) {
+		const temp = this.productService.getProductsPaged((page-1) * this.pageSizeProd, this.pageSizeProd);
+		this.products$ = temp.pipe(map(res => res.products))
+		this.totalProd$ = temp.pipe(map(res => res.total))
+		this.countProd$ = temp.pipe(map(res => res.count))
+	}
+	loadPageShop(page: number) {
+		const temp = this.shopService.getShopsPaged((page - 1) * this.pageSizeSho, this.pageSizeSho);
+		this.shops$ = temp.pipe(map(res => res.shops))
+		this.totalSho$ = temp.pipe(map(res => res.total))
+		this.countSho$ = temp.pipe(map(res => res.count))
 	}
 
 }

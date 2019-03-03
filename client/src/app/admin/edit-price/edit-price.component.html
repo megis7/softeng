@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
 	<h2>Υποβολή στοιχείων καφέ</h2>
 	<form [formGroup]="priceForm" (ngSubmit)="onSubmit()">
 		<div class="form-inline">
@@ -23,10 +23,8 @@
 				outsideDays="hidden"></ngb-datepicker>
 		</div>
 
-    
-    <h6>Όνομα καφέ:</h6>
     <div class = "container form-inline">
-      <table class = "row-border hover" datatable>
+      /* <table class = "row-border hover" datatable>
         <thead>
           <tr>
             <th>Όνομα</th>
@@ -46,12 +44,42 @@
                 </td>
             </tr>
         </tbody>
-      </table>
+      </table> */
+      <div class="row justify-content-center">
+          <h6>Όνομα καφέ:</h6>
+        </div>
+        <div class="row">
+          <table class="table table-striped table-sm">
+            <thead>
+              <tr>
+                <th scope="col">Όνομα</th>
+                <th scope="col">Περιγραφή Προϊόντος</th>
+                <th scope="col">Κατηγορία</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of products$ | async" (click) = "productSelection(product)">
+                <td>{{product.name}}</td>
+                <td>{{product.description}}</td>
+                <td>{{product.category}}</td>
+                <td>
+                    <div class="fa fa-check-square btn btn-success" *ngIf = "selectedProduct(product)" ></div>
+                    <div class="fa fa-square btn btn-success" *ngIf = "!selectedProduct(product)"></div>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+          <ngb-pagination [collectionSize]="totalProd$ | async" 
+                  (pageChange)="loadPageProduct($event)" 
+                  [(page)]="pageProd"
+                  [pageSize]="pageSizeProd" class="d-flex justify-content-end">
+          </ngb-pagination>
+      </div>
       </div>
 
-      <h6>Όνομα καταστήματος:</h6>
       <div class = "container form-inline">
-        <table class = "row-border hover" datatable>
+        /* <table class = "row-border hover" datatable>
           <thead>
             <tr>
               <th>Όνομα</th>
@@ -69,18 +97,153 @@
                   </td>
               </tr>
           </tbody>
-        </table>
+        </table> */
+        <div class="row justify-content-center">
+            <h6>Όνομα καταστήματος:</h6>
+          </div>
+          <div class="row">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Όνομα</th>
+                  <th scope="col">Διεύθυνση Καταστήματος</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let shop of shops$ | async" (click) = "shopSelection(shop)">
+                  <td>{{shop.name}}</td>
+                  <td>{{shop.address}}</td>
+                  <td>
+                      <div class="fa fa-check-square btn btn-success" *ngIf = "selectedShop(shop)" ></div>
+                      <div class="fa fa-square btn btn-success" *ngIf = "!selectedShop(shop)"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <ngb-pagination [collectionSize]="totalSho$ | async" 
+                    (pageChange)="loadPageShop($event)" 
+                    [(page)]="pageSho"
+                    [pageSize]="pageSizeSho" class="d-flex justify-content-end">
+            </ngb-pagination>
+          </div>
         </div>
 		<button class="btn btn-primary" type="submit" [disabled]="!priceForm.valid || !productFlag || !shopFlag">Submit</button>
   </form>
-	<!-- <app-map [initialZoom]='18'></app-map> -->
+	// <app-map [initialZoom]='18'></app-map>
+</div> -->
+
+
+<!-- ---------------------------------------------------------====================================================
+  ---------------------------------------------------------------------===========================================
+  --------------------------------------------------------------------------------------------------------------- -->
+<div class="fluid">
+  <div class="col-md-6 mx-auto text-center">
+    <div class="header-title">
+      <h1 class="wv-heading--title">
+        Υποβολή στοιχείων καφέ
+      </h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mx-auto">
+      <div class="myform form ">
+        <form [formGroup]="priceForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <input id="price" type="text" class="form-control my-input" placeholder="Τιμή" required
+              formControlName="price" appCurrencyValidator required
+              [ngClass]="{ 'is-invalid': price.invalid && (price.dirty || price.touched) }">
+            <div *ngIf="price.invalid && (price.dirty || price.touched)" class="invalid-feedback">
+              <div *ngIf="price.errors.required">
+                Παρακαλώ εισάγετε τιμή στον καφέ
+              </div>
+              <div *ngIf="price.errors.price">
+                Παρακαλώ εισάγετε έγκυρη τιμή στον καφέ
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <h6>Επιλέξτε ημερομηνία:</h6>
+            <hr class = "hr-ro">
+            <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
+              outsideDays="hidden"></ngb-datepicker>
+          </div>
+          <div class="container form-inline">
+            <div class="row justify-content-center">
+              <h6>Όνομα καφέ:</h6>
+            </div>
+            <div class="row">
+              <table class="table table-striped table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Όνομα</th>
+                    <th scope="col">Περιγραφή Προϊόντος</th>
+                    <th scope="col">Κατηγορία</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of products$ | async" (click)="productSelection(product)">
+                    <td>{{product.name}}</td>
+                    <td>{{product.description}}</td>
+                    <td>{{product.category}}</td>
+                    <td>
+                      <div class="fa fa-check-square btn btn-success" *ngIf="selectedProduct(product)"></div>
+                      <div class="fa fa-square btn btn-success" *ngIf="!selectedProduct(product)"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <ngb-pagination [collectionSize]="totalProd$ | async" (pageChange)="loadPageProduct($event)"
+                [(page)]="pageProd" [pageSize]="pageSizeProd" class="d-flex justify-content-end">
+              </ngb-pagination>
+            </div>
+          </div>
+
+          <div class="container form-inline">
+            <div class="row justify-content-center">
+              <h6>Όνομα καταστήματος:</h6>
+            </div>
+            <div class="row">
+              <table class="table table-striped table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Όνομα</th>
+                    <th scope="col">Διεύθυνση Καταστήματος</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let shop of shops$ | async" (click)="shopSelection(shop)">
+                    <td>{{shop.name}}</td>
+                    <td>{{shop.address}}</td>
+                    <td>
+                      <div class="fa fa-check-square btn btn-success" *ngIf="selectedShop(shop)"></div>
+                      <div class="fa fa-square btn btn-success" *ngIf="!selectedShop(shop)"></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <ngb-pagination [collectionSize]="totalSho$ | async" (pageChange)="loadPageShop($event)"
+                [(page)]="pageSho" [pageSize]="pageSizeSho" class="d-flex justify-content-end">
+              </ngb-pagination>
+            </div>
+          </div>
+          <div class="text-center ">
+            <button type="submit" class=" btn btn-block send-button tx-tfm"
+              [disabled]="!priceForm.valid || !productFlag || !shopFlag">Υποβολή</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- datepicker tamplate -->
 <ng-template #t let-date let-focused="focused">
-	<span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
-		[class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
-		(mouseleave)="hoveredDate = null">
-		{{ date.day }}
-	</span>
+  <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+    [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+    (mouseleave)="hoveredDate = null">
+    {{ date.day }}
+  </span>
 </ng-template>
