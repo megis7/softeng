@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductService } from 'src/services/product.service';
 import { Product } from 'src/models/product';
@@ -8,6 +8,7 @@ import { AuthService } from '../services/auth.service';
 import { PriceService } from '../services/price.service';
 import { GeocodeService } from 'src/services/geocode.service';
 import { Point } from 'src/models/point';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { Point } from 'src/models/point';
 })
 export class AppComponent {
 
-	constructor(private router: Router, private prodService: ProductService, private geocodeService: GeocodeService,
+	constructor(private router: Router, private prodService: ProductService, private geocodeService: GeocodeService, private toasterService: ToastrService,
 		private shopService: ShopService, private authService: AuthService, private priceService: PriceService) { }
 
 	public isActive(route: string): boolean {
@@ -49,7 +50,10 @@ export class AppComponent {
 		// this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24),["1","2","3"],null,["diaskedastiko!"]).subscribe(x => console.log(x));
 		// this.priceService.postPrice(new PriceLite(1.56,new Date(), new Date(), "2","3")).subscribe(x => console.log(x));
 
-		this.geocodeService.reverseGeocode(new Point(23.710409, 37.913213)).subscribe(x => console.log(x));
+		// this.geocodeService.reverseGeocode(new Point(23.710409, 37.913213)).subscribe(x => console.log(x));
+		this.toasterService.success("Ο καφές δημιουργήθηκε", "Επιτυχία")
+		this.toasterService.error("Σφάλμα δημιουργίας", "Αποτυχία")
+		this.toasterService.info("Καποια ενεργεια", "Ενημέρωση")
 	}
 }
 

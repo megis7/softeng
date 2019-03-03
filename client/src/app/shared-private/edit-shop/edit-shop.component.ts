@@ -8,6 +8,7 @@ import { MapComponent } from '../../shared/map/map.component';
 import { Point } from '../../../models/point';
 import { GeocodeService } from 'src/services/geocode.service';
 import { environment as env } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'shared-edit-shop',
@@ -18,7 +19,7 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 
 	@Input() mapDisplay;
 	@Input() private activeShop: Shop = null;
-	@Input() private isMap:boolean = true;
+	@Input() private isMap: boolean = true;
 	@Output() private formSubmitted = new EventEmitter<Shop>()
 	private subscription;
 	private showMapHelp = false;
@@ -36,7 +37,8 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 		private route: ActivatedRoute,
 		private shopService: ShopService,
 		private geocodeService: GeocodeService,
-		private fb: FormBuilder) { }
+		private fb: FormBuilder,
+		private toasterService: ToastrService) { }
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
@@ -56,9 +58,10 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 					address: [this.activeShop.address, Validators.required],
 					lat: [this.activeShop.lat],
 					lng: [this.activeShop.lng],
-					tags: this.fb.array([])
+					tags: this.fb.array([]),
+					withdrawn: ['']
 				});
-				if (id == "0") (this.shopForm.get("tags") as FormArray).push(this.fb.control('', Validators.required))
+				
 				this.activeShop.tags.forEach(tag => {
 					(this.shopForm.get("tags") as FormArray).push(this.fb.control(tag, Validators.required))
 				});
@@ -118,13 +121,25 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 
 	onSubmit() {
 		const shop = this.shopForm.value
-		this.formSubmitted.next(shop)
-		if (shop.id == "0")
-		this.shopService.postShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop); this.formSubmitted.next(sho)}, err => console.log(err))
-		else
-		this.shopService.putShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop); this.formSubmitted.next(sho)}, err => console.log(err))
 
-		console.log(shop)
+		if (shop.id == "0")
+			this.shopService.postShop(shop).subscribe(sho => {
+				this.activeShop = sho; 
+				this.shopForm.setValue(this.activeShop); 
+				this.formSubmitted.next(sho);
+
+				this.toasterService.success("Το κατάστημα δημιουργήθηκε", "Επιτυχία")
+				
+			}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά τη δημιουργία", "Αποτυχία") })
+		else
+			this.shopService.putShop(shop).subscribe(sho => {
+				this.activeShop = sho; 
+				this.shopForm.setValue(this.activeShop); 
+				this.formSubmitted.next(sho);
+
+				this.toasterService.success("Το κατάστημα ανανεώθηκε", "Επιτυχία")
+				
+			}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά την ανανέωση", "Αποτυχία") })
 	}
 
 }

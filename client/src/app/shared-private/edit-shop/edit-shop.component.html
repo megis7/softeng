@@ -4,7 +4,7 @@
 		<div class="myform form">
 			<form [formGroup]="shopForm" (ngSubmit)="onSubmit()">
 				<div class="form-group row">
-					<input type="text" class="form-control my-input" placeholder="Όνομα" required requried
+					<input type="text" class="form-control my-input" placeholder="Όνομα" requried
 						formControlName="name"
 						[ngClass]="{ 'is-invalid': name.invalid && (name.dirty || name.touched) }">
 					<div *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required"

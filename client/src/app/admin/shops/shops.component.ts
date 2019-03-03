@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Shop } from '../../../models/shop';
 import { ShopService } from '../../../services/shop.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'app-shops',
@@ -11,34 +12,31 @@ import { map } from 'rxjs/operators';
 })
 export class ShopsComponent implements OnInit {
 
-	shops$: Observable<Shop[]>;
+	shops$: Observable<Shop[]>
 	start$: Observable<number>
-	total$: Observable<number>
-	count$: Observable<number>
-	page: number = 0
-	pageSize: number = 2;
+	total: number = 0
 
-	constructor(private shopService: ShopService) { }
+	page: number = 1
+	pageSize: number = 3
+
+	constructor(
+		private shopService: ShopService,
+		private toasterService: ToastrService) { }
 
 	ngOnInit() {
-		const temp = this.shopService.getShopsPaged(this.page * 1, 1);
-		this.shops$ = temp.pipe(map(res => res.shops))
-		this.total$ = temp.pipe(map(res => res.total))
-		this.count$ = temp.pipe(map(res => res.count))
-
-		// this.shopService.getShops().subscribe(res => this.shops = res, err => console.log(err));
+		this.loadPage(this.page);
 	}
 
 	deleteShop(shop: Shop) {
 		this.shopService.deleteShop(shop.id).subscribe(msg => {
-			if(msg.message == "OK") this.loadPage(this.page); 
-		}, err => console.log(err));
+			if(msg.message == "OK") { this.toasterService.success("Το κατάστημα διαγράφηκε", "Επιτυχία"); this.loadPage(this.page); }
+		}, err => { console.log(err); this.toasterService.error("Σφάλμα κατά τη διαγραφή", "Αποτυχία") });
 	}
 
 	loadPage(page: number) {
-		const temp = this.shopService.getShopsPaged((page - 1) * this.pageSize, this.pageSize);
-		this.shops$ = temp.pipe(map(res => res.shops))
-		this.total$ = temp.pipe(map(res => res.total))
-		this.count$ = temp.pipe(map(res => res.count))
+		this.shops$ = this.shopService.getShopsPaged((page - 1) * this.pageSize, this.pageSize)
+									  .pipe(
+										  tap(res => this.total = res.total), 
+										  map(res => res.shops))
 	}
 }

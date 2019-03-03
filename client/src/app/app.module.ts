@@ -18,6 +18,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { NgbTypeaheadModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { UnauthorizedInterceptor } from 'src/infrastructure/unauthorized.interceptor';
+import { ToastNoAnimationModule } from 'ngx-toastr';
 
 @NgModule({
 	declarations: [
@@ -39,7 +40,14 @@ import { UnauthorizedInterceptor } from 'src/infrastructure/unauthorized.interce
 		ReactiveFormsModule,
 		FormsModule,
 		NgbTypeaheadModule,
-		NgbCollapseModule
+		NgbCollapseModule,
+		ToastNoAnimationModule.forRoot({
+			timeOut: 5000,
+			positionClass: 'toast-top-center',
+			closeButton: true,
+			maxOpened: 3,
+			autoDismiss: true
+		})
 	],
 	providers: [
 		SERVICE_PROVIDERS,

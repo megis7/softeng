@@ -1,3 +1,5 @@
+import { Point } from 'src/models/point';
+
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -8,7 +10,9 @@ export const environment = {
   geocodeURL: 'https://www.mapquestapi.com/geocoding/v1/address',
   revGeocodeURL: 'https://www.mapquestapi.com/geocoding/v1/reverse',
   geocodeKey: 'TlOzDikpKPLO5jhzFburuxsvWNH1GNPi',
-  mapZoomed: 17
+  mapZoomed: 17,
+  mapDefaultZoom: 7,
+  mapDefaultPosition: new Point(23, 38)
 };
 
 /*

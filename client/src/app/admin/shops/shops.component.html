@@ -1,38 +1,17 @@
-<!-- <div class="container">
-	<table class="row-border hover" datatable>
-		<thead>
-			<tr>
-				<th>Όνομα</th>
-				<th>Διεύθυνση Καταστήματος</th>
-				<th>Ενέργειες</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let shop of shops">
-				<td>{{shop.name}}</td>
-				<td>{{shop.address}}</td>
-				<td>
-					<ul>
-						<li>
-							<a class="btn btn-warning" [routerLink]="['/admin/edit-shop',shop.id]"><span
-									class="fa fa-edit"></span></a>
-						</li>
-						<li>
-							<button class="btn btn-danger" (click)="deleteShop(shop)"><span
-									class="fa fa-trash"></span></button>
-						</li>
-					</ul>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<a class="btn btn-success" [routerLink]="['/admin/create-shop']"><span class="fa fa-plus-square"></span>&nbsp; Νέο
-		Κατάστημα</a>
-</div> -->
-
 <div class="container">
-	<div class="row justify-content-center">
+	<div class="row justify-content-center" style="margin-top: 30px">
 		<h1>Καταστήματα</h1>
+	</div>
+	<div class="row">
+		<div class="col-xs-6">
+			<ngb-pagination [collectionSize]="total" (pageChange)="loadPage($event)" [(page)]="page"
+				[pageSize]="pageSize" class="d-flex justify-content-end">
+			</ngb-pagination>
+		</div>
+		<div class="ml-auto">
+			<a class="btn btn-success" [routerLink]="['/admin/create-shop']"><span
+					class="fa fa-plus-square"></span>&nbsp;Νέο Κατάστημα</a>
+		</div>
 	</div>
 	<div class="row">
 		<table class="table table-striped table-sm">
@@ -62,15 +41,5 @@
 				</tr>
 			</tbody>
 		</table>
-		<ngb-pagination [collectionSize]="total$ | async" 
-						(pageChange)="loadPage($event)" 
-						[(page)]="page"
-						[pageSize]="pageSize" class="d-flex justify-content-end">
-		</ngb-pagination>
-	</div>
-
-	<div class="row">
-		<a class="btn btn-success" [routerLink]="['/admin/create-shop']"><span
-				class="fa fa-plus-square"></span>&nbsp;Νέο Κατάστημα</a>
 	</div>
 </div>

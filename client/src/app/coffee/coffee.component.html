@@ -5,7 +5,8 @@
         <div class="card bg-light mb-3 shadow" style="width: 22rem; margin-top: 20px; margin-left: 20px;">
             <div class="card-header d-flex align-items-center">
                 Αναζήτηση Καφέ
-                <button type="button" class="btn btn-outline-primary ml-auto" (click)="showForm = !showForm">
+                <button class="ml-auto btn btn-outline-primary" style="margin-right: 5px" (click)="refocusMap()"><span class="fa fa-map-marker"></span></button>
+                <button type="button" class="btn btn-outline-primary" (click)="showForm = !showForm">
                     <span *ngIf="showForm" class="fa fa-angle-up"></span>
                     <span *ngIf="!showForm" class="fa fa-angle-down"></span>
                 </button>

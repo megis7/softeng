@@ -56,16 +56,16 @@ export class CoffeeComponent implements OnInit {
 
 	processFormChange(): void {
 		// TODO: after filtering, set points on map
-		const newPrices = this.prices.filter(p => p.productName.indexOf(this.coffeeForm.value.coffee) >= 0)
-									.filter(p => p.shopDist < +this.coffeeForm.value.maxDistance)
-									.filter(p => p.price < this.coffeeForm.value.maxPrice);
+		// const newPrices = this.prices.filter(p => p.productName.indexOf(this.coffeeForm.value.coffee) >= 0)
+		// 							.filter(p => p.shopDist < +this.coffeeForm.value.maxDistance)
+		// 							.filter(p => p.price < this.coffeeForm.value.maxPrice);
 									
 		console.log(this.prices)
-		console.log(newPrices);
+		// console.log(newPrices);
 
 		this.mapDisplay.removeAllPoints();
 		this.mapDisplay.addPoint(new Point(this.currentLocation.lon, this.currentLocation.lat));
-		newPrices.forEach(p => this.mapDisplay.addPoint(new Point(p.shopLng, p.shopLat)));
+		// newPrices.forEach(p => this.mapDisplay.addPoint(new Point(p.shopLng, p.shopLat)));
 
 		if(this.coffeeForm.value.address.trim() != '')
 			this.showMapEdit = true;
@@ -124,6 +124,11 @@ export class CoffeeComponent implements OnInit {
 
 	public clearEditMap() {
 		this.mapDisplay.setClickable(false);
+	}
+
+	public refocusMap() {
+		this.mapDisplay.setPosition(env.mapDefaultPosition);
+		this.mapDisplay.setZoom(env.mapDefaultZoom)
 	}
 
 	onSearchChange(searchValue: string) {

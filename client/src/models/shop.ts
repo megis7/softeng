@@ -7,6 +7,6 @@ export class Shop {
         public lng: number,
         public lat: number,
         public tags: string[],
-        // TODO: withdrawn
+        public withdrawn: boolean = false
     ) {}
 }

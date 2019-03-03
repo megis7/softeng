@@ -4,6 +4,7 @@ import { ProductService } from '../../../services/product.service';
 import { of } from 'rxjs';
 import { Product } from '../../../models/product';
 import { FormArray, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'app-edit-product',
@@ -24,7 +25,11 @@ export class EditProductComponent implements OnInit {
 		tags: this.fb.array([this.fb.control('', Validators.required)])
 	});
 
-	constructor(private route: ActivatedRoute, private productService: ProductService, private fb: FormBuilder) { }
+	constructor(
+		private route: ActivatedRoute, 
+		private productService: ProductService, 
+		private fb: FormBuilder,
+		private toasterService: ToastrService) { }
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
@@ -42,9 +47,10 @@ export class EditProductComponent implements OnInit {
 					name: [this.activeProduct.name],
 					description: [this.activeProduct.description],
 					category: [this.activeProduct.category],
-					tags: this.fb.array([])
-				});
-				if (id == "0") (this.productForm.get("tags") as FormArray).push(this.fb.control('', Validators.required))
+					tags: this.fb.array([]),
+					withdrawn: ['']
+				},err => console.warn(err));
+
 				this.activeProduct.tags.forEach(tag => {
 					(this.productForm.get("tags") as FormArray).push(this.fb.control(tag, Validators.required))
 				});
@@ -80,12 +86,25 @@ export class EditProductComponent implements OnInit {
 
 	onSubmit() {
 		const product = this.productForm.value
-		console.log(product)
-		this.formSubmitted.next(product)//! to delete when ready
+
 		if (product.id == "0")
-			this.productService.postProduct(product).subscribe(prod => { this.activeProduct = prod; this.productForm.setValue(this.activeProduct); this.formSubmitted.next(prod) }, err => console.log(err))
+			this.productService.postProduct(product).subscribe(prod => { 
+				this.activeProduct = prod; 
+				this.productForm.setValue(this.activeProduct); 
+				this.formSubmitted.next(prod);
+
+				this.toasterService.success("Ο καφές δημιουργήθηκε", "Επιτυχία")
+				
+			}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά τη δημιουργία", "Αποτυχία") })
 		else
-			this.productService.putProduct(product).subscribe(prod => { this.activeProduct = prod; this.productForm.setValue(this.activeProduct); this.formSubmitted.next(prod) }, err => console.log(err))
+			this.productService.putProduct(product).subscribe(prod => { 
+				this.activeProduct = prod; 
+				this.productForm.setValue(this.activeProduct); 
+				this.formSubmitted.next(prod);
+
+				this.toasterService.success("Ο καφές ανανεώθηκε", "Επιτυχία")
+
+			}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά την ανανέωση", "Αποτυχία") })
 	}
 
 }

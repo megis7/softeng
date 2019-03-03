@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { Product } from 'src/models/product';
 import { environment as env } from '../environments/environment';
-import { map } from 'rxjs/operators';
+import { map, min } from 'rxjs/operators';
 
 @Injectable()
 export class ProductService {
@@ -34,12 +34,18 @@ export class ProductService {
 
     getProductsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
         Observable<{start: number, count: number, total: number, products: Product[]}> {
-            return of({start: start, count: count, total: this.products.length, products: this.products.slice(start, start + count).map(x => Object.assign({}, x))});
+            const params = new HttpParams().set('start', start.toString())
+                                       .set('count', count.toString())
+                                       .set('status', status)
+                                       .set('sort', sort);
+            return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
+                            .pipe(map(res => this.mapPagedProducts(res)));
+            // return of({start: start, count: count, total: this.products.length, products: this.products.slice(start, start + count).map(x => Object.assign({}, x))});
     }
 
     getProduct(id: string): Observable<Product> {
-        // return this.http.get<Product>(`${this.url}/${id}`);
-        return of(this.products.find(x => x.id == id))
+        return this.http.get<Product>(`${this.url}/${id}`);
+        // return of(this.products.find(x => x.id == id))
     }
 
     postProduct(newProduct: Product): Observable<Product> {
@@ -58,8 +64,14 @@ export class ProductService {
     }
 
     deleteProduct(id: string): Observable<{message: string}> {
-        //return this.http.delete<{message: string}>(`${this.url}/${id}`);
-        this.products.splice(this.products.findIndex(x => x.id == id), 1)
-        return of({"message":"OK"})
+        return this.http.delete<{message: string}>(`${this.url}/${id}`);
+        // this.products.splice(this.products.findIndex(x => x.id == id), 1)
+        // return of({"message":"OK"})
+    }
+
+    private mapPagedProducts(res: {start: number, count: number, total: number, products: Product[]}):
+        { start: number, count: number, total: number, products: Product[] } {
+
+            return{ start: res.start, count: Math.min(res.count, res.total - res.start), total: res.total, products: res.products}
     }
 }
