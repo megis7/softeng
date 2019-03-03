@@ -5,13 +5,6 @@ require('../models/user')
 
 const User = mongoose.model('User')
 
-function queryCleanser(req) {
-    req.query.start = parseInt(req.query.start, 10) || 0
-    req.query.count = parseInt(req.query.count, 10) || 20;
-    [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
-        req.query.sort.split(/\|/) : ['_id', 'DESC']
-}
-
 async function bodyCleanser(req, res, next) {
     try {
         req.body.hash = await bcrypt.hash(req.body.password, 10)
@@ -20,35 +13,22 @@ async function bodyCleanser(req, res, next) {
     }
 }
 
-function conditionsBuilder(req) {
-    let conditions
-    if (!('status' in req.query) || req.query.status === 'ACTIVE')
-        conditions = {
-            withdrawn: false
-        }
-    else if (req.query.status === 'WITHDRAWN')
-        conditions = {
-            withdrawn: true
-        }
-    return conditions
-}
-
 function optionsBuilder(req) {
     const options = {
         skip: req.query.start,
         limit: req.query.count,
-        sort: JSON.parse(`{"${req.query.sortKey}": "${req.query.sortValue}"}`)
+        sort: {
+            [req.query.sortKey]: req.query.sortValue
+        }
     }
     return options
 }
 
-async function getController(req, res, next) {
-    queryCleanser(req)
-    const conditions = conditionsBuilder(req)
+async function getManyController(req, res, next) {
     const options = optionsBuilder(req)
     try {
-        const users = await User.find(conditions, null, options).exec()
-        const total = await User.countDocuments(conditions).exec()
+        const users = await User.find(null, null, options).exec()
+        const total = await User.countDocuments().exec()
         res.json({
             start: req.query.start,
             count: users.length,
@@ -60,7 +40,7 @@ async function getController(req, res, next) {
     }
 }
 
-async function postController(req, res, next) {
+async function postOneController(req, res, next) {
     await bodyCleanser(req, res, next)
     try {
         const user = await User.create(req.body)
@@ -79,7 +59,7 @@ async function getOneController(req, res, next) {
     }
 }
 
-async function putController(req, res, next) {
+async function putOneController(req, res, next) {
     await bodyCleanser(req, res, next)
     try {
         const user = await User.findByIdAndUpdate(req.params.id, req.body, {
@@ -93,7 +73,7 @@ async function putController(req, res, next) {
     }
 }
 
-async function deleteController(req, res, next) {
+async function deleteOneController(req, res, next) {
     try {
         await User.findByIdAndUpdate(req.params.id).exec()
         res.json({
@@ -104,11 +84,10 @@ async function deleteController(req, res, next) {
     }
 }
 
-module.exports = module.exports = {
-    getController,
-    postController,
+module.exports = {
+    getManyController,
+    postOneController,
     getOneController,
-    putController,
-    putController,
-    deleteController
+    putOneController,
+    deleteOneController
 }

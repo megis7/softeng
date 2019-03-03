@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt')
-const express = require('express')
 const fs = require('fs')
 const jsonwebtoken = require('jsonwebtoken')
 const mongoose = require('mongoose')
@@ -7,11 +6,10 @@ const path = require('path')
 const util = require('util')
 
 const InternalServerError = require('../error')
+require('../models/user')
 
 const readFile = util.promisify(fs.readFile)
 const sign = util.promisify(jsonwebtoken.sign)
-
-require('../models/user')
 
 const User = mongoose.model('User')
 

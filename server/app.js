@@ -9,9 +9,8 @@ const util = require('util')
 const loginRouter = require('./routes/login')
 const logoutRouter = require('./routes/logout')
 const usersRouter = require('./routes/users')
-const productsRouter = require('./routes/products')
-const shopsRouter = require('./routes/shops')
 const pricesRouter = require('./routes/prices')
+const genericRouter = require('./routes/genericRouter')
 
 const InternalServerError = require('./error')
 
@@ -51,38 +50,55 @@ app.use((req, res, next) => {
         next()
 })
 
-function cleanseInput(req) {
+function bodyCleanser(req) {
     delete req.body.withdrawn
     delete req.body._id
 }
 
-app.get('*', (req, res, next) => {
-    if ('sort' in req.query)
-        req.query.sort = req.query.sort.replace(/id/, '_id')
+function queryCleanser(req) {
+    req.query.start = parseInt(req.query.start, 10) || 0
+    req.query.count = parseInt(req.query.count, 10) || 20;
+    [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
+        req.query.sort.replace(/id/, '_id').split(/\|/) : ['_id', 'DESC']
+}
+
+app.use((req, res, next) => {
+    endpoint = req.originalUrl.split('/')[3].split('?')[0]
+    schema = endpoint.replace(endpoint[0], endpoint[0].toUpperCase()).slice(0, endpoint.lastIndexOf('s'))
     next()
 })
 
-app.post(/\/product|\/shops|\/prices/, (req, res, next) => {
-    cleanseInput(req)
+app.get(/\/products|\/shops|\/user/, (req, res, next) => {
+    queryCleanser(req)
+    next()
+})
+
+app.get(/\/prices/, (req, res, next) => {
+    next()
+})
+
+app.post(/\/products|\/shops|\/prices/, (req, res, next) => {
+    bodyCleanser(req)
     authenticatedUser(req, res, next)
 })
-app.put('*', (req, res, next) => {
-    cleanseInput(req)
+
+app.put((req, res, next) => {
+    bodyCleanser(req)
     authenticatedUser(req, res, next)
 })
-app.patch('*', (req, res, next) => {
-    cleanseInput(req)
+app.patch((req, res, next) => {
+    bodyCleanser(req)
     authenticatedUser(req, res, next)
 })
-app.delete('*', (req, res, next) =>
+app.delete((req, res, next) =>
     authenticatedUser(req, res, next)
 )
 
 app.use('/observatory/api/login', loginRouter)
 app.use('/observatory/api/logout', logoutRouter)
 app.use('/observatory/api/users', usersRouter)
-app.use('/observatory/api/products', productsRouter)
-app.use('/observatory/api/shops', shopsRouter)
+app.use('/observatory/api/products', genericRouter)
+app.use('/observatory/api/shops', genericRouter)
 app.use('/observatory/api/prices', pricesRouter)
 
 app.use((err, req, res, next) => {
@@ -93,7 +109,6 @@ app.use((err, req, res, next) => {
         })
     else
         res.status(400).json({
-            // constructor: err.constructor,
             name: err.name,
             message: err.message
         })

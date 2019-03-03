@@ -138,7 +138,9 @@ function optionsBuilder(req) {
         lean: true,
         skip: req.query.start,
         limit: req.query.count,
-        sort: JSON.parse(`{"${req.query.sortKey}": "${req.query.sortValue}"}`)
+        sort: {
+            [req.query.sortKey]: req.query.sortValue
+        }
     }
     return options
 }

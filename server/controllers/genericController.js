@@ -1,16 +1,8 @@
 const jsonwebtoken = require('jsonwebtoken')
 const mongoose = require('mongoose')
 
+require('../models/product')
 require('../models/shop')
-
-const Shop = mongoose.model('Shop')
-
-function queryCleanser(req) {
-    req.query.start = parseInt(req.query.start, 10) || 0
-    req.query.count = parseInt(req.query.count, 10) || 20;
-    [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
-        req.query.sort.split(/\|/) : ['_id', 'DESC']
-}
 
 function bodyCleanser(req, res) {
     if (!('lng' in req.body) || !('lat' in req.body))
@@ -40,70 +32,76 @@ function optionsBuilder(req) {
     const options = {
         skip: req.query.start,
         limit: req.query.count,
-        sort: JSON.parse(`{"${req.query.sortKey}": "${req.query.sortValue}"}`)
+        sort: {
+            [req.query.sortKey]: req.query.sortValue
+        }
     }
     return options
 }
 
-async function getController(req, res, next) {
-    queryCleanser(req)
+async function getManyController(req, res, next) {
+    const Model = mongoose.model(schema)
     const conditions = conditionsBuilder(req)
     const options = optionsBuilder(req)
     try {
-        const shops = await Shop.find(conditions, null, options).exec()
-        const total = await Shop.countDocuments(conditions).exec()
+        const result = await Model.find(conditions, null, options).exec()
+        const total = await Model.countDocuments(conditions).exec()
         res.json({
             start: req.query.start,
-            count: shops.length,
+            count: req.query.count,
             total: total,
-            shops: shops
+            [endpoint]: result
         })
     } catch (err) {
         next(err)
     }
 }
 
-async function postController(req, res, next) {
-    bodyCleanser(req, res)
+async function postOneController(req, res, next) {
+    const Model = mongoose.model(schema)
+    if (endpoint === 'shops')
+        bodyCleanser(req, res)
     try {
-        const shop = await Shop.create(req.body)
-        res.json(shop)
+        const result = await Model.create(req.body)
+        res.json(result)
     } catch (err) {
         next(err)
     }
 }
 
 async function getOneController(req, res, next) {
+    const Model = mongoose.model(schema)
     try {
-        const shop = await Shop.findById(req.params.id).exec()
-        res.json(shop)
+        const result = await Model.findById(req.params.id).exec()
+        res.json(result)
     } catch (err) {
         next(err)
     }
 }
 
-async function putController(req, res, next) {
-    bodyCleanser(req, res)
+async function putOneController(req, res, next) {
+    const Model = mongoose.model(schema)
     try {
-        const shop = await Shop.findByIdAndUpdate(req.params.id, req.body, {
+        const result = await Model.findByIdAndUpdate(req.params.id, req.body, {
             new: true
         }).exec()
-        res.json(shop)
+        res.json(result)
     } catch (err) {
         next(err)
     }
 }
 
-async function deleteController(req, res, next) {
+async function deleteOneController(req, res, next) {
+    const Model = mongoose.model(schema)
     const token = req.get('x-observatory-auth')
     const decoded = jsonwebtoken.decode(token)
     try {
         if (decoded.role === 'volunteer')
-            await Shop.findByIdAndUpdate(req.params.id, {
+            await Model.findByIdAndUpdate(req.params.id, {
                 withdrawn: true
             }).exec()
         else
-            await Shop.findByIdAndDelete(req.params.id).exec()
+            await Model.findByIdAndDelete(req.params.id).exec()
         res.json({
             message: 'OK'
         })
@@ -113,10 +111,9 @@ async function deleteController(req, res, next) {
 }
 
 module.exports = {
-    getController,
-    postController,
+    getManyController,
+    postOneController,
     getOneController,
-    putController,
-    putController,
-    deleteController
+    putOneController,
+    deleteOneController
 }
