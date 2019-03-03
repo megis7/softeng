@@ -5,10 +5,7 @@ const pricesController = require('../controllers/prices')
 const router = express.Router()
 
 router.route('/')
-    .get(pricesController.getController)
+    .get(pricesController.getManyController)
     .post(pricesController.postManyController)
-
-router.route('/:id')
-    .delete(pricesController.deleteController)
 
 module.exports = router

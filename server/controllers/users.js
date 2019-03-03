@@ -74,8 +74,11 @@ async function putOneController(req, res, next) {
 }
 
 async function deleteOneController(req, res, next) {
+    const conditions = {
+        _id: req.params.id
+    }
     try {
-        await User.findByIdAndUpdate(req.params.id).exec()
+        await User.deleteOne(conditions).exec()
         res.json({
             message: 'OK'
         })

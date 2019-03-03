@@ -11,7 +11,7 @@ router.route('/')
 router.route('/:id')
     .get(genericController.getOneController)
     .put(genericController.putOneController)
-    .patch(genericController.putOneController)
+    .patch(genericController.patchOneController)
     .delete(genericController.deleteOneController)
 
 module.exports = router

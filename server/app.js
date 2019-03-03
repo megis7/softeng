@@ -56,10 +56,11 @@ function bodyCleanser(req) {
 }
 
 function queryCleanser(req) {
-    req.query.start = parseInt(req.query.start, 10) || 0
-    req.query.count = parseInt(req.query.count, 10) || 20;
+    req.query.start = Number(req.query.start) || 0
+    req.query.count = Number(req.query.count) || 20;
     [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
-        req.query.sort.replace(/id/, '_id').split(/\|/) : ['_id', 'DESC']
+        req.query.sort.replace(/id/, '_id').split(/\|/) :
+        (endpoint === 'prices' ? ['price', 'ASC'] : ['_id', 'DESC'])
 }
 
 app.use((req, res, next) => {
@@ -68,12 +69,8 @@ app.use((req, res, next) => {
     next()
 })
 
-app.get(/\/products|\/shops|\/user/, (req, res, next) => {
+app.get(/.*/, (req, res, next) => {
     queryCleanser(req)
-    next()
-})
-
-app.get(/\/prices/, (req, res, next) => {
     next()
 })
 
@@ -82,15 +79,15 @@ app.post(/\/products|\/shops|\/prices/, (req, res, next) => {
     authenticatedUser(req, res, next)
 })
 
-app.put((req, res, next) => {
+app.put(/.*/, (req, res, next) => {
     bodyCleanser(req)
     authenticatedUser(req, res, next)
 })
-app.patch((req, res, next) => {
+app.patch(/.*/, (req, res, next) => {
     bodyCleanser(req)
     authenticatedUser(req, res, next)
 })
-app.delete((req, res, next) =>
+app.delete(/.*/, (req, res, next) =>
     authenticatedUser(req, res, next)
 )
 
