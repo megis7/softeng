@@ -18,7 +18,7 @@ export class MapComponent implements OnInit {
 	@Input() initialPosition: [number, number] = [23, 38];
 	@Input() initialZoom = 7;
 	@Output() clicked = new EventEmitter<Point>();
-
+	
 	private coordinates: Point[] = new Array<Point>();
 	private coffeeShopIconPath = "assets/images/coffee-shop.png"
 	private isClickable = false;

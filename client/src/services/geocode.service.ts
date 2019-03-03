@@ -20,9 +20,7 @@ export class GeocodeService{
         return this.http.get(env.geocodeURL, { params: params })
                         .pipe(map((res:any) => res.results[0].locations.map(l => this.mapLocations(l))))
     }
-    public mapAddress(location: any): string{
-        return location.street;
-    }
+   
     public reverseGeocode(point: Point): Observable<any> {
         let params = new HttpParams().set('key', env.geocodeKey)
                                      .set("location", point.lat + ',' + point.lon)
@@ -35,5 +33,10 @@ export class GeocodeService{
 
     private mapLocations(location: any): Point {
         return new Point(location.latLng.lng, location.latLng.lat)
+    }
+
+    public mapAddress(location: any): string{
+        console.log(location);   // TODO: add more fields to street
+        return location.street;
     }
 }

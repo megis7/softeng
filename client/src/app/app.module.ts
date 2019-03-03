@@ -16,6 +16,7 @@ import { RegisterComponent } from './register/register.component';
 import { TokenInterceptor } from 'src/infrastructure/token.interceptor';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { NgbTypeaheadModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
 	declarations: [
@@ -35,7 +36,9 @@ import { NotfoundComponent } from './notfound/notfound.component';
 		HttpClientModule,
 		SharedModule,
 		ReactiveFormsModule,
-		FormsModule
+		FormsModule,
+		NgbTypeaheadModule,
+		NgbCollapseModule
 	],
 	providers: [
 		SERVICE_PROVIDERS,
