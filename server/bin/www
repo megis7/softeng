@@ -11,8 +11,8 @@ const port = normalizePort(process.env.PORT || '8765')
 app.set('port', port)
 
 const server = https.createServer({
-  key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
-  cert: fs.readFileSync(path.resolve(__dirname, 'server.cert'))
+  key: fs.readFileSync('/home/server.key'),
+  cert: fs.readFileSync('/home/server.cert')
 }, app)
 
 server.listen(port)
