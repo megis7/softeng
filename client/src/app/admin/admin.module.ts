@@ -12,6 +12,7 @@ import { SharedPrivateModule } from '../shared-private/shared-private.module';
 import { EditPriceComponent } from './edit-price/edit-price.component';
 import { NgbDatepickerModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { EditShopComponent as AdminEditShop } from './edit-shop/edit-shop.component';
+import { NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 
 const routes: Routes = [
 	{ path: 'products', component: ProductsComponent },
@@ -38,7 +39,8 @@ const routes: Routes = [
 		SharedModule,
 		SharedPrivateModule,
 		NgbDatepickerModule,
-		NgbPaginationModule
+		NgbPaginationModule,
+		NgbTypeaheadModule
 	]
 })
 export class AdminModule { }

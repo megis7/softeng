@@ -37,7 +37,7 @@ export class EditPriceComponent implements OnInit {
 		private priceService: PriceService,
 		private calendar: NgbCalendar) { }
 
-	priceForm = this.fb.group({
+	private priceForm = this.fb.group({
 		price: ['', { validators: [Validators.required, this.currencyValidator], updateOn: 'blur' }],
 		dateFrom: [null],
 		dateTo: [null],
@@ -46,7 +46,6 @@ export class EditPriceComponent implements OnInit {
 	});
 
 	private currencyValidator(control: AbstractControl): { [key: string]: boolean } | null {
-		// /^(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?/
 		if (control.value !== undefined && control.value.length > 0 && (isNaN(control.value) || /^\d+(\.\d+)?$/.test(control.value) == false)) {
 			return { 'price': true };
 		}
@@ -57,18 +56,16 @@ export class EditPriceComponent implements OnInit {
 		return new Date([date.year, date.month, date.day].join('-'));
 	}
 
-	get product(){
-		return this.priceForm.get("product")
+	public get product(){
+		return this.priceForm.get("product");
 	}
-	get shop(){
-		return this.priceForm.get("shop")
+	public get shop(){
+		return this.priceForm.get("shop");
 	}
 
 	ngOnInit() {
-		// this.getLocation();
 
 		this.shopService.getShops(0, 1000, 'ACTIVE')
-			// .subscribe(shops => { this.shops = shops; this.shops.map(s => new Point(s.lng, s.lat)).forEach(x => this.mapDisplay.addPoint(x)) });
 			.subscribe(shops => this.shops = shops)
 
 		this.productService.getProducts(0, 1000, 'ACTIVE')
@@ -78,15 +75,13 @@ export class EditPriceComponent implements OnInit {
 			price: ['', { validators: [Validators.required, this.currencyValidator], updateOn: 'blur' }],
 			dateFrom: [this.calendar.getToday()],
 			dateTo: [this.calendar.getToday()],
+			product: ['',Validators.required],
+			shop: ['',Validators.required]
 		});
-
-		this.loadPageProduct(1)
-
-		this.loadPageShop(1)
 
 	}
 
-	get price() { return this.priceForm.get('price'); }
+	public get price() { return this.priceForm.get('price'); }
 
 	productSelection(product: Product) {
 		this.activeProduct = product
@@ -110,8 +105,8 @@ export class EditPriceComponent implements OnInit {
 		const price = this.priceForm.value.price;
 		const dateFrom = this.formatDate(this.priceForm.value.dateFrom); 
 		const dateTo = this.formatDate(this.priceForm.value.dateTo);
-		const productIndex = this.products.findIndex(p => p.name == this.priceForm.value.productName)
-		const shopIndex = this.shops.findIndex(s => s.name == this.priceForm.value.shopName)
+		const productIndex = this.products.findIndex(p => p.name == this.priceForm.value.product)
+		const shopIndex = this.shops.findIndex(s => s.name == this.priceForm.value.shop)
 		let productFound = true, shopFound = true;
 
 		if (productIndex < 0) {
@@ -126,7 +121,7 @@ export class EditPriceComponent implements OnInit {
 
 		if (productFound == false || shopFound == false)return false;
 
-		const newPrice = new PriceLite(price, dateFrom, dateTo, this.activeProduct.id, this.activeShop.id)
+		const newPrice = new PriceLite(price, dateFrom, dateTo, this.products[productIndex].id, this.shops[shopIndex].id)
 
 		this.priceService.postPrice(newPrice).subscribe(x => { }, err => console.log(err));
 		console.log(newPrice)
@@ -167,31 +162,17 @@ export class EditPriceComponent implements OnInit {
 		}
 	}
 
-	products$: Observable<Product[]>;
-	startProd$: Observable<number>
-	totalProd$: Observable<number>
-	countProd$: Observable<number>
-	pageProd: number = 0
-	pageSizeProd: number = 2;
+	searchProduct = (text$: Observable<string>) =>
+		text$.pipe(
+			debounceTime(200),
+			distinctUntilChanged(),
+			map(term => term.length < 2 ? [] : this.products.filter(p => p.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 7).map(p => p.name))
+		)
 
-	shops$: Observable<Shop[]>;
-	startSho$: Observable<number>
-	totalSho$: Observable<number>
-	countSho$: Observable<number>
-	pageSho: number = 0
-	pageSizeSho: number = 2;
-
-	loadPageProduct(page: number) {
-		const temp = this.productService.getProductsPaged((page-1) * this.pageSizeProd, this.pageSizeProd);
-		this.products$ = temp.pipe(map(res => res.products))
-		this.totalProd$ = temp.pipe(map(res => res.total))
-		this.countProd$ = temp.pipe(map(res => res.count))
-	}
-	loadPageShop(page: number) {
-		const temp = this.shopService.getShopsPaged((page - 1) * this.pageSizeSho, this.pageSizeSho);
-		this.shops$ = temp.pipe(map(res => res.shops))
-		this.totalSho$ = temp.pipe(map(res => res.total))
-		this.countSho$ = temp.pipe(map(res => res.count))
-	}
-
+	searchShop = (text$: Observable<string>) =>
+		text$.pipe(
+			debounceTime(200),
+			distinctUntilChanged(),
+			map(term => term.length < 2 ? [] : this.shops.filter(p => p.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 7).map(p => p.name))
+		)
 }
