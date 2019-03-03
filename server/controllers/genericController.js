@@ -1,19 +1,22 @@
 const jsonwebtoken = require('jsonwebtoken')
 const mongoose = require('mongoose')
 
+const error = require('../error')
+
 require('../models/product')
 require('../models/shop')
 require('../models/price')
 
-function bodyCleanser(req, res) {
-    if (!('lng' in req.body) || !('lat' in req.body))
-        res.status(400).send({
-            message: 'lng, lat'
-        })
-    req.body.location = {
-        type: 'Point',
-        coordinates: [req.body.lng, req.body.lat]
+function bodyCleanser(req, res, next) {
+    if (endpoint === 'shops') {
+        if (!('lng' in req.body) || !('lat' in req.body))
+            next(new error.BadRequestError('lng, lat'))
+        req.body.location = {
+            type: 'Point',
+            coordinates: [req.body.lng, req.body.lat]
+        }
     }
+    next()
 }
 
 function conditionsBuilder(req) {
@@ -46,6 +49,8 @@ async function getManyController(req, res, next) {
     const options = optionsBuilder(req)
     try {
         const result = await Model.find(conditions, null, options).exec()
+        if (!result)
+            return next(new error.NotFoundError(endpoint))
         const total = await Model.countDocuments(conditions).exec()
         res.json({
             start: req.query.start,
@@ -54,19 +59,17 @@ async function getManyController(req, res, next) {
             [endpoint]: result
         })
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
 async function postOneController(req, res, next) {
     const Model = mongoose.model(schema)
-    if (endpoint === 'shops')
-        bodyCleanser(req, res)
     try {
         const result = await Model.create(req.body)
         res.json(result)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -74,9 +77,11 @@ async function getOneController(req, res, next) {
     const Model = mongoose.model(schema)
     try {
         const result = await Model.findById(req.params.id).exec()
+        if (!result)
+            return next(new error.NotFoundError(endpoint))
         res.json(result)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -86,9 +91,11 @@ async function putOneController(req, res, next) {
         const result = await Model.findByIdAndUpdate(req.params.id, req.body, {
             new: true
         }).exec()
+        if (!result)
+            return next(new error.NotFoundError(endpoint))
         res.json(result)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -98,9 +105,11 @@ async function patchOneController(req, res, next) {
         const result = await Model.findByIdAndUpdate(req.params.id, req.body, {
             new: true
         }).exec()
+        if (!result)
+            return next(new error.NotFoundError(endpoint))
         res.json(result)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -113,28 +122,32 @@ async function deleteOneController(req, res, next) {
         _id: req.params.id
     }
     try {
-        if (decoded.role === 'volunteer')
-            await Model.updateOne(conditions, {
+        if (decoded.role === 'volunteer') {
+            const result = await Model.updateOne(conditions, {
                 withdrawn: true
             }).exec()
-        else {
-
-            console.log(await Model.deleteOne(conditions).exec())
+            if (result.n === 0)
+                return next(new error.NotFoundError(endpoint))
+        } else if (decoded.role === 'administrator') {
+            const result = await Model.deleteOne(conditions).exec()
+            if (result.n === 0)
+                return next(new error.NotFoundError(endpoint))
             const schemaIdKey = endpoint.slice(0, endpoint.lastIndexOf('s')).concat('Id')
             conditions = {
                 [schemaIdKey]: req.params.id
             }
-            console.log(await Price.deleteMany(conditions).exec())
+            await Price.deleteMany(conditions).exec()
         }
         res.json({
             message: 'OK'
         })
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
 module.exports = {
+    bodyCleanser,
     getManyController,
     postOneController,
     getOneController,

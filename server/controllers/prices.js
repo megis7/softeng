@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const error = require('../error')
+
 require('../models/price')
 
 const Price = mongoose.model('Price')
@@ -150,6 +152,8 @@ async function getManyController(req, res, next) {
 
         let prices = await Price.find(conditions, null, options).populate(populateArgument).exec()
         prices = myFilter(req, prices)
+        if (!prices)
+            return next(new error.NotFoundError('prices'))
 
         res.json({
             start: req.query.start,
@@ -158,7 +162,7 @@ async function getManyController(req, res, next) {
             prices: prices.slice(req.query.start, req.query.count)
         })
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -167,7 +171,7 @@ function bodyCleanser(req, res, next) {
     if ('dateFrom' in req.body && 'dateTo' in req.body) {
         if (!dateFormat.test(req.body.dateFrom) || !dateFormat.test(req.body.dateTo))
             next(new error.BadRequestError('date format'))
-        else if (new Date(req.body.dateTo) - new Date(req.body.dateFrom) > 1000 * 60 * 60 * 24 * 30)
+        else if (new Date(req.body.dateTo) - new Date(req.body.dateFrom) > 30 * (24 * 60 * 60 * 1000))
             next(new error.BadRequestError('date range'))
         else {
             req.body.dateFrom = new Date(req.body.dateFrom)
@@ -199,7 +203,7 @@ async function postManyController(req, res, next) {
             prices: prices
         })
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 

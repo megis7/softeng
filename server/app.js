@@ -39,7 +39,10 @@ async function authenticatedUser(req, res, next) {
         await verify(token, data)
         next()
     } catch (err) {
-        next(err)
+        if (err.name === 'JsonWebTokenError')
+            next(new error.UnauthorizedError(err))
+        else
+            next(new error.InternalServerError(err))
     }
 }
 

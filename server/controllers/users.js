@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 
+const error = require('../error')
+
+
 require('../models/user')
 
 const User = mongoose.model('User')
@@ -9,7 +12,7 @@ async function bodyCleanser(req, res, next) {
     try {
         req.body.hash = await bcrypt.hash(req.body.password, 10)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -36,7 +39,7 @@ async function getManyController(req, res, next) {
             users: users
         })
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -46,7 +49,7 @@ async function postOneController(req, res, next) {
         const user = await User.create(req.body)
         res.json(user)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -55,7 +58,7 @@ async function getOneController(req, res, next) {
         const user = await User.findById(req.params.id).exec()
         res.json(user)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -69,7 +72,7 @@ async function putOneController(req, res, next) {
         }).exec()
         res.json(user)
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 
@@ -83,7 +86,7 @@ async function deleteOneController(req, res, next) {
             message: 'OK'
         })
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 

@@ -6,6 +6,7 @@ const path = require('path')
 const util = require('util')
 
 const error = require('../error')
+
 require('../models/user')
 
 const readFile = util.promisify(fs.readFile)

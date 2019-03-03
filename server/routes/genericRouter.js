@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.route('/')
     .get(genericController.getManyController)
-    .post(genericController.postOneController)
+    .post([genericController.bodyCleanser, genericController.postOneController])
 
 router.route('/:id')
     .get(genericController.getOneController)
