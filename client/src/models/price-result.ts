@@ -10,5 +10,7 @@ export class PriceResult {
         public shopTags: string[],
         public shopAddress: string,
         public shopDist: number,
+        public shopLng: number,
+        public shopLat: number,
     ){}
 }
