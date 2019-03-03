@@ -6,10 +6,8 @@ import { ShopService } from '../services/shop.service';
 import { Shop } from '../models/shop';
 import { AuthService } from '../services/auth.service';
 import { PriceService } from '../services/price.service';
-import { PriceLite } from '../models/price';
-import { detachEmbeddedView } from '@angular/core/src/view';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { GeocodeService } from 'src/services/geocode.service';
+import { Point } from 'src/models/point';
 
 
 @Component({
@@ -44,11 +42,13 @@ export class AppComponent {
 		this.authService.login("hello","world").subscribe(x => this.authService.Token = x.token);
 	}
 	test5(){
-		this.priceService.getPrices().subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14).subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14,3.45,21.56).subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24)).subscribe(x => console.log(x));
-		this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24),["1","2","3"],null,["diaskedastiko!"]).subscribe(x => console.log(x));
-		this.priceService.postPrice(new PriceLite(1.56,new Date(), new Date(), "2","3")).subscribe(x => console.log(x));
+		// this.priceService.getPrices().subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14).subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14,3.45,21.56).subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24)).subscribe(x => console.log(x));
+		// this.priceService.getPrices(2,3,3.14,3.45,21.56,new Date(2019,2,23),new Date(2019,2,24),["1","2","3"],null,["diaskedastiko!"]).subscribe(x => console.log(x));
+		// this.priceService.postPrice(new PriceLite(1.56,new Date(), new Date(), "2","3")).subscribe(x => console.log(x));
+
+		this.geocodeService.reverseGeocode(new Point(23.710409, 37.913213)).subscribe(x => console.log(x));
 	}
 }

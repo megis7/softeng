@@ -21,6 +21,15 @@ export class GeocodeService{
                         .pipe(map((res:any) => res.results[0].locations.map(l => this.mapLocations(l))))
     }
 
+    public reverseGeocode(point: Point): Observable<any> {
+        let params = new HttpParams().set('key', env.geocodeKey)
+                                     .set("location", point.lat + ',' + point.lon)
+                                     .set('outFormat', "json")
+
+                        
+        return this.http.get(env.revGeocodeURL, { params: params }) 
+    }
+
     private mapLocations(location: any): Point {
         return new Point(location.latLng.lng, location.latLng.lat)
     }
