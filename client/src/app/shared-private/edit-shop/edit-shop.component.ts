@@ -7,15 +7,16 @@ import { ShopService } from '../../../services/shop.service';
 import { MapComponent } from '../../shared/map/map.component';
 import { Point } from '../../../models/point';
 import { GeocodeService } from 'src/services/geocode.service';
+import { environment as env } from 'src/environments/environment';
 
 @Component({
-	selector: 'app-edit-shop',
+	selector: 'shared-edit-shop',
 	templateUrl: './edit-shop.component.html',
 	styleUrls: ['./edit-shop.component.scss']
 })
 export class EditShopComponent implements OnInit, AfterViewInit {
 
-	@ViewChild(MapComponent) mapDisplay;
+	@Input() mapDisplay;
 	@Input() private activeShop: Shop = null;
 
 	private subscription;
@@ -68,6 +69,7 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 		if (this.activeShop.id != "0"){
 			this.mapDisplay.addPoint(new Point(this.activeShop.lng, this.activeShop.lat))
 			this.mapDisplay.setPosition(new Point(this.activeShop.lng, this.activeShop.lat))
+			this.mapDisplay.setZoom(env.mapZoomed);
 		}
 	}
 
@@ -78,7 +80,7 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 									this.mapDisplay.removeAllPoints();
 									this.mapDisplay.addPoint(l[0]);
 									this.mapDisplay.setPosition(l[0]);
-									this.mapDisplay.setZoom(18);
+									this.mapDisplay.setZoom(env.mapZoomed);
 									this.mapDisplay.setClickable(true);
 									this.updateShopCoords(l[0]);
 									this.showMapHelp = true;

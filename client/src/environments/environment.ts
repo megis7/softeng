@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   baseURL: 'observatory/api',
   geocodeURL: 'http://www.mapquestapi.com/geocoding/v1/address',
-  geocodeKey: 'TlOzDikpKPLO5jhzFburuxsvWNH1GNPi'
+  geocodeKey: 'TlOzDikpKPLO5jhzFburuxsvWNH1GNPi',
+  mapZoomed: 17
 };
 
 /*

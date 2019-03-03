@@ -38,16 +38,70 @@
 	<app-map (clicked)='updateShopCoords($event)' style="margin-bottom: 40px"></app-map>
 </div> -->
 
-<div class="container">
-	<div class="col-md-6 mx-auto text-center">
-		<div class="header-title">
-			<h1 class="wv-heading--title">
-				Υποβολή τιμής καφέ
-			</h1>
+<div class="card bg-light mb-3" style="width: 22rem; margin-top: 20px; margin-left: 20px;">
+	<div class="card-header">Υποβολή καταστήματος</div>
+	<div class="card-body" style="margin-left: 10px; margin-right: 10px">
+		<div class="myform form">
+			<form [formGroup]="shopForm" (ngSubmit)="onSubmit()">
+				<div class="form-group row">
+					<input type="text" class="form-control my-input" placeholder="Όνομα" required requried
+						formControlName="name"
+						[ngClass]="{ 'is-invalid': name.invalid && (name.dirty || name.touched) }">
+					<div *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required"
+						class="invalid-feedback">
+						<p>Παρακαλώ εισάγετε όνομα στο κατάστημα</p>
+					</div>
+				</div>
+				<div class="form-group row">
+					<input type="text" class="form-control my-input" placeholder="Διεύθυνση" (blur)="addressLostFocus()"
+						*ngIf="activeShop.id == '0'" requried formControlName="address"
+						[ngClass]="{ 'is-invalid': address.invalid && (address.dirty || address.touched) }">
+					<div *ngIf="address.invalid && (address.dirty || address.touched) && address.errors.required"
+						class="invalid-feedback">
+						<p>Παρακαλώ εισάγετε διεύθυνση καταστήματος</p>
+					</div>
+					<input class="form-control" type="text" *ngIf="!(activeShop.id == '0')" formControlName="address"
+						[attr.disabled]="true">
+				</div>
+				<p *ngIf="showMapHelp" class="card-text"><small class="text-muted">Δεν είναι σωστή η τοποθεσία της
+						καφετέρειας?<br>Επιλέξτε την επιθυμητή τοποθεσία στο χάρτη</small></p>
+
+				<div class="row" style="margin-bottom: 10px">
+					<label class="ml-1 mt-auto">Ετικέτες: &nbsp;</label><button class="btn btn-success btn-sm ml-auto"
+						(click)="addTag()"><span class="fa fa-plus"></span></button>
+				</div>
+				<div formArrayName="tags">
+					<div *ngFor="let tag of tags.controls ; let i=index">
+						<div class="input-group mb-3 ml-3 row">
+							<input class="form-control" required type="text" [formControlName]="i"
+								[ngClass]="{ 'is-invalid': tag.invalid && (tag.dirty || tag.touched) }">
+							<div class="input-group-append">
+								<button class="btn btn-danger btn-sm" (click)="removeTag(i)"><span
+										class="fa fa-trash"></span></button>
+							</div>
+							<div *ngIf="tag.invalid && (tag.dirty || tag.touched) && tag.errors.required"
+								class="invalid-feedback">
+								<p>Παρακαλώ εισάγετε όνομα ετικέτας</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="text-center row" style="margin-top: 10px">
+					<button type="submit" class=" btn btn-block send-button tx-tfm"
+						[disabled]="!shopForm.valid">Υποβολή</button>
+				</div>
+			</form>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-4 mx-auto">
+</div>
+
+<!-- <div class="d-flex" style="height: 0">
+	<div class="d-flex flex-column mr-auto">
+		<div style="background-color: white; margin-left: 20px">
+			<div class="header-title text-center mt-auto">
+				<h2>Υποβολή τιμής καφέ</h2>
+			</div>
 			<div class="myform form ">
 				<form [formGroup]="shopForm" (ngSubmit)="onSubmit()">
 					<div class="form-group">
@@ -96,9 +150,4 @@
 
 			</div>
 		</div>
-	</div>
-</div>
-<div class="container-fluid" style = "width: 50%">
-<app-map (clicked)='updateShopCoords($event)' ></app-map>
-</div>
-<!-- style="position: absolute; width: 100%; height: 100%; top : 0; z-index: -1;" -->
+	</div> -->

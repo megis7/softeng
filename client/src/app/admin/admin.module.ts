@@ -11,14 +11,15 @@ import { EditProductComponent } from '../shared-private/edit-product/edit-produc
 import { SharedPrivateModule } from '../shared-private/shared-private.module';
 import { EditPriceComponent } from './edit-price/edit-price.component';
 import { NgbDatepickerModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { EditShopComponent as AdminEditShop } from './edit-shop/edit-shop.component';
 
 const routes: Routes = [
 	{ path: 'products', component: ProductsComponent },
 	{ path: 'edit-product/:id', component: EditProductComponent },
 	{ path: 'create-product', component: EditProductComponent },
 	{ path: 'shops', component: ShopsComponent },
-	{ path: 'edit-shop/:id', component: EditShopComponent },
-	{ path: 'create-shop', component: EditShopComponent },
+	{ path: 'edit-shop/:id', component: AdminEditShop },
+	{ path: 'create-shop', component: AdminEditShop },
 	{ path: 'edit-price', component: EditPriceComponent}
 ];
 
@@ -26,7 +27,8 @@ const routes: Routes = [
 	declarations: [
 		ProductsComponent,
 		EditPriceComponent,
-		ShopsComponent],
+		ShopsComponent,
+		AdminEditShop],
 	imports: [
 		CommonModule,
 		RouterModule.forChild(routes),

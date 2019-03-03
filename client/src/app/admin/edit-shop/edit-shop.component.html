@@ -1,0 +1,6 @@
+<div class="d-flex" style="height: 0">
+    <div>
+        <shared-edit-shop [mapDisplay]='mapDisplay'></shared-edit-shop>
+    </div>
+</div>
+<app-map (clicked)='updateShopCoords($event)' [ngClass]="{'map-lg-bg' : true}"></app-map>
