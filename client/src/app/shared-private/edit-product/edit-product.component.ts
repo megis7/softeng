@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../../services/product.service';
 import { of } from 'rxjs';
@@ -14,6 +14,7 @@ export class EditProductComponent implements OnInit {
 
 	private subscription
 	@Input() private activeProduct: Product = null
+	@Output() private formSubmitted = new EventEmitter<Product>()
 
 	productForm = this.fb.group({
 		id: [''],
@@ -80,10 +81,11 @@ export class EditProductComponent implements OnInit {
 	onSubmit() {
 		const product = this.productForm.value
 		console.log(product)
+		this.formSubmitted.next(product)//! to delete when ready
 		if (product.id == "0")
-			this.productService.postProduct(product).subscribe(prod => { this.activeProduct = prod; this.productForm.setValue(this.activeProduct) }, err => console.log(err))
+			this.productService.postProduct(product).subscribe(prod => { this.activeProduct = prod; this.productForm.setValue(this.activeProduct); this.formSubmitted.next(prod) }, err => console.log(err))
 		else
-			this.productService.putProduct(product).subscribe(prod => { this.activeProduct = prod; this.productForm.setValue(this.activeProduct) }, err => console.log(err))
+			this.productService.putProduct(product).subscribe(prod => { this.activeProduct = prod; this.productForm.setValue(this.activeProduct); this.formSubmitted.next(prod) }, err => console.log(err))
 	}
 
 }

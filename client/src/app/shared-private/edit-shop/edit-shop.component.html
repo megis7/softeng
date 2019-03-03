@@ -1,6 +1,6 @@
-<div class="card bg-light mb-3 shadow" style="width: 22rem; margin-top: 20px; margin-left: 20px;">
-	<div class="card-header">Υποβολή καταστήματος</div>
-	<div class="card-body" style="margin-left: 10px; margin-right: 10px">
+<div [ngClass]="{'card bg-light mb-3 shadow dummy' : isMap}" >
+	<div [ngClass]="{'card-header' : isMap}">Υποβολή καταστήματος</div>
+	<div [ngClass]="{'card-body dummy2' : isMap}">
 		<div class="myform form">
 			<form [formGroup]="shopForm" (ngSubmit)="onSubmit()">
 				<div class="form-group row">
@@ -23,7 +23,7 @@
 					<input class="form-control" type="text" *ngIf="!(activeShop.id == '0')" formControlName="address"
 						[attr.disabled]="true">
 				</div>
-				<p *ngIf="showMapHelp" class="card-text"><small class="text-muted">Δεν είναι σωστή η τοποθεσία της
+				<p *ngIf="showMapHelp" [ngClass]="{'card-text' : isMap}" ><small class="text-muted">Δεν είναι σωστή η τοποθεσία της
 						καφετέρειας?<br>Επιλέξτε την επιθυμητή τοποθεσία στο χάρτη</small></p>
 
 				<div class="row" style="margin-bottom: 10px">

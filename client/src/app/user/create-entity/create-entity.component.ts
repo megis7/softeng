@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Shop } from 'src/models/shop';
 import { Product } from 'src/models/product';
 
@@ -14,6 +14,7 @@ export class CreateEntityComponent implements OnInit {
 
 	@Input() activeProduct: Product;
 	@Input() activeShop: Shop;
+	@Output() creationCompleted = new EventEmitter()
 
 	private state = "";
 
@@ -26,6 +27,7 @@ export class CreateEntityComponent implements OnInit {
 
 	private updateState(newState: string) {
 		this.state = newState;
+		if(newState == "finish")this.creationCompleted.next()
 	}
 
 	get showEditProduct() {

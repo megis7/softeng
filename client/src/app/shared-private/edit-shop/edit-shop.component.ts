@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
 import { Shop } from '../../../models/shop';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -18,7 +18,8 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 
 	@Input() mapDisplay;
 	@Input() private activeShop: Shop = null;
-
+	@Input() private isMap:boolean = true;
+	@Output() private formSubmitted = new EventEmitter<Shop>()
 	private subscription;
 	private showMapHelp = false;
 
@@ -117,10 +118,11 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 
 	onSubmit() {
 		const shop = this.shopForm.value
+		this.formSubmitted.next(shop)
 		if (shop.id == "0")
-		this.shopService.postShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop) }, err => console.log(err))
+		this.shopService.postShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop); this.formSubmitted.next(sho)}, err => console.log(err))
 		else
-		this.shopService.putShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop) }, err => console.log(err))
+		this.shopService.putShop(shop).subscribe(sho => { this.activeShop = sho; this.shopForm.setValue(this.activeShop); this.formSubmitted.next(sho)}, err => console.log(err))
 
 		console.log(shop)
 	}

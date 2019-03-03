@@ -114,12 +114,12 @@ export class CrouwdsourceComponent implements OnInit {
 		let productFound = true, shopFound = true;
 
 		if (productIndex < 0) {
-			this.product.setErrors({ 'name': true });
+			//this.product.setErrors({ 'name': true });
 			productFound = false;
 		}
 
 		if (shopIndex < 0) {
-			this.shop.setErrors({ 'name': true });
+			//this.shop.setErrors({ 'name': true });
 			shopFound = false;
 		}
 
