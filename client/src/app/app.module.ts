@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,28 +13,34 @@ import { LogoutComponent } from './logout/logout.component';
 import { SharedModule } from './shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegisterComponent } from './register/register.component';
+import { TokenInterceptor } from 'src/infrastructure/token.interceptor';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    AboutComponent,
-    LoginComponent,
-    CoffeeComponent,
-    LogoutComponent,
-    RegisterComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    SharedModule,
-    ReactiveFormsModule,
-    FormsModule
-  ],
-  providers: [
-    SERVICE_PROVIDERS
-  ],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		HomeComponent,
+		AboutComponent,
+		LoginComponent,
+		CoffeeComponent,
+		LogoutComponent,
+		RegisterComponent,
+	],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		HttpClientModule,
+		SharedModule,
+		ReactiveFormsModule,
+		FormsModule
+	],
+	providers: [
+		SERVICE_PROVIDERS,
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: TokenInterceptor,
+			multi: true
+		},
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }
