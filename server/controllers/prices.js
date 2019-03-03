@@ -61,32 +61,33 @@ function myFilter(req, prices) {
     return prices
 }
 
-function checkDate(req, next) {
+function checkDate(req, res, next) {
     if ('dateFrom' in req.query && 'dateTo' in req.query) {
         const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
         if (!dateFormat.test(req.query.dateFrom) || !dateFormat.test(req.query.dateTo))
-            return next(new Error('date format'))
-    } else if (!('dateFrom' in req.query) && !('dateTo' in req.query))
+            next(new error.BadRequestError('date format'))
+        else
+            next()
+    } else if (!('dateFrom' in req.query) && !('dateTo' in req.query)) {
         req.query.dateFrom = req.query.dateTo = new Date()
-    else
-        return next(new Error('bad request'))
+        next()
+    } else
+        next(new error.BadRequestError('bad request'))
 }
 
 function checkGeo(req, res, next) {
-    if ('geoLng' in req.query && 'geoLat' in req.query && 'geoDist' in req.query) {
+    if ('geoLng' in req.query && 'geoLat' in req.query && 'geoDist' in req.query) { // all
         req.query.geoLng = Number(req.query.geoLng)
         req.query.geoLat = Number(req.query.geoLat)
         req.query.geoDist = Number(req.query.geoDist)
-    } else if ('geoLng' in req.query || 'geoLat' in req.query || 'geoDist' in req.query)
-        return next(new Error('geoLng, geoLat, geoDist'))
-}
+        next()
+    } else if ('geoLng' in req.query || 'geoLat' in req.query || 'geoDist' in req.query) // any
+        next(new error.BadRequestError('geoLng, geoLat, geoDist'))
+    else if (req.query.sortKey === 'geoDist') // none
+        next(new error.BadRequestError('can\'t sort if I don\'t know geodist'))
+    else
+        next()
 
-function extendedQueryCleanser(req, res, next) {
-    if (req.query.sortKey === 'geoDist' && !('geoDist' in req.query))
-        return next(new Error('geoDist'))
-
-    checkDate(req, next)
-    checkGeo(req, res, next)
 }
 
 function conditionsBuilder(req) {
@@ -119,8 +120,6 @@ function optionsBuilder(req) {
 
 async function getManyController(req, res, next) {
     try {
-        extendedQueryCleanser(req, res, next)
-
         const conditions = conditionsBuilder(req)
         const options = optionsBuilder(req)
 
@@ -167,18 +166,20 @@ function bodyCleanser(req, res, next) {
     const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
     if ('dateFrom' in req.body && 'dateTo' in req.body) {
         if (!dateFormat.test(req.body.dateFrom) || !dateFormat.test(req.body.dateTo))
-            return next(new Error('date format'))
-        if (new Date(req.body.dateTo) - new Date(req.body.dateFrom) > 1000 * 60 * 60 * 24 * 30)
-            return next(new Error('too wide a range'))
-        req.body.dateFrom = new Date(req.body.dateFrom)
-        req.body.dateTo = new Date(req.body.dateTo)
+            next(new error.BadRequestError('date format'))
+        else if (new Date(req.body.dateTo) - new Date(req.body.dateFrom) > 1000 * 60 * 60 * 24 * 30)
+            next(new error.BadRequestError('date range'))
+        else {
+            req.body.dateFrom = new Date(req.body.dateFrom)
+            req.body.dateTo = new Date(req.body.dateTo)
+            next()
+        }
     } else
-        return next(new Error('bad request'))
+        next(new error.BadRequestError('dateFrom and dateTo are required'))
 }
 
 async function postManyController(req, res, next) {
     try {
-        bodyCleanser(req, res, next)
         let conditions = {
             productId: req.body.productId,
             shopId: req.body.shopId
@@ -203,6 +204,9 @@ async function postManyController(req, res, next) {
 }
 
 module.exports = {
+    checkGeo,
+    checkDate,
     getManyController,
+    bodyCleanser,
     postManyController
 }

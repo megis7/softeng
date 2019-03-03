@@ -12,7 +12,7 @@ const usersRouter = require('./routes/users')
 const pricesRouter = require('./routes/prices')
 const genericRouter = require('./routes/genericRouter')
 
-const InternalServerError = require('./error')
+const error = require('./error')
 
 mongoose.connect('mongodb://localhost/server', {
     useCreateIndex: true,
@@ -43,25 +43,34 @@ async function authenticatedUser(req, res, next) {
     }
 }
 
-app.use((req, res, next) => {
-    if (req.query.format == 'xml')
-        next(new Error('xml'))
-    else
-        next()
-})
-
-function bodyCleanser(req) {
+function bodyCleanser(req, res, next) {
     delete req.body.withdrawn
     delete req.body._id
+    next()
 }
 
-function queryCleanser(req) {
+function queryCleanser(req, res, next) {
     req.query.start = Number(req.query.start) || 0
     req.query.count = Number(req.query.count) || 20;
     [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
         req.query.sort.replace(/id/, '_id').split(/\|/) :
         (endpoint === 'prices' ? ['price', 'ASC'] : ['_id', 'DESC'])
+    next()
 }
+
+function patchBodyChecker(req, res, next) {
+    if (Object.keys(req.body).length > 1)
+        next(new error.BadRequestError('patch updates only one field, baka'))
+    else
+        next()
+}
+
+app.use((req, res, next) => {
+    if (req.query.format === 'xml')
+        next(new error.BadRequestError('xml'))
+    else
+        next()
+})
 
 app.use((req, res, next) => {
     endpoint = req.originalUrl.split('/')[3].split('?')[0]
@@ -69,27 +78,15 @@ app.use((req, res, next) => {
     next()
 })
 
-app.get(/.*/, (req, res, next) => {
-    queryCleanser(req)
-    next()
-})
+app.get(/.*/, queryCleanser)
 
-app.post(/\/products|\/shops|\/prices/, (req, res, next) => {
-    bodyCleanser(req)
-    authenticatedUser(req, res, next)
-})
+app.post(/\/products|\/shops|\/prices/, [authenticatedUser, bodyCleanser])
 
-app.put(/.*/, (req, res, next) => {
-    bodyCleanser(req)
-    authenticatedUser(req, res, next)
-})
-app.patch(/.*/, (req, res, next) => {
-    bodyCleanser(req)
-    authenticatedUser(req, res, next)
-})
-app.delete(/.*/, (req, res, next) =>
-    authenticatedUser(req, res, next)
-)
+app.put(/.*/, [authenticatedUser, bodyCleanser])
+
+app.patch(/.*/, [authenticatedUser, patchBodyChecker, bodyCleanser])
+
+app.delete(/.*/, authenticatedUser)
 
 app.use('/observatory/api/login', loginRouter)
 app.use('/observatory/api/logout', logoutRouter)
@@ -100,15 +97,14 @@ app.use('/observatory/api/prices', pricesRouter)
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
-    if (err instanceof InternalServerError)
-        res.status(500).json({
-            name: err.name,
-        })
-    else
-        res.status(400).json({
-            name: err.name,
-            message: err.message
-        })
+    if (!('status' in err))
+        err.status = 400
+    if (err.status === 500)
+        err.message = undefined
+    res.status(err.status).json({
+        name: err.name,
+        message: err.message
+    })
 })
 
 module.exports = app

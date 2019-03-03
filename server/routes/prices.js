@@ -5,7 +5,7 @@ const pricesController = require('../controllers/prices')
 const router = express.Router()
 
 router.route('/')
-    .get(pricesController.getManyController)
-    .post(pricesController.postManyController)
+    .get([pricesController.checkGeo, pricesController.checkDate, pricesController.getManyController])
+    .post([pricesController.bodyCleanser, pricesController.postManyController])
 
 module.exports = router

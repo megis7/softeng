@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const path = require('path')
 const util = require('util')
 
-const InternalServerError = require('../error')
+const error = require('../error')
 require('../models/user')
 
 const readFile = util.promisify(fs.readFile)
@@ -20,14 +20,10 @@ async function postController(req, res, next) {
         }
         const user = await User.findOne(conditions).exec()
         if (!user)
-            return res.status(404).json({
-                message: 'username'
-            })
+            return next(new error.NotFoundError('username'))
         const same = await bcrypt.compare(req.body.password, user.hash)
         if (!same)
-            return res.status(404).json({
-                message: 'password'
-            })
+            return next(new error.NotFoundError('password'))
         const data = await readFile(path.resolve(__dirname, 'secret'))
         const encoded = await sign({
             _id: user._id,
@@ -40,7 +36,7 @@ async function postController(req, res, next) {
             token: encoded
         })
     } catch (err) {
-        next(err)
+        next(new error.InternalServerError(err))
     }
 }
 

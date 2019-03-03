@@ -94,8 +94,6 @@ async function putOneController(req, res, next) {
 
 async function patchOneController(req, res, next) {
     const Model = mongoose.model(schema)
-    if (Object.keys(req.body).length > 1)
-        next(new Error('patch updates only one field, baka'))
     try {
         const result = await Model.findByIdAndUpdate(req.params.id, req.body, {
             new: true
