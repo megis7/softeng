@@ -32,7 +32,8 @@ function myFilter(req, prices) {
         price.shopAddress = price.shopId.address
         price.shopDist = 'geoDist' in req.query ?
             getGeoDist(req.query.geoLng, req.query.geoLat, ...price.shopId.location.coordinates) :
-            null
+            null;
+        [price.shopLng, price.shopLat] = price.shopId.location.coordinates
         price.productId = price.productId._id
         price.shopId = price.shopId._id
         delete price._id
@@ -169,22 +170,27 @@ function bodyCleanser(req, res, next) {
             return next(new Error('date format'))
         if (new Date(req.body.dateTo) - new Date(req.body.dateFrom) > 1000 * 60 * 60 * 24 * 30)
             return next(new Error('too wide a range'))
+        req.body.dateFrom = new Date(req.body.dateFrom)
+        req.body.dateTo = new Date(req.body.dateTo)
     } else
         return next(new Error('bad request'))
-
-    const dateFrom = new Date(req.body.dateFrom)
-    const dateTo = new Date(req.body.dateTo)
-    req.body.prices = []
-    for (let date = dateFrom; date <= dateTo; date.setDate(date.getDate() + 1)) {
-        req.body.date = new Date(date)
-        req.body.prices.push(new Price(req.body))
-    }
 }
 
 async function postManyController(req, res, next) {
     try {
         bodyCleanser(req, res, next)
-        const prices = await Price.insertMany(req.body.prices)
+        let conditions = {
+            productId: req.body.productId,
+            shopId: req.body.shopId
+        }
+        let prices = []
+        for (let date = req.body.dateFrom; date <= req.body.dateTo; date.setDate(date.getDate() + 1)) {
+            conditions.date = req.body.date = date
+            prices.push(await Price.findOneAndUpdate(conditions, req.body, {
+                new: true,
+                upsert: true
+            }))
+        }
         res.json({
             start: 0,
             count: prices.length,
