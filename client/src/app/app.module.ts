@@ -14,6 +14,8 @@ import { SharedModule } from './shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegisterComponent } from './register/register.component';
 import { TokenInterceptor } from 'src/infrastructure/token.interceptor';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 @NgModule({
 	declarations: [
@@ -24,6 +26,8 @@ import { TokenInterceptor } from 'src/infrastructure/token.interceptor';
 		CoffeeComponent,
 		LogoutComponent,
 		RegisterComponent,
+		UnauthorizedComponent,
+		NotfoundComponent,
 	],
 	imports: [
 		BrowserModule,

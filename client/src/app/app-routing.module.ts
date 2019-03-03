@@ -5,6 +5,8 @@ import { AboutComponent } from './about/about.component';
 import { LoginComponent } from './login/login.component';
 import { CoffeeComponent } from './coffee/coffee.component';
 import { RegisterComponent } from './register/register.component';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -21,7 +23,9 @@ const routes: Routes = [
   {
     path: 'user',
     loadChildren: './user/user.module#UserModule'
-  }
+  },
+  { path: 'unauthorized', component: UnauthorizedComponent },
+  { path: 'notfound', component: NotfoundComponent }
 ];
 
 @NgModule({
