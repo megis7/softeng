@@ -43,7 +43,7 @@ export class AuthService{
     }
 
     register(username:string , password:string, role: string): Observable<{messege: string}>{
-        //const temp = this.http.post<{messege: string}>(`${this.url}/register`,{username: username, password: password, role: role});
+        //const temp = this.http.post<{messege: string}>(`${this.url}/user`,{username: username, password: password, role: role});
         const temp = of({messege: "ok"})
         return temp;
     }
