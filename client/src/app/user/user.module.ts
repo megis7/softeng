@@ -13,7 +13,6 @@ import { CreateEntityComponent } from './create-entity/create-entity.component';
 const routes: Routes = [
 	{ path: '', redirectTo: 'crowdsource' },
 	{ path: 'crowdsource', component: CrouwdsourceComponent },
-	// { path: 'create-shop', component: EditShopComponent}
 ];
 
 @NgModule({
@@ -21,7 +20,8 @@ const routes: Routes = [
 		CrouwdsourceComponent, 
 		TestComponent, 
 		EntityNotFoundComponent, 
-		CreateEntityComponent],
+		CreateEntityComponent
+	],
 	imports: [
 		CommonModule,
 		RouterModule.forChild(routes),
