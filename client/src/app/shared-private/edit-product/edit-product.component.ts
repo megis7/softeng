@@ -8,7 +8,7 @@ import { FormArray, FormBuilder, FormGroup, FormControl, Validators } from '@ang
 @Component({
 	selector: 'app-edit-product',
 	templateUrl: './edit-product.component.html',
-	styleUrls: ['./edit-product.component.scss']
+	styleUrls: ['./edit-product.component.scss','../../login/login.component.scss']
 })
 export class EditProductComponent implements OnInit {
 

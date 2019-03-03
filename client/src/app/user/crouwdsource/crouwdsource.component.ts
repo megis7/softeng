@@ -15,7 +15,7 @@ import { EntityNotFoundComponent } from '../entity-not-found/entity-not-found.co
 @Component({
 	selector: 'app-crouwdsource',
 	templateUrl: './crouwdsource.component.html',
-	styleUrls: ['./crouwdsource.component.scss']
+	styleUrls: ['./crouwdsource.component.scss','../../login/login.component.scss']
 })
 export class CrouwdsourceComponent implements OnInit {
 

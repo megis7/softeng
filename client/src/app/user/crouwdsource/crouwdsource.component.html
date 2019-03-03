@@ -1,59 +1,3 @@
-<!-- <div class="container">
-	<h2>Υποβολή στοιχείων καφέ</h2>
-	<form [formGroup]="priceForm" (ngSubmit)="onSubmit()">
-		<div class="form-inline">
-			<label>
-				Τιμή: &nbsp;
-			</label>
-			<input id="price" class="form-control" type="text" formControlName="price" appCurrencyValidator required [ngClass]="{ 'is-invalid': price.invalid && (price.dirty || price.touched) }">
-			<div *ngIf="price.invalid && (price.dirty || price.touched)" class="invalid-feedback">
-				<div *ngIf="price.errors.required">
-					Παρακαλώ εισάγετε τιμή στον καφέ
-				</div>
-				<div *ngIf="price.errors.price">
-					Παρακαλώ εισάγετε έγκυρη τιμή στον καφέ
-				</div>
-			</div>
-		</div>
-
-		<div class="form-inline">
-			<label>Όνομα καφέ:&nbsp; </label>
-			<input type="text" class="form-control" formControlName='productName' [ngbTypeahead]="searchProduct" required [ngClass]="{ 'is-invalid': product.invalid && (product.dirty || product.touched) }">
-			<div *ngIf="product.invalid && (product.dirty || product.touched)" class="invalid-feedback">
-				<div *ngIf="product.errors.required">
-					Παρακαλώ εισάγετε όνομα καφέ
-				</div>
-				/*<div *ngIf="product.errors.name">
-					Παρακαλώ εισάγετε έγκυρο όνομα καφέ
-				</div>*/
-			</div>
-		</div>
-
-		<div class="form-inline">
-			<label>Όνομα καταστήματος:&nbsp; </label>
-			<input type="text" class="form-control" formControlName='shopName' [ngbTypeahead]="searchShop" required [ngClass]="{ 'is-invalid': shop.invalid && (shop.dirty || shop.touched) }">
-			<div *ngIf="shop.invalid && (shop.dirty || shop.touched)" class="invalid-feedback">
-					<div *ngIf="shop.errors.required">
-						Παρακαλώ εισάγετε όνομα καταστήματος
-					</div>
-					/* <div *ngIf="shop.errors.name">
-						Παρακαλώ εισάγετε έγκυρο όνομα καταστήματος
-					</div> */
-				</div>
-		</div>
-		<button class="btn btn-primary" type="submit" >Υποβολή</button>
-		/* [disabled]="!priceForm.valid" */
-	</form>
-
-	// <app-map [initialZoom]='18'></app-map>
-
-	<app-create-entity *ngIf="shouldCreateEntity" 
-						[activeProduct]="tempActiveProduct" 
-						[activeShop]="tempActiveShop" 
-						[createProduct]="productNotFound" 
-						[createShop]="shopNotFound"></app-create-entity>
-</div> -->
-
 <div class="container">
 	<div class="col-md-6 mx-auto text-center">
 		<div class="header-title">
@@ -104,10 +48,15 @@
 						<button type="submit" class=" btn btn-block send-button tx-tfm">Υποβολή</button>
 					</div>
 				</form>
-				<app-create-entity *ngIf="shouldCreateEntity" [activeProduct]="tempActiveProduct"
-					[activeShop]="tempActiveShop" [createProduct]="productNotFound" [createShop]="shopNotFound">
-				</app-create-entity>
+				
 			</div>
 		</div>
 	</div>
 </div>
+<hr *ngIf = "shouldCreateEntity">
+<app-create-entity *ngIf="shouldCreateEntity" 
+					[activeProduct]="tempActiveProduct"
+					[activeShop]="tempActiveShop"
+					[createProduct]="productNotFound"
+					[createShop]="shopNotFound">
+				</app-create-entity>
