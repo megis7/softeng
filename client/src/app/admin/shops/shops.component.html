@@ -1,8 +1,11 @@
+<img class="back-image" src="../../../assets/images/black-mountain-cofffe-shop-inside-1024x768.jpg">
+
 <div class="container">
-	<div class="row justify-content-center" style="margin-top: 30px">
+		<div class="jumbotron" style="margin-top: 20px">
+	<div class="row justify-content-center coloredTxtNoHover" style="margin-top: 30px">
 		<h1>Καταστήματα</h1>
 	</div>
-	<div class="row">
+	<div class="row justify-content-center">
 		<div class="col-xs-6">
 			<ngb-pagination [collectionSize]="total" (pageChange)="loadPage($event)" [(page)]="page"
 				[pageSize]="pageSize" class="d-flex justify-content-end">
@@ -13,8 +16,8 @@
 					class="fa fa-plus-square"></span>&nbsp;Νέο Κατάστημα</a>
 		</div>
 	</div>
-	<div class="row">
-		<table class="table table-striped table-sm">
+	<div class="row justify-content-center">
+		<table class="table table-striped table-sm coloredTxtNoHover" bordercolor="#ffc107">
 			<thead>
 				<tr>
 					<th scope="col">Όνομα</th>
@@ -42,4 +45,5 @@
 			</tbody>
 		</table>
 	</div>
+</div>
 </div>

@@ -4,17 +4,17 @@
 <div class="container align-items-start">
 	<div class="jumbotron w-100" style="margin-top: 20px">
 		<div class="row justify-content-center">
-			<h1 class="font-weight-normal display-3 d-none d-sm-block">Καλώς Ορίσατε</h1>
-			<p class="font-weight-bold text-mobile d-sm-none">Καλώς Ορίσατε</p>
+			<h1 class="font-weight-normal display-3 d-none d-sm-block coloredTxtNoHover">Καλώς Ορίσατε</h1>
+			<p class="font-weight-bold text-mobile d-sm-none coloredTxtNoHover">Καλώς Ορίσατε</p>
 		</div>
 		<div class="row justify-content-center">
-			<p class="lead">Ξεκινήστε την ημέρα σας με τον πιο γλυκό καφέ!</p>
+			<p class="lead coloredTxtNoHover">Ξεκινήστε την ημέρα σας με τον πιο γλυκό καφέ!</p>
 		</div>
 		<div class="row justify-content-center">
 			<p class="lead">
 				<a class="coloredBg coloredTxt btn btn-lg d-flex align-items-center" (mouseenter) ="mouseEnter() "  (mouseleave) ="mouseLeave()" [routerLink]="['/coffee']" role="button"><!--btn-warning text-coffee-->
 					<span *ngIf = "Hovering"><img class="java-coffee1"></span>
-					<span *ngIf = "!Hovering"><img class="java-coffee2"></span>
+					<span *ngIf = "!Hovering"><img class="java-coffee2 "></span>
 					&nbsp;&nbsp; Βρες τον καφέ σου!
 				</a>
 			</p>
