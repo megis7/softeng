@@ -1,49 +1,50 @@
 <img class="back-image" src="../../../assets/images/black-mountain-cofffe-shop-inside-1024x768.jpg">
 
 <div class="container">
-		<div class="jumbotron" style="margin-top: 20px">
-	<div class="row justify-content-center coloredTxtNoHover" style="margin-top: 30px">
-		<h1>Καταστήματα</h1>
-	</div>
-	<div class="row justify-content-center">
-		<div class="col-xs-6">
-			<ngb-pagination [collectionSize]="total" (pageChange)="loadPage($event)" [(page)]="page"
-				[pageSize]="pageSize" class="d-flex justify-content-end">
-			</ngb-pagination>
+	<div class="jumbotron" style="margin-top: 20px">
+		<div class="row justify-content-center coloredTxtNoHover" style="margin-top: 30px">
+			<h1>Καταστήματα</h1>
 		</div>
-		<div class="ml-auto">
-			<a class="btn btn-success" [routerLink]="['/admin/create-shop']"><span
-					class="fa fa-plus-square"></span>&nbsp;Νέο Κατάστημα</a>
+		<div class="row justify-content-center">
+			<div class="col-xs-6">
+				<ngb-pagination [collectionSize]="total" (pageChange)="loadPage($event)" [(page)]="page"
+					[pageSize]="pageSize" class="d-flex justify-content-end bgbutton">
+				</ngb-pagination>
+			</div>
+			<div class="ml-auto">
+				<a class="btn coloredBg-rev custom-fa-rev" [routerLink]="['/admin/create-shop']"><span
+						class="fa fa-plus-square"></span>&nbsp;Νέο Κατάστημα</a>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<table class="table table-striped table-sm coloredTxtNoHover" bordercolor="#ffc107">
+				<thead>
+					<tr>
+						<th scope="col">Όνομα</th>
+						<th scope="col">Διεύθυνση Καταστήματος</th>
+						<th scope="col">Ενεργειες</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let shop of shops$ | async">
+						<td>{{shop.name}}</td>
+						<td>{{shop.address}}</td>
+						<td>
+							<ul>
+								<li>
+									<a class="btn btn-warning coloredBg-rev custom-fa-rev"
+										[routerLink]="['/admin/edit-shop', shop.id]"><span
+											class="fa fa-edit "></span></a>
+								</li>
+								<li>
+									<button class="btn coloredBg custom-fa" (click)="deleteShop(shop)"><span
+											class="fa fa-trash"></span></button>
+								</li>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
-	<div class="row justify-content-center">
-		<table class="table table-striped table-sm coloredTxtNoHover" bordercolor="#ffc107">
-			<thead>
-				<tr>
-					<th scope="col">Όνομα</th>
-					<th scope="col">Διεύθυνση Καταστήματος</th>
-					<th scope="col">Ενεργειες</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let shop of shops$ | async">
-					<td>{{shop.name}}</td>
-					<td>{{shop.address}}</td>
-					<td>
-						<ul>
-							<li>
-								<a class="btn btn-warning" [routerLink]="['/admin/edit-shop', shop.id]"><span
-										class="fa fa-edit"></span></a>
-							</li>
-							<li>
-								<button class="btn btn-danger" (click)="deleteShop(shop)"><span
-										class="fa fa-trash"></span></button>
-							</li>
-						</ul>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
 </div>

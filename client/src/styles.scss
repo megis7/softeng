@@ -20,6 +20,47 @@
   background-color: #884d16 !important;/*ffc107*/
 }
 
+.custom-fa{
+  color: #ffc107 !important;
+}
+.custom-fa:hover{
+  color: #fdda6e !important;
+}
+
+.coloredBg-rev{
+  background-color: #ffc107 !important;
+}
+
+.coloredBg-rev:hover{
+  background-color: #fdda6e !important;
+}
+
+.custom-fa-rev{
+  color: #683b12 !important;/*ffc107*/
+}
+.custom-fa-rev:hover{
+  color: #884d16 !important;/*ffc107*/
+}
+
+.bgbutton a{
+  color: #ffc107 !important;
+  background-color: #683b12 !important;
+  border-color: #ffc107 !important;
+}
+
+.bgbutton a:hover{
+  color: #fdda6e !important;
+  background-color: #884d16 !important;
+  border-color: #ffc107 !important;
+}
+
+.bgbutton a:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border:2px solid #ffc107 !important;
+}
+
+
 .coloredBgNoHover{
   background-color: #683b12 !important;/*ffc107*/
 }
