@@ -9,8 +9,8 @@ const util = require('util')
 const loginRouter = require('./routes/login')
 const logoutRouter = require('./routes/logout')
 const usersRouter = require('./routes/users')
-const pricesRouter = require('./routes/prices')
 const genericRouter = require('./routes/genericRouter')
+const pricesRouter = require('./routes/prices')
 
 const error = require('./error')
 
