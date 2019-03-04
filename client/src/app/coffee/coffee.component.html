@@ -65,16 +65,33 @@
                             </div>
                         </div>
 
+
                         <div class="row" *ngIf="showShopDetails" style="margin-top: 10px">
                             <div class="col">
-                                <div class="row">
-                                    <p class="text-center">{{acitveShopPrice.shopName}}</p>
-                                    <button class="ml-auto btn btn-outline-primary" (click)="refocusMapGreece()"><span
-                                            class="fa fa-globe"></span></button>
-                                </div>
-                                <hr>
-                                <!-- <p>{{}}</p> -->
+                                <hr class="row">
 
+                                <div class="row">
+                                    <p>{{acitveShopPrice.shopName}}</p>
+                                    <button class="ml-auto btn btn-outline-primary" (click)="focusOnActiveShop()"><span
+                                            class="fa fa-map-marker"></span></button>
+                                </div>
+                                <div class="row">
+                                    <p style="margin-bottom: -10px; margin-top: -10px">{{acitveShopPrice.shopAddress}}</p>
+                                </div>
+                                <hr class="row">
+
+                                <div class="row">
+                                    Καφέδες:
+                                </div>
+                                <div class="row d-flex ml-3 justify-content-center">
+                                    <table class="table table-sm table-bordered">
+                                        <tr *ngFor="let p of acitveShopPrice.products">
+                                            <td>{{p.productName}}</td>
+                                            <!-- <td>{{acitveShopPrice.shopDist | number:'1.0-0'}}&nbsp;χλμ</td> -->
+                                            <td>{{p.price}}&nbsp;&euro;</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </form>

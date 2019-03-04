@@ -31,7 +31,7 @@ export class CoffeeComponent implements OnInit {
 	public showForm = true;
 	public showMapEdit = false;
 
-	public acitveShopPrice: { shopName: string, products: { productName: string, price: number }[], location: Point } = null;
+	public acitveShopPrice: { shopName: string, shopAddress: string, shopDist: number, products: { productName: string, price: number, date: Date }[], location: Point } = null;
 
 	public coffeeShopLocations = new Array<ShopPrice>();
 
@@ -156,6 +156,11 @@ export class CoffeeComponent implements OnInit {
 		this.mapDisplay.setZoom(env.mapDefaultZoom)
 	}
 
+	public focusOnActiveShop() {
+		this.mapDisplay.setPosition(this.acitveShopPrice.location);
+		this.mapDisplay.setZoom(env.mapZoomed);
+	}
+
 	public gotoCharts() {
 		localStorage.setItem('prices', JSON.stringify(this.activePrices));
 		this.router.navigate(['/charts']);
@@ -165,10 +170,17 @@ export class CoffeeComponent implements OnInit {
 		if (shops.filter(s => s.type != 'home').length == 0)
 			return;
 
+		const distinctProducts = Array.from(new Set(shops.map((item: ShopPrice) => item.productName)))
+
+		const interestingProducts = distinctProducts.map(pName => shops.filter(p => p.productName == pName))
+		const temp = interestingProducts.map(p => p.sort((a, b) => a.date < b.date ? 1 : -1)[0])
+
 		this.acitveShopPrice = {
 			shopName: shops[0].shopName,
+			shopAddress: shops[0].shopAddress,
+			shopDist: 5,
 			location: new Point(shops[0].shopLng, shops[0].shopLat),
-			products: shops.map(p => { return { productName: p.productName, price: p.price } })
+			products: temp.map(p => { return { productName: p.productName, price: p.price, date: new Date(p.date) } })
 		}
 		console.log(this.acitveShopPrice);
 		this.showShopDetails = true;
