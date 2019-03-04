@@ -7,7 +7,7 @@ require('../models/price')
 const Price = mongoose.model('Price')
 
 function getGeoDist(lng1, lat1, lng2, lat2) {
-    const R = 6371
+    const R = 6371 / 1.6
     const dLat = deg2rad(lat2 - lat1)
     const dLng = deg2rad(lng2 - lng1)
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2)
@@ -42,11 +42,16 @@ function myFilter(req, prices) {
         delete price.__v
     })
 
+
     if ('tags' in req.query)
         prices = prices.filter(price => {
-            for (tag of req.query.tags)
-                if (price.productTags.indexOf(tag) >= 0 || price.shopTags.indexOf(tag) >= 0)
-                    return true
+            if (req.query.tags instanceof Array) {
+                for (tag of req.query.tags)
+                    if (price.productTags.indexOf(tag) >= 0 || price.shopTags.indexOf(tag) >= 0)
+                        return true
+            } else
+            if (price.productTags.indexOf(req.query.tags) >= 0 || price.shopTags.indexOf(req.query.tags) >= 0)
+                return true
             return false
         })
 
@@ -126,16 +131,16 @@ async function getManyController(req, res, next) {
         const options = optionsBuilder(req)
 
         const productMatch = {
-            withdrawn: false
+            // withdrawn: false
         }
         const shopMatch = {
-            withdrawn: false
+            // withdrawn: false
         }
         if ('geoDist' in req.query)
             shopMatch.location = {
                 $geoWithin: {
                     $centerSphere: [
-                        [req.query.geoLng, req.query.geoLat], req.query.geoDist / 6378.1
+                        [req.query.geoLng, req.query.geoLat], req.query.geoDist / (6378.1 / 1.6)
                     ]
                 }
             }
@@ -159,7 +164,7 @@ async function getManyController(req, res, next) {
             start: req.query.start,
             count: req.query.count,
             total: prices.length,
-            prices: prices.slice(req.query.start, req.query.count)
+            prices: prices.slice(req.query.start, req.query.start + req.query.count)
         })
     } catch (err) {
         next(new error.BadRequestError(err))

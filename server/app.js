@@ -76,8 +76,10 @@ app.use((req, res, next) => {
 })
 
 app.use((req, res, next) => {
-    req.endpoint = req.originalUrl.split('/')[3].split('?')[0]
-    req.schema = req.endpoint.replace(req.endpoint[0], req.endpoint[0].toUpperCase()).slice(0, req.endpoint.lastIndexOf('s'))
+    if (req.originalUrl.split('/').length > 3) {
+        req.endpoint = req.originalUrl.split('/')[3].split('?')[0]
+        req.schema = req.endpoint.replace(req.endpoint[0], req.endpoint[0].toUpperCase()).slice(0, req.endpoint.lastIndexOf('s'))
+    }
     next()
 })
 

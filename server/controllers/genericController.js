@@ -51,12 +51,13 @@ async function getManyController(req, res, next) {
         const result = await Model.find(conditions, null, options).exec()
         if (!result)
             return next(new error.NotFoundError(req.endpoint))
-        const total = await Model.countDocuments(conditions).exec()
+        const totalCount = await Model.countDocuments(conditions).exec()
         res.json({
             start: req.query.start,
             count: req.query.count,
-            total: total,
-            [req.endpoint]: result
+            total: result.length,
+            [req.endpoint]: result,
+            totalCount: totalCount
         })
     } catch (err) {
         next(new error.BadRequestError(err))
