@@ -57,7 +57,7 @@ function queryCleanser(req, res, next) {
     req.query.count = Number(req.query.count) || 20;
     [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
         req.query.sort.replace(/id/, '_id').split(/\|/) :
-        (endpoint === 'prices' ? ['price', 'ASC'] : ['_id', 'DESC'])
+        (req.endpoint === 'prices' ? ['price', 'ASC'] : ['_id', 'DESC'])
     next()
 }
 
@@ -76,8 +76,8 @@ app.use((req, res, next) => {
 })
 
 app.use((req, res, next) => {
-    endpoint = req.originalUrl.split('/')[3].split('?')[0]
-    schema = endpoint.replace(endpoint[0], endpoint[0].toUpperCase()).slice(0, endpoint.lastIndexOf('s'))
+    req.endpoint = req.originalUrl.split('/')[3].split('?')[0]
+    req.schema = req.endpoint.replace(req.endpoint[0], req.endpoint[0].toUpperCase()).slice(0, req.endpoint.lastIndexOf('s'))
     next()
 })
 

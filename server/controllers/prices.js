@@ -162,7 +162,7 @@ async function getManyController(req, res, next) {
             prices: prices.slice(req.query.start, req.query.count)
         })
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
@@ -203,7 +203,7 @@ async function postManyController(req, res, next) {
             prices: prices
         })
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
