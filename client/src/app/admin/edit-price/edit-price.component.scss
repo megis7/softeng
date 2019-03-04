@@ -88,3 +88,27 @@
     font-size: 20px;
     }
     }
+
+    .split {
+      height: 50%;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      overflow-y: hidden;
+      padding-left: 20px;
+    }
+    .up {
+      top: 0;
+      background-color: #ffc107;
+    }
+    .down {
+      bottom: 0;
+      background-color: #683b12;
+    }
+
+    .background{
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -100;
+  }

@@ -60,9 +60,18 @@
   border:2px solid #ffc107 !important;
 }
 
+.no-focus:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 
 .coloredBgNoHover{
   background-color: #683b12 !important;/*ffc107*/
+}
+
+.coloredBgNoHover-rev{
+  background-color: #ffc107 !important;/*ffc107*/
 }
 
 .coloredTxt{

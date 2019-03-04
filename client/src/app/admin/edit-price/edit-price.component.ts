@@ -16,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
 	selector: 'app-edit-price',
 	templateUrl: './edit-price.component.html',
-	styleUrls: ['./edit-price.component.scss']
+	styleUrls: ['./edit-price.component.scss','../../home/home.component.scss']
 })
 export class EditPriceComponent implements OnInit {
 
