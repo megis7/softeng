@@ -59,7 +59,7 @@ export class PriceService {
 
         return this.http.get<{start: number, count: number, total: number, prices: PriceResult[]}>(this.url, { params: params })
                         .pipe(map(res => res.prices));
-        //return of(this.prices.map(x => Object.assign({}, x)));
+        // return of(this.prices.map(x => Object.assign({}, x)));
     }
 
     postPrice(newPrice: PriceLite): Observable<PriceResult> {

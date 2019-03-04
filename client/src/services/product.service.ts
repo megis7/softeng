@@ -27,9 +27,9 @@ export class ProductService {
                                        .set('status', status)
                                        .set('sort', sort);
 
-        return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
-                        .pipe(map(res => res.products));
-        // return of(this.products.map(x => Object.assign({}, x)));
+        // return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
+        //                 .pipe(map(res => res.products));
+        return of(this.products.map(x => Object.assign({}, x)));
     }
 
     getProductsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
@@ -38,9 +38,9 @@ export class ProductService {
                                        .set('count', count.toString())
                                        .set('status', status)
                                        .set('sort', sort);
-            return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
-                            .pipe(map(res => this.mapPagedProducts(res)));
-            // return of({start: start, count: count, total: this.products.length, products: this.products.slice(start, start + count).map(x => Object.assign({}, x))});
+            // return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
+            //                 .pipe(map(res => this.mapPagedProducts(res)));
+            return of({start: start, count: count, total: this.products.length, products: this.products.slice(start, start + count).map(x => Object.assign({}, x))});
     }
 
     getProduct(id: string): Observable<Product> {

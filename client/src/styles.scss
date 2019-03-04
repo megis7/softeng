@@ -8,6 +8,10 @@
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
   }
 
+  table, th, td {
+    border-color: #ffc107 !important;
+  }
+
 .coloredBg{
   background-color: #683b12 !important;/*ffc107*/
 }
