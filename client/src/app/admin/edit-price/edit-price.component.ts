@@ -39,7 +39,7 @@ export class EditPriceComponent implements OnInit {
 		private toasterService: ToastrService,
 		private calendar: NgbCalendar) { }
 
-	private priceForm = this.fb.group({
+	priceForm = this.fb.group({
 		price: ['', { validators: [Validators.required, this.currencyValidator], updateOn: 'blur' }],
 		dateFrom: [null],
 		dateTo: [null],

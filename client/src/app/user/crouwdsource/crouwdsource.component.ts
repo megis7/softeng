@@ -24,7 +24,7 @@ export class CrouwdsourceComponent implements OnInit {
 	private shops: Shop[];
 	private products: Product[] = null;
 
-	private shouldCreateEntity = false;
+	shouldCreateEntity = false;
 	private productNotFound = false;
 	private shopNotFound = false;
 

@@ -34,7 +34,7 @@ export class CoffeeComponent implements OnInit {
 
 	private geolocationInitialized = false;
 
-	private coffeeForm = this.fb.group({
+	public coffeeForm = this.fb.group({
 		address: [''],
 		coffee: [''],
 		maxDistance: [1],

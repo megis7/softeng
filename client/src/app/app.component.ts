@@ -19,7 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 export class AppComponent {
 
 	constructor(private router: Router, private prodService: ProductService, private geocodeService: GeocodeService, private toasterService: ToastrService,
-		private shopService: ShopService, private authService: AuthService, private priceService: PriceService) { }
+		private shopService: ShopService, public authService: AuthService, private priceService: PriceService) { }
 
 	public isActive(route: string): boolean {
 		return this.router.url.includes(route);

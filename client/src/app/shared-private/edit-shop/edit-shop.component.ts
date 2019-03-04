@@ -19,11 +19,11 @@ import { debounceTime } from 'rxjs/operators';
 export class EditShopComponent implements OnInit, AfterViewInit {
 
 	@Input() mapDisplay;
-	@Input() private activeShop: Shop = null;
-	@Input() private isMap: boolean = true;
+	@Input() activeShop: Shop = null;
+	@Input() isMap: boolean = true;
 	@Output() private formSubmitted = new EventEmitter<Shop>()
 	private subscription;
-	private showMapHelp = false;
+	showMapHelp = false;
 	private mapClickedSubscription;
 
 	shopForm = this.fb.group({
