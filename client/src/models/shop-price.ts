@@ -2,6 +2,7 @@ export class ShopPrice {
     constructor(
         public type: string,
         public price: number,
+        public date: Date,
         public productName: string,
         public productId: string,
         public shopId: string,

@@ -2,10 +2,12 @@
 
 <div class="d-flex justify-content-start" style="height: 0">
     <div>
-        <div class="card bg-light mb-3 shadow" style="width: 22rem; margin-top: 20px; margin-left: 20px;">
+        <div class="card bg-light mb-3 shadow" style="width: 24rem; margin-top: 20px; margin-left: 20px;">
             <div class="card-header d-flex align-items-center">
                 Αναζήτηση Καφέ
                 <ul style="list-style: none" class="ml-auto mb-auto">
+                    <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary"
+                            (click)='gotoCharts()'><span class="fa fa-bar-chart"></span></button></li>
                     <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary"
                             (click)="refocusMapGreece()"><span class="fa fa-globe"></span></button></li>
                     <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary"
@@ -40,8 +42,6 @@
                                 [ngbTypeahead]="availableProducts$">
                         </div>
 
-                        <hr class="row">
-
                         <div class="form-group row mb-auto">
                             <button type="button" class="btn btn-outline-primary w-100"
                                 (click)="showAdvancedSearch = !showAdvancedSearch">
@@ -65,12 +65,17 @@
                             </div>
                         </div>
 
-                        <hr class="row">
+                        <div class="row" *ngIf="showShopDetails" style="margin-top: 10px">
+                            <div class="col">
+                                <div class="row">
+                                    <p class="text-center">{{acitveShopPrice.shopName}}</p>
+                                    <button class="ml-auto btn btn-outline-primary" (click)="refocusMapGreece()"><span
+                                            class="fa fa-globe"></span></button>
+                                </div>
+                                <hr>
+                                <!-- <p>{{}}</p> -->
 
-                        <div class="form-group row mb-auto">
-                            <button type="button" class="btn btn-outline-primary w-100" (click)='gotoCharts()'>
-                                Γραφήματα
-                            </button>
+                            </div>
                         </div>
                     </form>
                 </div>

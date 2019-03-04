@@ -27,8 +27,11 @@ export class CoffeeComponent implements OnInit {
 	private maxDistance = 5;
 	private maxPrice = 10;
 	public showAdvancedSearch = false;
+	public showShopDetails = false;
 	public showForm = true;
 	public showMapEdit = false;
+
+	public acitveShopPrice: { shopName: string, products: { productName: string, price: number }[], location: Point } = null;
 
 	public coffeeShopLocations = new Array<ShopPrice>();
 
@@ -68,25 +71,25 @@ export class CoffeeComponent implements OnInit {
 	}
 
 	processFormCoffeeAndFilters(value) {
-		if(value == null)
+		if (value == null)
 			value = this.coffeeForm.value;
 
 		let newPrices = this.prices;
 
-		if(value.coffee.trim().length != 0) {
+		if (value.coffee.trim().length != 0) {
 			newPrices = newPrices.filter(p => p.productName.indexOf(value.coffee) >= 0)
 		}
 
 		newPrices = newPrices.filter(p => p.shopDist < +value.maxDistance * this.DISTANCE_MULTIPLIER)
-							 .filter(p => p.price < +value.maxPrice * this.PRICE_MULTIPLIER);
+			.filter(p => p.price < +value.maxPrice * this.PRICE_MULTIPLIER);
 
 		this.coffeeShopLocations.length = 0
 		this.activePrices = newPrices;
 
-		const shopPrices = this.activePrices.map(p => new ShopPrice('shop', p.price, p.productName, p.productId, p.shopId, p.shopName, p.shopAddress, p.shopDist, p.shopLng, p.shopLat));
-		
+		const shopPrices = this.activePrices.map(p => new ShopPrice('shop', p.price, p.date, p.productName, p.productId, p.shopId, p.shopName, p.shopAddress, p.shopDist, p.shopLng, p.shopLat));
+
 		shopPrices.forEach(e => this.coffeeShopLocations.push(e))
-		this.coffeeShopLocations.push(new ShopPrice('home', -1, null, null, null, null, null, 0, this.currentLocation.lon, this.currentLocation.lat))
+		this.coffeeShopLocations.push(new ShopPrice('home', -1, null, null, null, null, null, null, 0, this.currentLocation.lon, this.currentLocation.lat))
 	}
 
 	// must be called with proper currentLocation
@@ -95,7 +98,7 @@ export class CoffeeComponent implements OnInit {
 			.subscribe(prices => {
 				this.prices = prices
 				this.processFormCoffeeAndFilters(null);
-				
+
 				this.mapDisplay.setPosition(this.currentLocation)
 				this.mapDisplay.setZoom(env.mapZoomed)
 			})
@@ -158,9 +161,18 @@ export class CoffeeComponent implements OnInit {
 		this.router.navigate(['/charts']);
 	}
 
-	shopClicked(shop: ShopPrice[]) {
-		console.log(shop);
-	}	
+	shopClicked(shops: ShopPrice[]) {
+		if (shops.filter(s => s.type != 'home').length == 0)
+			return;
+
+		this.acitveShopPrice = {
+			shopName: shops[0].shopName,
+			location: new Point(shops[0].shopLng, shops[0].shopLat),
+			products: shops.map(p => { return { productName: p.productName, price: p.price } })
+		}
+		console.log(this.acitveShopPrice);
+		this.showShopDetails = true;
+	}
 
 	onSearchChange(searchValue: string) {
 		// this.prices.filter(p => p.productName.indexOf(searchValue) >= 0)

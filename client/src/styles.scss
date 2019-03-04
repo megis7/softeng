@@ -13,11 +13,11 @@
   }
 
 .coloredBg{
-  background-color: #683b12 !important;/*ffc107*/
+  background-color: #683b12 !important;
 }
 
-.coloredBg:hover{
-  background-color: #884d16 !important;/*ffc107*/
+.coloredBg:hover:not([disabled]){
+  background-color: #884d16 !important;
 }
 
 .custom-fa{
@@ -36,10 +36,10 @@
 }
 
 .custom-fa-rev{
-  color: #683b12 !important;/*ffc107*/
+  color: #683b12 !important;
 }
 .custom-fa-rev:hover{
-  color: #884d16 !important;/*ffc107*/
+  color: #884d16 !important;
 }
 
 .bgbutton a{
@@ -67,17 +67,17 @@
 
 
 .coloredBgNoHover{
-  background-color: #683b12 !important;/*ffc107*/
+  background-color: #683b12 !important;
 }
 
 .coloredBgNoHover-rev{
-  background-color: #ffc107 !important;/*ffc107*/
+  background-color: #ffc107 !important;
 }
 
 .coloredTxt{
   color: #ffc107 !important;/* 845e3a */
 }
-.coloredTxt:hover{
+.coloredTxt:hover:not([disabled]){
   color: #fdda6e !important;/*683b12*/
 }
 .coloredTxtNoHover{
