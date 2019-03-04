@@ -8,7 +8,7 @@ require('../models/shop')
 require('../models/price')
 
 function bodyCleanser(req, res, next) {
-    if (endpoint === 'shops') {
+    if (req.endpoint === 'shops') {
         if (!('lng' in req.body) || !('lat' in req.body))
             next(new error.BadRequestError('lng, lat'))
         req.body.location = {
@@ -44,77 +44,77 @@ function optionsBuilder(req) {
 }
 
 async function getManyController(req, res, next) {
-    const Model = mongoose.model(schema)
+    const Model = mongoose.model(req.schema)
     const conditions = conditionsBuilder(req)
     const options = optionsBuilder(req)
     try {
         const result = await Model.find(conditions, null, options).exec()
         if (!result)
-            return next(new error.NotFoundError(endpoint))
+            return next(new error.NotFoundError(req.endpoint))
         const total = await Model.countDocuments(conditions).exec()
         res.json({
             start: req.query.start,
             count: req.query.count,
             total: total,
-            [endpoint]: result
+            [req.endpoint]: result
         })
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
 async function postOneController(req, res, next) {
-    const Model = mongoose.model(schema)
+    const Model = mongoose.model(req.schema)
     try {
         const result = await Model.create(req.body)
         res.json(result)
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
 async function getOneController(req, res, next) {
-    const Model = mongoose.model(schema)
+    const Model = mongoose.model(req.schema)
     try {
         const result = await Model.findById(req.params.id).exec()
         if (!result)
-            return next(new error.NotFoundError(endpoint))
+            return next(new error.NotFoundError(req.endpoint))
         res.json(result)
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
 async function putOneController(req, res, next) {
-    const Model = mongoose.model(schema)
+    const Model = mongoose.model(req.schema)
     try {
         const result = await Model.findByIdAndUpdate(req.params.id, req.body, {
             new: true
         }).exec()
         if (!result)
-            return next(new error.NotFoundError(endpoint))
+            return next(new error.NotFoundError(req.endpoint))
         res.json(result)
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
 async function patchOneController(req, res, next) {
-    const Model = mongoose.model(schema)
+    const Model = mongoose.model(req.schema)
     try {
         const result = await Model.findByIdAndUpdate(req.params.id, req.body, {
             new: true
         }).exec()
         if (!result)
-            return next(new error.NotFoundError(endpoint))
+            return next(new error.NotFoundError(req.endpoint))
         res.json(result)
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
 async function deleteOneController(req, res, next) {
-    const Model = mongoose.model(schema)
+    const Model = mongoose.model(req.schema)
     const Price = mongoose.model('Price')
     const token = req.get('x-observatory-auth')
     const decoded = jsonwebtoken.decode(token)
@@ -127,12 +127,12 @@ async function deleteOneController(req, res, next) {
                 withdrawn: true
             }).exec()
             if (result.n === 0)
-                return next(new error.NotFoundError(endpoint))
+                return next(new error.NotFoundError(req.endpoint))
         } else if (decoded.role === 'administrator') {
             const result = await Model.deleteOne(conditions).exec()
             if (result.n === 0)
-                return next(new error.NotFoundError(endpoint))
-            const schemaIdKey = endpoint.slice(0, endpoint.lastIndexOf('s')).concat('Id')
+                return next(new error.NotFoundError(req.endpoint))
+            const schemaIdKey = req.endpoint.slice(0, req.endpoint.lastIndexOf('s')).concat('Id')
             conditions = {
                 [schemaIdKey]: req.params.id
             }
@@ -142,7 +142,7 @@ async function deleteOneController(req, res, next) {
             message: 'OK'
         })
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 
