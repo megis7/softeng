@@ -132,7 +132,12 @@ export class CoffeeComponent implements OnInit {
 		this.mapDisplay.setClickable(false);
 	}
 
-	public refocusMap() {
+	public refocusMapSelf() {
+		this.mapDisplay.setPosition(this.currentLocation);
+		this.mapDisplay.setZoom(env.mapZoomed)
+	}
+
+	public refocusMapGreece() {
 		this.mapDisplay.setPosition(env.mapDefaultPosition);
 		this.mapDisplay.setZoom(env.mapDefaultZoom)
 	}

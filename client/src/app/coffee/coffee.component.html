@@ -5,11 +5,17 @@
         <div class="card bg-light mb-3 shadow" style="width: 22rem; margin-top: 20px; margin-left: 20px;">
             <div class="card-header d-flex align-items-center">
                 Αναζήτηση Καφέ
-                <button class="ml-auto btn btn-outline-primary" style="margin-right: 5px" (click)="refocusMap()"><span class="fa fa-map-marker"></span></button>
-                <button type="button" class="btn btn-outline-primary" (click)="showForm = !showForm">
-                    <span *ngIf="showForm" class="fa fa-angle-up"></span>
-                    <span *ngIf="!showForm" class="fa fa-angle-down"></span>
-                </button>
+                <ul style="list-style: none" class="ml-auto mb-auto">
+                        <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary" (click)="refocusMapGreece()"><span class="fa fa-globe"></span></button></li>
+                        <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary" (click)="refocusMapSelf()"><span class="fa fa-map-marker"></span></button></li>
+                    <li style="display:inline">
+                            <button type="button" class="btn btn-outline-primary" (click)="showForm = !showForm">
+                                    <span *ngIf="showForm" class="fa fa-angle-up"></span>
+                                    <span *ngIf="!showForm" class="fa fa-angle-down"></span>
+                                </button>
+
+                    </li>
+                </ul>              
             </div>
             <div class="card-body" [ngbCollapse]="!showForm" style="margin-left: 10px; margin-right: 10px">
                 <div class="myform form">
