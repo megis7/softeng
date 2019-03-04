@@ -10,6 +10,7 @@ import { ProductService } from 'src/services/product.service';
 import { Product } from 'src/models/product';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-coffee',
@@ -20,6 +21,7 @@ export class CoffeeComponent implements OnInit {
 
 	private currentLocation: Point = { 'lon': -1, 'lat': -1 };
 	private prices: PriceResult[];
+	private activePrices: PriceResult[];
 	private availableProducts: Product[];
 	private maxDistance = 5;
 	private maxPrice = 10;
@@ -46,6 +48,7 @@ export class CoffeeComponent implements OnInit {
 	@ViewChild(MapComponent) mapDisplay;
 
 	constructor(
+		private router: Router,
 		private priceService: PriceService,
 		private fb: FormBuilder,
 		private geocodeService: GeocodeService,
@@ -68,14 +71,17 @@ export class CoffeeComponent implements OnInit {
 			value = this.coffeeForm.value;
 
 		let newPrices = this.prices;
-		if(value.coffee.trim().length != 0)
-			newPrices = newPrices.filter(p => p.productName.indexOf(value.coffee))
 
-		newPrices = this.prices.filter(p => p.shopDist < +value.maxDistance * this.DISTANCE_MULTIPLIER)
-							   .filter(p => p.price < +value.maxPrice * this.PRICE_MULTIPLIER);
+		if(value.coffee.trim().length != 0) {
+			newPrices = newPrices.filter(p => p.productName.indexOf(value.coffee) >= 0)
+		}
+
+		newPrices = newPrices.filter(p => p.shopDist < +value.maxDistance * this.DISTANCE_MULTIPLIER)
+							 .filter(p => p.price < +value.maxPrice * this.PRICE_MULTIPLIER);
 
 		this.coffeeShopLocations.length = 0
 		newPrices.forEach(e => this.coffeeShopLocations.push(new Point(e.shopLng, e.shopLat)))
+		this.activePrices = newPrices;
 		this.coffeeShopLocations.push(this.currentLocation)
 	}
 
@@ -140,6 +146,11 @@ export class CoffeeComponent implements OnInit {
 	public refocusMapGreece() {
 		this.mapDisplay.setPosition(env.mapDefaultPosition);
 		this.mapDisplay.setZoom(env.mapDefaultZoom)
+	}
+
+	public gotoCharts() {
+		localStorage.setItem('prices', JSON.stringify(this.activePrices));
+		this.router.navigate(['/charts']);
 	}
 
 	onSearchChange(searchValue: string) {

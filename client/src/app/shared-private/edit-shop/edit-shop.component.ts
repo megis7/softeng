@@ -140,6 +140,7 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 				this.shopForm.setValue(this.activeShop); 
 				this.formSubmitted.next(sho);
 
+				// this.shopForm.reset();
 				this.toasterService.success("Το κατάστημα δημιουργήθηκε", "Επιτυχία")
 				
 			}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά τη δημιουργία", "Αποτυχία") })

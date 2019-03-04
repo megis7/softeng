@@ -93,6 +93,7 @@ export class EditProductComponent implements OnInit {
 				this.productForm.setValue(this.activeProduct); 
 				this.formSubmitted.next(prod);
 
+				this.productForm.reset();
 				this.toasterService.success("Ο καφές δημιουργήθηκε", "Επιτυχία")
 				
 			}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά τη δημιουργία", "Αποτυχία") })

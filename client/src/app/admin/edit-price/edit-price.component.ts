@@ -11,6 +11,7 @@ import { PriceLite } from 'src/models/price';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'app-edit-price',
@@ -35,6 +36,7 @@ export class EditPriceComponent implements OnInit {
 		private shopService: ShopService,
 		private productService: ProductService,
 		private priceService: PriceService,
+		private toasterService: ToastrService,
 		private calendar: NgbCalendar) { }
 
 	private priceForm = this.fb.group({
@@ -46,7 +48,7 @@ export class EditPriceComponent implements OnInit {
 	});
 
 	private currencyValidator(control: AbstractControl): { [key: string]: boolean } | null {
-		if (control.value !== undefined && control.value.length > 0 && (isNaN(control.value) || /^\d+(\.\d+)?$/.test(control.value) == false)) {
+		if (control.value !== undefined && control.value != null && control.value.length > 0 && (isNaN(control.value) || /^\d+(\.\d+)?$/.test(control.value) == false)) {
 			return { 'price': true };
 		}
 		return null;
@@ -73,8 +75,8 @@ export class EditPriceComponent implements OnInit {
 
 		this.priceForm = this.fb.group({
 			price: ['', { validators: [Validators.required, this.currencyValidator], updateOn: 'blur' }],
-			dateFrom: [this.calendar.getToday()],
-			dateTo: [this.calendar.getToday()],
+			dateFrom: [],
+			dateTo: [],
 			product: ['',Validators.required],
 			shop: ['',Validators.required]
 		});
@@ -124,7 +126,10 @@ export class EditPriceComponent implements OnInit {
 
 		const newPrice = new PriceLite(price, dateFrom, dateTo, this.products[productIndex].id, this.shops[shopIndex].id)
 
-		this.priceService.postPrice(newPrice).subscribe(x => { }, err => console.log(err));
+		this.priceService.postPrice(newPrice).subscribe(x => { 
+			this.toasterService.success("Η τιμή υποβλήθηκε", "Επιτυχία"); 
+			this.priceForm.reset(); 
+		}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά την υποβολή", "Αποτυχία"); });
 	}
 
 	//* Datepicker functions

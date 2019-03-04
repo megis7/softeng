@@ -24,9 +24,9 @@ export class ShopService {
                                        .set('sort', sort);
 
                                        
-        // return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
-                    //    .pipe(map(res => res.shops));
-        return of(this.shops.map(x => Object.assign({}, x)))
+        return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
+                       .pipe(map(res => res.shops));
+        // return of(this.shops.map(x => Object.assign({}, x)))
     }
 
     getShopsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
