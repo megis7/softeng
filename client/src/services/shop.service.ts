@@ -24,9 +24,9 @@ export class ShopService {
                                        .set('sort', sort);
 
                                        
-        // return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
-        //                .pipe(map(res => res.shops));
-        return of(this.shops.map(x => Object.assign({}, x)))
+        return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
+                       .pipe(map(res => res.shops));
+        // return of(this.shops.map(x => Object.assign({}, x)))
     }
 
     getShopsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
@@ -35,9 +35,9 @@ export class ShopService {
                                        .set('count', count.toString())
                                        .set('status', status)
                                        .set('sort', sort);
-        return of({start: start, count: count, total: this.shops.length, shops: this.shops.slice(start, start + count).map(x => Object.assign({}, x))});
-        // return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
-        //                 .pipe(map(res => this.mapPagesShops(res)))
+        // return of({start: start, count: count, total: this.shops.length, shops: this.shops.slice(start, start + count).map(x => Object.assign({}, x))});
+        return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
+                        .pipe(map(res => this.mapPagesShops(res)))
 }   
 
     getShop(id: string): Observable<Shop> {
