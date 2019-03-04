@@ -1,8 +1,11 @@
-
-<app-edit-product [activeProduct]="activeProduct" *ngIf="showEditProduct" (formSubmitted) = "updateState('shop')"></app-edit-product>
-
-<!-- <button class="btn btn-primary" *ngIf="createShop && createProduct && canMoveNext" (click)="updateState('shop')">Επόμενο</button> -->
+<div style="margin-bottom: 40px">
+    <app-edit-product [activeProduct]="activeProduct" *ngIf="showEditProduct" (formSubmitted)="updateState('shop', $event)">
+    </app-edit-product>
 
 <div class="container">
-<shared-edit-shop [activeShop]="activeShop" (formSubmitted) = "updateState('finish')" [isMap] = "false" *ngIf="showEditShop"></shared-edit-shop>
+    <div class="mx-auto">
+        <shared-edit-shop [activeShop]="activeShop" (formSubmitted)="updateState('finish', $event)" [isMap]="false"
+            *ngIf="showEditShop"></shared-edit-shop>
+        </div>
+        </div>
 </div>

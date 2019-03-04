@@ -19,6 +19,8 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { NgbTypeaheadModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { UnauthorizedInterceptor } from 'src/infrastructure/unauthorized.interceptor';
 import { ToastNoAnimationModule } from 'ngx-toastr';
+import { ChartsComponent } from './charts/charts.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
 	declarations: [
@@ -31,6 +33,7 @@ import { ToastNoAnimationModule } from 'ngx-toastr';
 		RegisterComponent,
 		UnauthorizedComponent,
 		NotfoundComponent,
+		ChartsComponent
 	],
 	imports: [
 		BrowserModule,
@@ -41,6 +44,7 @@ import { ToastNoAnimationModule } from 'ngx-toastr';
 		FormsModule,
 		NgbTypeaheadModule,
 		NgbCollapseModule,
+		ChartsModule,
 		ToastNoAnimationModule.forRoot({
 			timeOut: 5000,
 			positionClass: 'toast-top-center',

@@ -66,7 +66,7 @@ export class EditPriceComponent implements OnInit {
 	ngOnInit() {
 
 		this.shopService.getShops(0, 1000, 'ACTIVE')
-			.subscribe(shops => this.shops = shops)
+			.subscribe(shops => {this.shops = shops; console.log(shops)})
 
 		this.productService.getProducts(0, 1000, 'ACTIVE')
 			.subscribe(products => this.products = products)
@@ -110,21 +110,21 @@ export class EditPriceComponent implements OnInit {
 		let productFound = true, shopFound = true;
 
 		if (productIndex < 0) {
-			this.product.setErrors({ 'name': true });
+			this.product.setErrors({ 'product': true });
 			productFound = false;
 		}
 
 		if (shopIndex < 0) {
-			this.shop.setErrors({ 'name': true });
+			this.shop.setErrors({ 'shop': true });
 			shopFound = false;
 		}
 
-		if (productFound == false || shopFound == false)return false;
+		if (productFound == false || shopFound == false)
+			return false;
 
 		const newPrice = new PriceLite(price, dateFrom, dateTo, this.products[productIndex].id, this.shops[shopIndex].id)
 
 		this.priceService.postPrice(newPrice).subscribe(x => { }, err => console.log(err));
-		console.log(newPrice)
 	}
 
 	//* Datepicker functions

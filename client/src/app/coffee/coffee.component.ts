@@ -27,14 +27,21 @@ export class CoffeeComponent implements OnInit {
 	public showForm = true;
 	public showMapEdit = false;
 
+	public coffeeShopLocations = new Array<Point>();
+
+	private geolocationInitialized = false;
 
 	private coffeeForm = this.fb.group({
 		address: [''],
 		coffee: [''],
 		maxDistance: [1],
 		maxPrice: [2],
-		addressCopy: [null]
 	});
+
+	private addressOld: string = null;
+
+	private DISTANCE_MULTIPLIER = 5
+	private PRICE_MULTIPLIER = 10
 
 	@ViewChild(MapComponent) mapDisplay;
 
@@ -48,78 +55,77 @@ export class CoffeeComponent implements OnInit {
 		this.productService.getProducts(0, 1000)
 			.subscribe(res => this.availableProducts = res)
 
-		this.coffeeForm.valueChanges.pipe(debounceTime(200)).subscribe(value => this.processFormChange())
+		this.coffeeForm.valueChanges
+			.pipe(debounceTime(300))
+			.subscribe(value => this.processFormChange(value))
 
 		if (navigator.geolocation != null)
-			this.getLocation();
+			this.getInitialLocation();
 	}
 
-	processFormChange(): void {
-		// TODO: after filtering, set points on map
-		// const newPrices = this.prices.filter(p => p.productName.indexOf(this.coffeeForm.value.coffee) >= 0)
-		// 							.filter(p => p.shopDist < +this.coffeeForm.value.maxDistance)
-		// 							.filter(p => p.price < this.coffeeForm.value.maxPrice);
-									
-		console.log(this.prices)
-		// console.log(newPrices);
+	processFormCoffeeAndFilters(value) {
+		if(value == null)
+			value = this.coffeeForm.value;
 
-		this.mapDisplay.removeAllPoints();
-		this.mapDisplay.addPoint(new Point(this.currentLocation.lon, this.currentLocation.lat));
-		// newPrices.forEach(p => this.mapDisplay.addPoint(new Point(p.shopLng, p.shopLat)));
+		let newPrices = this.prices;
+		if(value.coffee.trim().length != 0)
+			newPrices = newPrices.filter(p => p.productName.indexOf(value.coffee))
 
-		if(this.coffeeForm.value.address.trim() != '')
-			this.showMapEdit = true;
-		else {
-			this.showMapEdit = false;
-			this.clearEditMap();
-		}
+		newPrices = this.prices.filter(p => p.shopDist < +value.maxDistance * this.DISTANCE_MULTIPLIER)
+							   .filter(p => p.price < +value.maxPrice * this.PRICE_MULTIPLIER);
 
-		// fix address and geocode
-		if (this.coffeeForm.value.address == this.coffeeForm.value.addressCopy)
-			return;
-
-		this.coffeeForm.get('addressCopy').setValue(this.coffeeForm.value.address);
-
-		this.geocodeService.geocode(this.coffeeForm.value.address)
-			.subscribe(
-				l => {
-					this.getPricesForLocation(l[0], this.maxDistance);
-					this.mapDisplay.removeAllPoints();
-					this.mapDisplay.addPoint(l[0]);
-					this.mapDisplay.setPosition(l[0]);
-					this.mapDisplay.setZoom(env.mapZoomed);
-					// this.updateShopCoords(l[0]);
-					// this.showMapHelp = true;
-				}
-				, err => console.log(err));
+		this.coffeeShopLocations.length = 0
+		newPrices.forEach(e => this.coffeeShopLocations.push(new Point(e.shopLng, e.shopLat)))
+		this.coffeeShopLocations.push(this.currentLocation)
 	}
 
-	private getLocation(): void {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(pos => {
-				this.currentLocation.lon = pos.coords.longitude;
-				this.currentLocation.lat = pos.coords.latitude;
-
-				this.mapDisplay.addPoint(this.currentLocation);
-				this.mapDisplay.setPosition(this.currentLocation);
-				this.mapDisplay.setZoom(env.mapZoomed);
-
-				this.geocodeService.reverseGeocode(this.currentLocation).subscribe(x => {
-					this.coffeeForm.get("address").setValue(x[0])
-					this.coffeeForm.get("addressCopy").setValue(x[0])
-				})
-
-				this.getPricesForLocation(this.currentLocation, this.maxDistance);
+	// must be called with proper currentLocation
+	getPricesAndUpdateMap() {
+		this.priceService.getPrices(0, 1000, this.maxDistance * this.DISTANCE_MULTIPLIER, this.currentLocation.lon, this.currentLocation.lat, new Date(2000, 1, 1), new Date(2100, 1, 1))
+			.subscribe(prices => {
+				this.prices = prices
+				this.processFormCoffeeAndFilters(null);
+				
+				this.mapDisplay.setPosition(this.currentLocation)
+				this.mapDisplay.setZoom(env.mapZoomed)
 			})
+	}
+
+	processFormChange(value): void {
+		// address field has changed => flush all prices and re-evaluate
+		if (value.address != this.addressOld) {
+			if (this.geolocationInitialized == false) {
+				this.geocodeService.geocode(value.address as string).subscribe(x => {
+					this.currentLocation = x[0];
+					// TODO: Set location to currentLocation
+					this.getPricesAndUpdateMap();
+				})
+			} else {
+				// this is when for the first time browser gps is used
+				this.geolocationInitialized = false;
+				this.getPricesAndUpdateMap();
+			}
+			this.addressOld = value.address
+		}
+		else {
+			this.processFormCoffeeAndFilters(value);
 		}
 	}
 
-	private getPricesForLocation(location: Point, distance: number) {
-		this.priceService.getPrices(0, 1000, distance, location.lon, location.lat, new Date(2000, 1, 1), new Date(2100, 1, 1)).subscribe(x => this.prices = x, err => console.log(err))
+	private getInitialLocation(): void {
+		navigator.geolocation.getCurrentPosition(pos => {
+			this.currentLocation = new Point(pos.coords.longitude, pos.coords.latitude)
+
+			this.geocodeService.reverseGeocode(this.currentLocation).subscribe(x => {
+				this.geolocationInitialized = true;
+				this.coffeeForm.get("address").setValue(x[0])
+			})
+		})
 	}
 
 	public allowEditMap() {
 		this.mapDisplay.setClickable(true);
+		return false;
 	}
 
 	public clearEditMap() {
@@ -134,8 +140,8 @@ export class CoffeeComponent implements OnInit {
 	onSearchChange(searchValue: string) {
 		// this.prices.filter(p => p.productName.indexOf(searchValue) >= 0)
 
-		this.mapDisplay.removeAllPoints();
-		this.mapDisplay.addPoint(this.currentLocation);
+		//! this.mapDisplay.removeAllPoints();
+		//! this.mapDisplay.addPoint(this.currentLocation);
 	}
 
 

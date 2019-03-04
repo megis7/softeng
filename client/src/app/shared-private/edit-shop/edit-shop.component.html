@@ -1,6 +1,15 @@
 <div [ngClass]="{'card bg-light mb-3 shadow dummy' : isMap}" >
-	<div [ngClass]="{'card-header' : isMap}">Υποβολή καταστήματος</div>
-	<div [ngClass]="{'card-body dummy2' : isMap}">
+	<div *ngIf="isMap" class='card-header'>Υποβολή καταστήματος</div>
+
+	<div *ngIf="!isMap" class="col-md-7 mx-auto text-center">
+		<div class="header-title">
+			<h1 class="wv-heading--title">
+				Υποβολή Καταστήματος
+			</h1>
+		</div>
+	</div>
+
+	<div [ngClass]="{'card-body dummy2' : isMap, 'col-md-5 mx-auto': !isMap}">
 		<div class="myform form">
 			<form [formGroup]="shopForm" (ngSubmit)="onSubmit()">
 				<div class="form-group row">

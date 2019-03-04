@@ -4,24 +4,14 @@ import { Observable, of } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { Shop } from 'src/models/shop';
 import { environment as env } from '../environments/environment';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable()
 export class ShopService {
 
     private url = `${env.baseURL}/shops`;
 
-    // private shops = [
-    //     {"id":"1","name":  "Κατάστημα Χαλκίδας", "address": "Κριεζώτου 14, T.K. 34100, Χαλκίδα", "lat": 38.46361, "lng": 23.59944,
-    //       "tags": ["Μουσική", "Υπολογιστές"]
-    //     },
-    //     {"id":"2","name":  "Κατάστημα Ψυχικού", "address": "Διονυσίου Σολωμού 3, T.K. 15451, Ψυχικό", "lat": 38.01324, "lng": 23.77223,
-    //       "tags": ["Μουσική", "Υπολογιστές", "Βιβλία"]
-    //     },
-    //     {"id":"3","name":  "Κατάστημα Αγίας Παρασκευής", "address": "Λεωφόρος Μεσογείων 402, T.K. 15342, Αγία Παρασκευή", "lat": 38.01667, "lng": 23.83333,
-    //       "tags": ["Κινητά", "Υπολογιστές", "Βιβλία"]
-    //     }
-    // ]
+    private shops = [{"tags":[],"withdrawn":false,"name":"δοκιμαστικο","address":"Παλαιο Φαληρο","lng":23.70330333709717,"lat":37.93123007760046,"id":"5c7d1c8695188b53f0c060d6"},{"tags":[],"withdrawn":false,"name":"Alimos-Grigoris","address":"Αλιμος","lng":23.710384368896488,"lat":37.91201801036502,"id":"5c7d1c3395188b53f0c060d5"},{"tags":[],"withdrawn":false,"name":"Γρηγορης-Αλιμος","address":"Αλιμος","lng":23.721483,"lat":37.911041,"id":"5c7cea81f9dfaf1501de85b1"}]
     
     constructor(
         private http: HttpClient
@@ -33,9 +23,10 @@ export class ShopService {
                                        .set('status', status)
                                        .set('sort', sort);
 
-        return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
-                       .pipe(map(res => res.shops));
-        // return of(this.shops.map(x => Object.assign({}, x)))
+                                       
+        // return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
+                    //    .pipe(map(res => res.shops));
+        return of(this.shops.map(x => Object.assign({}, x)))
     }
 
     getShopsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
@@ -77,7 +68,6 @@ export class ShopService {
 
     private mapPagesShops(res: {start: number, count: number, total: number, shops: Shop[]}):
         {start: number, count: number, total: number, shops: Shop[]} {
-
             return{ start: res.start, count: Math.min(res.count, res.total - res.start), total: res.total, shops: res.shops}
     }
 }

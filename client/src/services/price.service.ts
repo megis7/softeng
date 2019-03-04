@@ -63,6 +63,10 @@ export class PriceService {
     }
 
     postPrice(newPrice: PriceLite): Observable<PriceResult> {
+
+        newPrice.dateFrom = this.toDateString(newPrice.dateFrom as Date)
+        newPrice.dateTo = this.toDateString(newPrice.dateTo as Date)
+
         return this.http.post<PriceResult>(this.url, newPrice);
     }
 }

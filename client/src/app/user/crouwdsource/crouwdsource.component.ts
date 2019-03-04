@@ -11,6 +11,8 @@ import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EntityNotFoundComponent } from '../entity-not-found/entity-not-found.component';
+import { ToastrService } from 'ngx-toastr';
+import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
 @Component({
 	selector: 'app-crouwdsource',
@@ -18,19 +20,6 @@ import { EntityNotFoundComponent } from '../entity-not-found/entity-not-found.co
 	styleUrls: ['./crouwdsource.component.scss','../../login/login.component.scss']
 })
 export class CrouwdsourceComponent implements OnInit {
-
-	// private currentLocation: Point = { 'lon': -1, 'lat': -1 };
-
-	// private getLocation(): void {
-	// 	if (navigator.geolocation) {
-	// 		navigator.geolocation.getCurrentPosition(pos => {
-	// 			this.currentLocation.lon = pos.coords.longitude;
-	// 			this.currentLocation.lat = pos.coords.latitude;
-
-	// 			this.handleLocation();
-	// 		})
-	// 	}
-	// }
 
 	private shops: Shop[];
 	private products: Product[] = null;
@@ -59,35 +48,24 @@ export class CrouwdsourceComponent implements OnInit {
 		private shopService: ShopService, 
 		private productService: ProductService, 
 		private priceService: PriceService,
+		private toasterService: ToastrService,
 		private modalService: NgbModal) { }
 
 	
 	private currencyValidator(control: AbstractControl): { [key: string]: boolean } | null {
-		// /^(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?/
-		if (control.value !== undefined && control.value.length > 0 && (isNaN(control.value) || /^\d+(\.\d+)?$/.test(control.value) == false)) {
+		if (control.value !== undefined && control.value && control.value.length > 0 && (isNaN(control.value) || /^\d+(\.\d+)?$/.test(control.value) == false)) {
 			return { 'price': true };
 		}
 		return null;
 	}
 
 	ngOnInit() {
-		// this.getLocation();
-
 		this.shopService.getShops(0, 1000, 'ACTIVE')
-			// .subscribe(shops => { this.shops = shops; this.shops.map(s => new Point(s.lng, s.lat)).forEach(x => this.mapDisplay.addPoint(x)) });
 			.subscribe(shops => this.shops = shops)
 
 		this.productService.getProducts(0, 1000, 'ACTIVE')
 			.subscribe(products => this.products = products)
 	}
-
-	// private handleLocation() {
-
-	// 	// set map properties
-	// 	// this.mapDisplay.setPosition(this.currentLocation);
-	// 	// this.mapDisplay.addPoint(this.currentLocation);
-
-	// }
 
 	get price() { return this.priceForm.get('price'); }
 	get product() { return this.priceForm.get('productName'); }
@@ -146,12 +124,30 @@ export class CrouwdsourceComponent implements OnInit {
 
 		const newPrice = new PriceLite(price, new Date(), new Date(), this.products[productIndex].id, this.shops[shopIndex].id)
 
-		this.priceService.postPrice(newPrice).subscribe(x => { }, err => console.log(err));
-		console.log(newPrice)
+		this.priceService.postPrice(newPrice)
+			.subscribe(x => { this.toasterService.success("Ευχαριστούμε", "Η τιμή καταχωρήθηκε επιτυχώς"); this.priceForm.reset(); },
+					 err => { console.log(err); this.toasterService.error("Σφάλμα κατά την υποβολή", "Αποτυχία") });
 	}
 
 	private processModalResult(result): boolean {
 		if (result == "close-click" || result == "cross-click") return false;
 		else return true;
+	}
+
+	completeSumission(event: any) {
+		this.shouldCreateEntity = false;
+
+		this.shopService.getShops(0, 1000, 'ACTIVE')
+			.subscribe(shops => {
+
+				this.shops = shops
+				this.productService.getProducts(0, 1000, 'ACTIVE')
+				.subscribe(products => {
+					this.products = products;
+
+					this.onSubmit();
+				})
+				
+			})
 	}
 }

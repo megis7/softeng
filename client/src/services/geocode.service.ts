@@ -3,10 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment as env } from '../environments/environment';
 import { Point } from 'src/models/point';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class GeocodeService{
+
+    public mapClickedSubject = new Subject<Point>();
 
     constructor(private http: HttpClient){}
 
@@ -34,7 +36,11 @@ export class GeocodeService{
     }
 
     public mapAddress(location: any): string{
-        console.log(location);   // TODO: add more fields to street
+        // console.log(location);   // TODO: add more fields to street
         return location.street;
+    }
+
+    public mapClicked(): Observable<Point> {
+        return this.mapClickedSubject.asObservable();
     }
 }

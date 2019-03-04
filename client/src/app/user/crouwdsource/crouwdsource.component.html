@@ -46,19 +46,18 @@
 					</div>
 
 					<div class="text-center ">
-						<button type="submit" class=" btn btn-block send-button tx-tfm">Υποβολή</button>
+						<button type="submit" class=" btn btn-block send-button tx-tfm"
+							[disabled]="!priceForm.valid || shouldCreateEntity">Υποβολή</button>
 					</div>
 				</form>
-				
+
 			</div>
 		</div>
 	</div>
 </div>
-<hr *ngIf = "shouldCreateEntity">
-<div class = "container">
-<app-create-entity *ngIf="shouldCreateEntity" 
-					[activeProduct]="tempActiveProduct"
-					[activeShop]="tempActiveShop"
-					[createProduct]="productNotFound"
-					[createShop]="shopNotFound" (creationCompleted) = "shouldCreateEntity = false">
-				</app-create-entity></div>
+<hr *ngIf="shouldCreateEntity">
+<div class="container">
+	<app-create-entity *ngIf="shouldCreateEntity" [activeProduct]="tempActiveProduct" [activeShop]="tempActiveShop"
+		[createProduct]="productNotFound" [createShop]="shopNotFound" (creationCompleted)="completeSumission($event)">
+	</app-create-entity>
+</div>

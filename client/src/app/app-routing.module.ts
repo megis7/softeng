@@ -7,6 +7,7 @@ import { CoffeeComponent } from './coffee/coffee.component';
 import { RegisterComponent } from './register/register.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { ChartsComponent } from './charts/charts.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -24,8 +25,14 @@ const routes: Routes = [
     path: 'user',
     loadChildren: './user/user.module#UserModule'
   },
+
+  { path: 'charts', component: ChartsComponent },
+
   { path: 'unauthorized', component: UnauthorizedComponent },
-  { path: 'notfound', component: NotfoundComponent }
+  { path: 'notfound', component: NotfoundComponent },
+
+  { path: '**', redirectTo: 'not-found' }
+
 ];
 
 @NgModule({

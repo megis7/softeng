@@ -1,15 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, IterableDiffers, DoCheck } from '@angular/core';
 import * as ol from 'openlayers';
 import { Point } from 'src/models/point';
+import { GeocodeService } from 'src/services/geocode.service';
 
 @Component({
 	selector: 'app-map',
 	templateUrl: './map.component.html',
 	styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, DoCheck {
 
-	constructor() { }
+	constructor(
+		private _iterableDiffers: IterableDiffers, 
+		private geocodeService: GeocodeService)
+	 { this.iterableDiffer = this._iterableDiffers.find([]).create(null); }
 
 	map: ol.Map;
 	vectorLayer: ol.layer.Vector;
@@ -18,10 +22,14 @@ export class MapComponent implements OnInit {
 	@Input() initialPosition: [number, number] = [23, 38];
 	@Input() initialZoom = 7;
 	@Output() clicked = new EventEmitter<Point>();
-	
+	@Input() mapPoints: Point[] = null;
+
 	private coordinates: Point[] = new Array<Point>();
 	private coffeeShopIconPath = "assets/images/coffee-shop.png"
 	private isClickable = false;
+
+	private mapInitialized = false;
+	private iterableDiffer;
 
 	ngOnInit() {
 		this.vectorSource = new ol.source.Vector();
@@ -37,10 +45,27 @@ export class MapComponent implements OnInit {
 			controls: []
 		})
 
+		this.mapInitialized = true;
+
 		this.map.on('click', this.handleMapClick)
 	}
 
-	public addPoint(coordinates : Point) {
+	ngDoCheck(): void {
+
+		if(this.mapPoints == null)		// this feature is not always used
+			return;
+
+		let changes = this.iterableDiffer.diff(this.mapPoints);
+
+		if (changes && this.mapInitialized) {
+			let newPoints: Point[] = changes.collection;
+
+			this.removeAllPoints();
+			newPoints.forEach(p => this.addPoint(p))
+		}
+	}
+
+	public addPoint(coordinates: Point) {
 		this.coordinates.push(coordinates);
 
 		const coords: [number, number] = ol.proj.fromLonLat([coordinates.lon, coordinates.lat]);
@@ -87,9 +112,8 @@ export class MapComponent implements OnInit {
 		})
 	}
 
-	// TODO: no longer needed
 	private handleMapClick = (evt: any) => {
-		if(this.isClickable == false)
+		if (this.isClickable == false)
 			return;
 
 		const coords = this.map.getCoordinateFromPixel(evt.pixel);
@@ -99,7 +123,7 @@ export class MapComponent implements OnInit {
 		let found = false;
 		this.map.forEachFeatureAtPixel(evt.pixel, f => { found = true });
 
-		if(found)
+		if (found)
 			return;
 
 		this.removeAllPoints();
@@ -109,6 +133,10 @@ export class MapComponent implements OnInit {
 		feature.setProperties({ name: 'test point', value: 15 });
 
 		this.vectorSource.addFeature(feature);
-		this.clicked.next(point)
+
+		// TODO: this line is replaced with servie observable
+		// this.clicked.next(point)
+		
+		this.geocodeService.mapClickedSubject.next(point)
 	}
 }

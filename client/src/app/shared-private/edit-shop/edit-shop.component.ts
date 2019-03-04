@@ -9,6 +9,7 @@ import { Point } from '../../../models/point';
 import { GeocodeService } from 'src/services/geocode.service';
 import { environment as env } from 'src/environments/environment';
 import { ToastrService } from 'ngx-toastr';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
 	selector: 'shared-edit-shop',
@@ -23,6 +24,7 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 	@Output() private formSubmitted = new EventEmitter<Shop>()
 	private subscription;
 	private showMapHelp = false;
+	private mapClickedSubscription;
 
 	shopForm = this.fb.group({
 		id: [''],
@@ -65,8 +67,18 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 				this.activeShop.tags.forEach(tag => {
 					(this.shopForm.get("tags") as FormArray).push(this.fb.control(tag, Validators.required))
 				});
+
+				this.shopForm.valueChanges
+					.pipe(debounceTime(300))
+					.subscribe(value => this.processFormChange(value))
+
+				this.mapClickedSubscription = this.geocodeService.mapClicked().subscribe(pos => this.updateShopCoords(pos))
 			})
 		})
+	}
+
+	private processFormChange(value) {
+
 	}
 
 	ngAfterViewInit() {

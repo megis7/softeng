@@ -51,9 +51,9 @@ export class AppComponent {
 		// this.priceService.postPrice(new PriceLite(1.56,new Date(), new Date(), "2","3")).subscribe(x => console.log(x));
 
 		// this.geocodeService.reverseGeocode(new Point(23.710409, 37.913213)).subscribe(x => console.log(x));
-		this.toasterService.success("Ο καφές δημιουργήθηκε", "Επιτυχία")
-		this.toasterService.error("Σφάλμα δημιουργίας", "Αποτυχία")
-		this.toasterService.info("Καποια ενεργεια", "Ενημέρωση")
+		// this.toasterService.success("Ο καφές δημιουργήθηκε", "Επιτυχία")
+		// this.toasterService.error("Σφάλμα δημιουργίας", "Αποτυχία")
+		// this.toasterService.info("Καποια ενεργεια", "Ενημέρωση")
 	}
 }
 
