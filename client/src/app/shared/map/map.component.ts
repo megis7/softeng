@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, IterableDiffers, DoChec
 import * as ol from 'openlayers';
 import { Point } from 'src/models/point';
 import { GeocodeService } from 'src/services/geocode.service';
+import { PriceResult } from 'src/models/price-result';
+import { ShopPrice } from 'src/models/shop-price';
 
 @Component({
 	selector: 'app-map',
@@ -11,9 +13,8 @@ import { GeocodeService } from 'src/services/geocode.service';
 export class MapComponent implements OnInit, DoCheck {
 
 	constructor(
-		private _iterableDiffers: IterableDiffers, 
-		private geocodeService: GeocodeService)
-	 { this.iterableDiffer = this._iterableDiffers.find([]).create(null); }
+		private _iterableDiffers: IterableDiffers,
+		private geocodeService: GeocodeService) { this.iterableDiffer = this._iterableDiffers.find([]).create(null); }
 
 	map: ol.Map;
 	vectorLayer: ol.layer.Vector;
@@ -21,8 +22,9 @@ export class MapComponent implements OnInit, DoCheck {
 
 	@Input() initialPosition: [number, number] = [23, 38];
 	@Input() initialZoom = 7;
+	@Input() mapPoints: ShopPrice[] = null;
 	@Output() clicked = new EventEmitter<Point>();
-	@Input() mapPoints: Point[] = null;
+	@Output() shopClicked = new EventEmitter<ShopPrice[]>();
 
 	private coordinates: Point[] = new Array<Point>();
 	private coffeeShopIconPath = "assets/images/coffee-shop.png"
@@ -52,29 +54,42 @@ export class MapComponent implements OnInit, DoCheck {
 
 	ngDoCheck(): void {
 
-		if(this.mapPoints == null)		// this feature is not always used
+		if (this.mapPoints == null)		// this feature is not always used
 			return;
 
 		let changes = this.iterableDiffer.diff(this.mapPoints);
 
 		if (changes && this.mapInitialized) {
-			let newPoints: Point[] = changes.collection;
+			let newPoints: ShopPrice[] = changes.collection;
 
 			this.removeAllPoints();
-			newPoints.forEach(p => this.addPoint(p))
+			newPoints.forEach(p => this.addPoint(null, p))
 		}
 	}
 
-	public addPoint(coordinates: Point) {
-		this.coordinates.push(coordinates);
+	public addPoint(coordinates: Point, shopPrice: ShopPrice = null) {
 
-		const coords: [number, number] = ol.proj.fromLonLat([coordinates.lon, coordinates.lat]);
+		if (coordinates != null) {
+			this.coordinates.push(coordinates);
 
-		let feature = new ol.Feature(new ol.geom.Point(coords));
-		feature.setStyle(this.createIconStyle(this.coffeeShopIconPath, undefined));
-		feature.setProperties({ name: 'test point', value: 15 });
+			const coords: [number, number] = ol.proj.fromLonLat([coordinates.lon, coordinates.lat]);
 
-		this.vectorSource.addFeature(feature);
+			let feature = new ol.Feature(new ol.geom.Point(coords));
+			feature.setStyle(this.createIconStyle(this.coffeeShopIconPath, undefined));
+			feature.setProperties({ name: 'test point', value: 15 });
+
+			this.vectorSource.addFeature(feature);
+		} 
+		else {
+			this.coordinates.push(new Point(shopPrice.shopLng, shopPrice.shopLat));
+			const coords: [number, number] = ol.proj.fromLonLat([shopPrice.shopLng, shopPrice.shopLat]);
+
+			let feature = new ol.Feature(new ol.geom.Point(coords));
+			feature.setStyle(this.createIconStyle(this.coffeeShopIconPath, undefined));
+			feature.setProperties({ shop: shopPrice });
+
+			this.vectorSource.addFeature(feature);
+		}
 	}
 
 	public setPosition(point: Point) {
@@ -113,6 +128,14 @@ export class MapComponent implements OnInit, DoCheck {
 	}
 
 	private handleMapClick = (evt: any) => {
+
+		let shops: ShopPrice[] = []
+		this.map.forEachFeatureAtPixel(evt.pixel, f => { shops.push(f.getProperties().shop) });
+
+		if(shops.length > 0)
+			this.shopClicked.next(shops);
+
+
 		if (this.isClickable == false)
 			return;
 
@@ -136,7 +159,7 @@ export class MapComponent implements OnInit, DoCheck {
 
 		// TODO: this line is replaced with servie observable
 		// this.clicked.next(point)
-		
+
 		this.geocodeService.mapClickedSubject.next(point)
 	}
 }

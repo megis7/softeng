@@ -141,8 +141,6 @@ export class ChartsComponent implements OnInit {
 			}
 		})
 
-		console.log()
-
 		this.refreshDataSeries(this.priceData, distinctCoffees, distinctDays, distinctDays);
 	}
 

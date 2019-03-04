@@ -11,6 +11,7 @@ import { Product } from 'src/models/product';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ShopPrice } from 'src/models/shop-price';
 
 @Component({
 	selector: 'app-coffee',
@@ -29,7 +30,7 @@ export class CoffeeComponent implements OnInit {
 	public showForm = true;
 	public showMapEdit = false;
 
-	public coffeeShopLocations = new Array<Point>();
+	public coffeeShopLocations = new Array<ShopPrice>();
 
 	private geolocationInitialized = false;
 
@@ -80,9 +81,12 @@ export class CoffeeComponent implements OnInit {
 							 .filter(p => p.price < +value.maxPrice * this.PRICE_MULTIPLIER);
 
 		this.coffeeShopLocations.length = 0
-		newPrices.forEach(e => this.coffeeShopLocations.push(new Point(e.shopLng, e.shopLat)))
 		this.activePrices = newPrices;
-		this.coffeeShopLocations.push(this.currentLocation)
+
+		const shopPrices = this.activePrices.map(p => new ShopPrice('shop', p.price, p.productName, p.productId, p.shopId, p.shopName, p.shopAddress, p.shopDist, p.shopLng, p.shopLat));
+		
+		shopPrices.forEach(e => this.coffeeShopLocations.push(e))
+		this.coffeeShopLocations.push(new ShopPrice('home', -1, null, null, null, null, null, 0, this.currentLocation.lon, this.currentLocation.lat))
 	}
 
 	// must be called with proper currentLocation
@@ -98,6 +102,7 @@ export class CoffeeComponent implements OnInit {
 	}
 
 	processFormChange(value): void {
+
 		// address field has changed => flush all prices and re-evaluate
 		if (value.address != this.addressOld) {
 			if (this.geolocationInitialized == false) {
@@ -152,6 +157,10 @@ export class CoffeeComponent implements OnInit {
 		localStorage.setItem('prices', JSON.stringify(this.activePrices));
 		this.router.navigate(['/charts']);
 	}
+
+	shopClicked(shop: ShopPrice[]) {
+		console.log(shop);
+	}	
 
 	onSearchChange(searchValue: string) {
 		// this.prices.filter(p => p.productName.indexOf(searchValue) >= 0)
