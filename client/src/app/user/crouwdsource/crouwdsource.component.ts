@@ -17,7 +17,7 @@ import { componentNeedsResolution } from '@angular/core/src/metadata/resource_lo
 @Component({
 	selector: 'app-crouwdsource',
 	templateUrl: './crouwdsource.component.html',
-	styleUrls: ['./crouwdsource.component.scss','../../login/login.component.scss']
+	styleUrls: ['./crouwdsource.component.scss','../../login/login.component.scss','../../home/home.component.scss']
 })
 export class CrouwdsourceComponent implements OnInit {
 
