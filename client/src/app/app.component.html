@@ -1,19 +1,4 @@
-<!-- <nav class="navbar navbar-dark bg-dark">
-	<a class="navbar-brand" href="#">Coffee Watcher</a>
-	
-	<div class="collapse navbar-collapse" id="navbarsExample02">
-		<ul class="nav navbar-nav mr-auto">
-		<li class="nav-item"><a class="nav-link" [routerLink]="['home']">Home</a></li>
-		<li class="nav-item"><a class="nav-link" [routerLink]="['about']">About</a></li>
-		</ul>
-
-		<ul class="nav navbar-nav ml-auto">
-			<li class="nav-item"><a class="nav-link" [routerLink]="['login']">Login</a></li>
-		</ul>
-	</div>
-</nav> -->
-
-<nav class="navbar navbar-expand-lg navbar-dark coloredBgNoHover"> <!--bg-dark-->
+<nav class="navbar navbar-expand-lg navbar-dark coloredBgNoHover">
 	<a class="navbar-brand" href="#"><b class="coloredTxt">Coffee Watcher</b></a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
@@ -23,8 +8,7 @@
 		<ul class="navbar-nav mr-auto">
 		<li [class.active]="isActive('home')" class="nav-item coloredBg"><a class="nav-link" href="#" [routerLink]="['/home']"><b class="coloredTxt">Αρχική</b></a></li>
 		<li [class.active]="isActive('about')" class="nav-item coloredBg"><a class="nav-link" href="#" [routerLink]="['/about']"><b class="coloredTxt">Η Ομάδα μας</b></a></li>
-		<li [class.active]="isActive('charts')" class="nav-item"><a class="nav-link" href="#" [routerLink]="['/charts']"><b class="coloredTxt">Γραφήματα</b></a></li>
-		<li [class.active]="isActive('admin')" class="nav-item dropdown coloredBg">
+		<li [class.active]="isActive('admin')" *ngIf="authService.isAdmin()" class="nav-item dropdown coloredBg">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<b class="coloredTxt">Διαχείριση</b>
 				</a>
@@ -36,20 +20,11 @@
 		</li>
 		</ul>
 
-		<ul class="navbar-nav ml-auto"><!-- nav -->
+		<ul class="navbar-nav ml-auto">
 			<li class="nav-item" *ngIf = "authService.isLoggedIn()"><a class="nav-link no-select"><b class="coloredTxtNoHover">Καλώς ήρθατε, {{authService.User.username}}</b></a></li>
 			<li class="nav-item coloredBg" *ngIf = "!authService.isLoggedIn()"><a class="nav-link" [routerLink]="['/login']"><b class="coloredTxt">Σύνδεση/Εγγραφή</b></a></li>
 			<li class="nav-item coloredBg" *ngIf = "authService.isLoggedIn()"><a class="nav-link" (click) = "authService.logout()" [routerLink]="['/home']"><b class="coloredTxt">Αποσύνδεση</b></a></li>
 		</ul>
-		<!-- <form class="form-inline my-2 my-lg-0">
-		<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-		</form> -->
 	</div>
 </nav>
-
-<!-- <button (click)="test()">Test1</button>
-<button (click)="test2()">Test2</button>
-<button class="coloredBg coloredTxt" (click)="test4()">Test4</button> -->
-<!-- <button (click)="test5()">Test5</button> -->
 <router-outlet></router-outlet>

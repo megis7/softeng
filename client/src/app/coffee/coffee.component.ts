@@ -191,7 +191,7 @@ export class CoffeeComponent implements OnInit {
 			shopId: shops[0].shopId,
 			shopName: shops[0].shopName,
 			shopAddress: shops[0].shopAddress,
-			shopDist: 5,
+			shopDist: shops[0].shopDist,
 			location: new Point(shops[0].shopLng, shops[0].shopLat),
 			products: temp.map(p => { return { productName: p.productName, price: p.price, date: new Date(p.date) } })
 		}

@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'notfound', component: NotfoundComponent },
 
-  { path: '**', redirectTo: 'not-found' }
+  { path: '**', redirectTo: 'notfound' }
 
 ];
 
