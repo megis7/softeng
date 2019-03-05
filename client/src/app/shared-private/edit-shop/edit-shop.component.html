@@ -36,7 +36,8 @@
 						καφετέρειας?<br>Επιλέξτε την επιθυμητή τοποθεσία κάνοντας κλικ στο χάρτη</small></p>
 
 				<div class="row" style="margin-bottom: 10px">
-					<label class="ml-1 mt-auto coloredTxtNoHover">Ετικέτες: &nbsp;</label><button class="btn custom-fa-rev coloredBg-rev no-focus btn-sm ml-auto"
+					<label class="ml-1 mt-auto"  [ngClass]="{' coloredTxtNoHover' : !isMap}">Ετικέτες: &nbsp;</label>
+					<button class="btn btn-sm ml-auto" [ngClass]="{'btn-success': isMap, ' coloredTxtNoHover custom-fa-rev coloredBg-rev no-focus' : !isMap}"
 						(click)="addTag()"><span class="fa fa-plus"></span></button>
 				</div>
 				<div formArrayName="tags">
@@ -45,7 +46,7 @@
 							<input class="form-control" required type="text" [formControlName]="i"
 								[ngClass]="{ 'is-invalid': tag.invalid && (tag.dirty || tag.touched) }">
 							<div class="input-group-append">
-								<button class="btn custom-fa coloredBg no-focus btn-sm" (click)="removeTag(i)"><span
+								<button class="btn btn-sm" [ngClass]="{'btn-danger': isMap, ' coloredTxtNoHover custom-fa-rev coloredBg-rev no-focus' : !isMap}" (click)="removeTag(i)"><span
 										class="fa fa-trash"></span></button>
 							</div>
 							<div *ngIf="tag.invalid && (tag.dirty || tag.touched) && tag.errors.required"
