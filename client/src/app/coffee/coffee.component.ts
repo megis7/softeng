@@ -30,6 +30,7 @@ export class CoffeeComponent implements OnInit {
 	public showShopDetails = false;
 	public showForm = true;
 	public showMapEdit = false;
+	public showCharts = false;
 
 	public acitveShopPrice: { shopId: string, shopName: string, shopAddress: string, shopDist: number, products: { productName: string, price: number, date: Date }[], location: Point } = null;
 
@@ -77,7 +78,7 @@ export class CoffeeComponent implements OnInit {
 		let newPrices = this.prices;
 
 		if (value.coffee.trim().length != 0) {
-			newPrices = newPrices.filter(p => p.productName.indexOf(value.coffee) >= 0)
+			newPrices = newPrices.filter(p => p.productName.toLowerCase().indexOf(value.coffee) >= 0)
 		}
 
 		newPrices = newPrices.filter(p => p.shopDist < +value.maxDistance * this.DISTANCE_MULTIPLIER)
