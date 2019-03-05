@@ -21,6 +21,7 @@ import { UnauthorizedInterceptor } from 'src/infrastructure/unauthorized.interce
 import { ToastNoAnimationModule } from 'ngx-toastr';
 import { ChartsComponent } from './charts/charts.component';
 import { ChartsModule } from 'ng2-charts';
+import { GUARD_PROVIDERS } from 'src/guards/guards.export';
 
 @NgModule({
 	declarations: [
@@ -55,6 +56,7 @@ import { ChartsModule } from 'ng2-charts';
 	],
 	providers: [
 		SERVICE_PROVIDERS,
+		GUARD_PROVIDERS,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: TokenInterceptor,

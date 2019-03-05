@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { HttpParams } from '@angular/common/http';
-import { Product } from 'src/models/product';
 import { environment as env } from '../environments/environment';
-import { map } from 'rxjs/operators';
 import { User } from '../models/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
@@ -43,11 +40,17 @@ export class AuthService{
 
     register(username:string , password:string, role: string): Observable<{messege: string}>{
         const temp = this.http.post<{messege: string}>(`${this.url}/users`,{username: username, password: password, role: role});
-        // const temp = of({messege: "ok"})
         return temp;
     }
 
     isLoggedIn(): boolean{
         return this.Token != null;
+    }
+
+    isAdmin(): boolean {
+        if(this.Token == null || this.User.role.toLowerCase() != "administrator")
+            return false;
+
+        return true;
     }
 }
