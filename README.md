@@ -33,6 +33,6 @@ gradle wrapper &&
 
 ## Stack
 
-Frontend: Angular 7
-Backend: Node 11 and Express 4
-Database: MongoDB 4
+* Frontend: Angular 7
+* Backend: Node 11 and Express 4
+* Database: MongoDB 4
