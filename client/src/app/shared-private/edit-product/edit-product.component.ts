@@ -15,6 +15,7 @@ export class EditProductComponent implements OnInit {
 
 	private subscription
 	@Input() private activeProduct: Product = null
+	@Input() public showJumbotron = true;
 	@Output() private formSubmitted = new EventEmitter<Product>()
 
 	productForm = this.fb.group({

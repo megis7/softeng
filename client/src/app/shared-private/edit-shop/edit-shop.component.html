@@ -37,7 +37,7 @@
 
 				<div class="row" style="margin-bottom: 10px">
 					<label class="ml-1 mt-auto"  [ngClass]="{' coloredTxtNoHover' : !isMap}">Ετικέτες: &nbsp;</label>
-					<button class="btn btn-sm ml-auto" [ngClass]="{'btn-success': isMap, ' coloredTxtNoHover custom-fa-rev coloredBg-rev no-focus' : !isMap}"
+					<button class="btn btn-sm ml-auto" [ngClass]="{'btn-success': isMap, ' custom-fa-rev coloredBg-rev no-focus' : !isMap}"
 						(click)="addTag()"><span class="fa fa-plus"></span></button>
 				</div>
 				<div formArrayName="tags">
@@ -46,7 +46,7 @@
 							<input class="form-control" required type="text" [formControlName]="i"
 								[ngClass]="{ 'is-invalid': tag.invalid && (tag.dirty || tag.touched) }">
 							<div class="input-group-append">
-								<button class="btn btn-sm" [ngClass]="{'btn-danger': isMap, ' coloredTxtNoHover custom-fa-rev coloredBg-rev no-focus' : !isMap}" (click)="removeTag(i)"><span
+								<button class="btn btn-sm" [ngClass]="{'btn-danger': isMap, 'custom-fa coloredBg no-focus' : !isMap}" (click)="removeTag(i)"><span
 										class="fa fa-trash"></span></button>
 							</div>
 							<div *ngIf="tag.invalid && (tag.dirty || tag.touched) && tag.errors.required"
@@ -58,7 +58,7 @@
 				</div>
 
 				<div class="text-center row" style="margin-top: 10px">
-					<button type="submit" class=" btn btn-block send-button tx-tfm" [ngClass]="{' btn btn-block send-button tx-tfm coloredTxt coloredBg no-focus' : !isMap}"
+					<button type="submit" class=" btn btn-block" [ngClass]="{'send-button coloredTxt coloredBg no-focus' : !isMap, 'send-button tx-tfm': isMap}"
 						[disabled]="!shopForm.valid">Υποβολή</button>
 				</div>
 			</form>
