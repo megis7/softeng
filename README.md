@@ -19,3 +19,5 @@ cd softeng/server &&
 npm install &&
 npm start
 ```
+
+Run to build and start the server.
