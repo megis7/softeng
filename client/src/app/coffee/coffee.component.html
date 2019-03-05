@@ -72,22 +72,30 @@
 
                                 <div class="row">
                                     <p>{{acitveShopPrice.shopName}}</p>
-                                    <button class="ml-auto btn btn-outline-primary" (click)="focusOnActiveShop()"><span
-                                            class="fa fa-map-marker"></span></button>
+                                    <ul style="list-style: none" class="ml-auto mb-auto">
+                                        <li style="display:inline; margin-right: 5px"><button
+                                                class="ml-auto btn btn-outline-primary"
+                                                (click)="focusOnActiveShop()"><span
+                                                    class="fa fa-map-marker"></span></button></li>
+                                        <li style="display:inline; margin-right: 5px"><button
+                                                class="ml-auto btn btn-outline-secondary"
+                                                (click)="closeShopDetails()"><span class="fa fa-close"></span></button>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <div class="row">
-                                    <p style="margin-bottom: -10px; margin-top: -10px">{{acitveShopPrice.shopAddress}}</p>
+                                <div class="row" style="margin-top: 5px; margin-bottom: -20px">
+                                    <p>{{acitveShopPrice.shopAddress}}&nbsp;({{acitveShopPrice.shopDist | number:'1.0-0'}}&nbsp;χλμ)
+                                    </p>
                                 </div>
                                 <hr class="row">
 
-                                <div class="row">
+                                <div class="row" style="margin-bottom: 5px">
                                     Καφέδες:
                                 </div>
                                 <div class="row d-flex ml-3 justify-content-center">
                                     <table class="table table-sm table-bordered">
                                         <tr *ngFor="let p of acitveShopPrice.products">
                                             <td>{{p.productName}}</td>
-                                            <!-- <td>{{acitveShopPrice.shopDist | number:'1.0-0'}}&nbsp;χλμ</td> -->
                                             <td>{{p.price}}&nbsp;&euro;</td>
                                         </tr>
                                     </table>
@@ -96,6 +104,20 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center" style="height: 0">
+    <div>
+        <div class="card bg-light mb-3 shadow" style="width: 60vw; margin-top: 20px; margin-right: 20px;">
+                <div class="card-header d-flex justify-content-center">
+                    <h5 class="card-title">Γράφημα τιμών καφέδων</h5>
+                    <button class="ml-auto"><span class="fa fa-close"></span></button>
+                </div>
+            <div class="card-body">
+                <app-charts class="w-100"></app-charts>
             </div>
         </div>
     </div>

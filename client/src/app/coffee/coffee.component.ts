@@ -31,7 +31,7 @@ export class CoffeeComponent implements OnInit {
 	public showForm = true;
 	public showMapEdit = false;
 
-	public acitveShopPrice: { shopName: string, shopAddress: string, shopDist: number, products: { productName: string, price: number, date: Date }[], location: Point } = null;
+	public acitveShopPrice: { shopId: string, shopName: string, shopAddress: string, shopDist: number, products: { productName: string, price: number, date: Date }[], location: Point } = null;
 
 	public coffeeShopLocations = new Array<ShopPrice>();
 
@@ -90,6 +90,12 @@ export class CoffeeComponent implements OnInit {
 
 		shopPrices.forEach(e => this.coffeeShopLocations.push(e))
 		this.coffeeShopLocations.push(new ShopPrice('home', -1, null, null, null, null, null, null, 0, this.currentLocation.lon, this.currentLocation.lat))
+
+		if (this.acitveShopPrice != null && shopPrices.some(p => p.shopId == this.acitveShopPrice.shopId) == false) {
+			this.showShopDetails = false;
+			this.acitveShopPrice = null;
+		}
+
 	}
 
 	// must be called with proper currentLocation
@@ -166,6 +172,11 @@ export class CoffeeComponent implements OnInit {
 		this.router.navigate(['/charts']);
 	}
 
+	public closeShopDetails() {
+		this.showShopDetails = false;
+		this.acitveShopPrice = null;
+	}
+
 	shopClicked(shops: ShopPrice[]) {
 		if (shops.filter(s => s.type != 'home').length == 0)
 			return;
@@ -176,6 +187,7 @@ export class CoffeeComponent implements OnInit {
 		const temp = interestingProducts.map(p => p.sort((a, b) => a.date < b.date ? 1 : -1)[0])
 
 		this.acitveShopPrice = {
+			shopId: shops[0].shopId,
 			shopName: shops[0].shopName,
 			shopAddress: shops[0].shopAddress,
 			shopDist: 5,
