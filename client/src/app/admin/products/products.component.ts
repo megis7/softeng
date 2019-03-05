@@ -36,7 +36,7 @@ export class ProductsComponent implements OnInit {
 	loadPage(page: number) {
 		this.products$ = this.productService.getProductsPaged((page - 1) * this.pageSize, this.pageSize)
 											.pipe(
-												tap(res => this.total = res.total), 
+												tap(res => this.total = res.totalCount), 
 												map(res => res.products))
 	}
 }
