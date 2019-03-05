@@ -68,7 +68,7 @@ export class EditPriceComponent implements OnInit {
 	ngOnInit() {
 
 		this.shopService.getShops(0, 1000, 'ACTIVE')
-			.subscribe(shops => {this.shops = shops; console.log(shops)})
+			.subscribe(shops => {this.shops = shops;})
 
 		this.productService.getProducts(0, 1000, 'ACTIVE')
 			.subscribe(products => this.products = products)

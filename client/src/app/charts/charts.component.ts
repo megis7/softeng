@@ -115,8 +115,6 @@ export class ChartsComponent implements AfterContentInit {
 		const distinctCoffees = Array.from(new Set(this.priceData.map((item: PriceResult) => item.productName)))
 		const distinctDays = Array.from(new Set(this.priceData.map((item: PriceResult) => item.date)))
 
-		console.log(distinctDays);
-
 		const temp = distinctCoffees.map(pName => {
 			return {
 				id: pName,
@@ -188,7 +186,6 @@ export class ChartsComponent implements AfterContentInit {
 			return mean;
 		})
 		
-		console.log(series);
 		series.forEach((s, ind) => this.barChartData[ind].data = s)
 
 	}
