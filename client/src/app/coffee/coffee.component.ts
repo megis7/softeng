@@ -22,7 +22,7 @@ export class CoffeeComponent implements OnInit {
 
 	private currentLocation: Point = { 'lon': -1, 'lat': -1 };
 	private prices: PriceResult[];
-	private activePrices: PriceResult[];
+	public activePrices: PriceResult[];
 	private availableProducts: Product[];
 	private maxDistance = 5;
 	private maxPrice = 10;
@@ -195,15 +195,11 @@ export class CoffeeComponent implements OnInit {
 			location: new Point(shops[0].shopLng, shops[0].shopLat),
 			products: temp.map(p => { return { productName: p.productName, price: p.price, date: new Date(p.date) } })
 		}
-		console.log(this.acitveShopPrice);
 		this.showShopDetails = true;
 	}
 
 	onSearchChange(searchValue: string) {
-		// this.prices.filter(p => p.productName.indexOf(searchValue) >= 0)
-
-		//! this.mapDisplay.removeAllPoints();
-		//! this.mapDisplay.addPoint(this.currentLocation);
+		
 	}
 
 
