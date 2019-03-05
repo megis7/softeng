@@ -24,19 +24,19 @@ export class ShopService {
                                        .set('sort', sort);
 
                                        
-        return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
+        return this.http.get<{start: number, count: number, total: number, shops: Shop[], totalCount: number}>(this.url, { params: params })
                        .pipe(map(res => res.shops));
         // return of(this.shops.map(x => Object.assign({}, x)))
     }
 
     getShopsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
-        Observable<{start: number, count: number, total: number, shops: Shop[]}> {
+        Observable<{start: number, count: number, total: number, shops: Shop[], totalCount: number}> {
             const params = new HttpParams().set('start', start.toString())
                                        .set('count', count.toString())
                                        .set('status', status)
                                        .set('sort', sort);
         // return of({start: start, count: count, total: this.shops.length, shops: this.shops.slice(start, start + count).map(x => Object.assign({}, x))});
-        return this.http.get<{start: number, count: number, total: number, shops: Shop[]}>(this.url, { params: params })
+        return this.http.get<{start: number, count: number, total: number, shops: Shop[], totalCount: number}>(this.url, { params: params })
                         .pipe(map(res => this.mapPagesShops(res)))
 }   
 
@@ -66,8 +66,8 @@ export class ShopService {
         // return of({"message":"OK"})
     }
 
-    private mapPagesShops(res: {start: number, count: number, total: number, shops: Shop[]}):
-        {start: number, count: number, total: number, shops: Shop[]} {
-            return{ start: res.start, count: Math.min(res.count, res.total - res.start), total: res.total, shops: res.shops}
+    private mapPagesShops(res: {start: number, count: number, total: number, shops: Shop[], totalCount: number}):
+        {start: number, count: number, total: number, shops: Shop[], totalCount: number} {
+            return{ start: res.start, count: res.count, total: res.total, shops: res.shops, totalCount: res.totalCount}
     }
 }

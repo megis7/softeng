@@ -27,18 +27,18 @@ export class ProductService {
                                        .set('status', status)
                                        .set('sort', sort);
 
-        return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
+        return this.http.get<{start: number, count: number, total: number, products: Product[], totalCount: number}>(this.url, { params: params })
                         .pipe(map(res => res.products));
         // return of(this.products.map(x => Object.assign({}, x)));
     }
 
     getProductsPaged(start: number = 0, count: number = 20, status: string = "ACTIVE", sort: string = "id|DESC"): 
-        Observable<{start: number, count: number, total: number, products: Product[]}> {
+        Observable<{start: number, count: number, total: number, products: Product[], totalCount: number}> {
             const params = new HttpParams().set('start', start.toString())
                                        .set('count', count.toString())
                                        .set('status', status)
                                        .set('sort', sort);
-            return this.http.get<{start: number, count: number, total: number, products: Product[]}>(this.url, { params: params })
+            return this.http.get<{start: number, count: number, total: number, products: Product[], totalCount: number}>(this.url, { params: params })
                             .pipe(map(res => this.mapPagedProducts(res)));
             // return of({start: start, count: count, total: this.products.length, products: this.products.slice(start, start + count).map(x => Object.assign({}, x))});
     }
@@ -69,9 +69,8 @@ export class ProductService {
         // return of({"message":"OK"})
     }
 
-    private mapPagedProducts(res: {start: number, count: number, total: number, products: Product[]}):
-        { start: number, count: number, total: number, products: Product[] } {
-
-            return{ start: res.start, count: Math.min(res.count, res.total - res.start), total: res.total, products: res.products}
+    private mapPagedProducts(res: {start: number, count: number, total: number, products: Product[], totalCount: number}):
+        { start: number, count: number, total: number, products: Product[], totalCount: number } {
+            return{ start: res.start, count: res.count, total: res.total, products: res.products, totalCount: res.totalCount}
     }
 }

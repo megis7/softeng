@@ -6,7 +6,7 @@ require('../models/price')
 
 const Price = mongoose.model('Price')
 
-const R = 6371 / 1.6
+const R = 6371
 
 function checkDate(req, res, next) {
     if ('dateFrom' in req.query && 'dateTo' in req.query) {

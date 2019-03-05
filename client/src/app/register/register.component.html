@@ -1,53 +1,5 @@
-<!-- <div class="container">
-    <h2>Register</h2>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-inline">
-        <label>
-          Όνομα: &nbsp;
-        </label>
-        <input class="form-control" type="text" formControlName="username">
-      </div>
-  
-      <div class="form-inline">
-        <label>
-          Κωδικός: &nbsp;
-        </label>
-        <input class="form-control" type="password" formControlName="password1">
-      </div>
-
-    <div class="form-inline">
-        <label>
-          Ξαναγράψε τον κωδικό: &nbsp;
-        </label>
-        <input class="form-control" type="password" formControlName="password2" [ngClass]="{ 'is-invalid': password2.invalid && (password2.dirty || password2.touched) }">
-        <div *ngIf="password2.invalid && (password2.dirty || password2.touched)" class="invalid-feedback">
-            <div *ngIf="password2.errors.name">
-              Οι κωδικοί δεν ταιριάζουν
-            </div>
-          </div>
-      </div>
-
-      <div class="form-inline">
-          <label>
-            Ρόλος: &nbsp;
-          </label>
-          <div>
-              <label class="form-check-label">
-                <input type="radio" class="form-control" formControlName="role" value = "administrator">Διαχειριστής
-              </label>
-            </div>
-            <div class="form-check">
-              <label class="form-check-label">
-                <input type="radio" class="form-control" formControlName="role" value = "volunteer">Εθελοντής
-              </label>
-            </div>
-        </div>
-        <button class="btn btn-primary" type="submit"  [disabled]="!registerForm.valid">Submit</button>
-       href="#" [routerLink]="['/home']" required passwordValidator(password1)
-    </form>
-  </div> -->
-
-  <div class="container h-100">
+<img class="back-image" src="../../assets/images/283149-coffee-bean.jpg">
+<div class="container h-100">
     <div class="d-flex justify-content-center h-100">
       <div class="user_card">
         <div class="d-flex justify-content-center">

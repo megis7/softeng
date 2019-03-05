@@ -2,7 +2,7 @@ body, html {
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	background: #60a3bc !important;
+	background: #ffc107 !important;
 }
 .user_card {
 	height: 400px;
@@ -27,7 +27,7 @@ body, html {
 	width: 170px;
 	top: -75px;
 	border-radius: 50%;
-	background: #60a3bc;
+	background: #683b12;
 	padding: 10px;
 	text-align: center;
 }
@@ -35,7 +35,7 @@ body, html {
 	height: 150px;
 	width: 150px;
 	border-radius: 50%;
-	border: 2px solid white;
+	border: 2px solid #ffc107;
 }
 .form_container {
 	margin-top: 100px;
@@ -64,5 +64,5 @@ body, html {
 	background-color: #c0392b !important;
 }
 .container {
-	margin-top: 50px;
+	margin-top: 150px;
 }
