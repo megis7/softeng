@@ -1,4 +1,7 @@
+<img class="back-image" src="../../../assets/images/100315_coffee_opener_NEW_0.jpg">
+
 <div class="container">
+		<div class="jumbotron" style="margin-top:20px">
 	<div class="col-md-7 mx-auto text-center">
 		<div class="header-title">
 			<h1 class="wv-heading--title coloredTxtNoHover">
@@ -38,7 +41,7 @@
 						</div>
 					</div>
 					<div class="row" style="margin-bottom: 10px">
-					<label class="ml-1 mt-auto">Ετικέτες: &nbsp;</label><button class="btn btn-success ml-auto" (click)="addTag()"><span
+					<label class="ml-1 mt-auto coloredTxtNoHover">Ετικέτες: &nbsp;</label><button class="btn custom-fa-rev coloredBg-rev no-focus ml-auto" (click)="addTag()"><span
 							class="fa fa-plus"></span></button>
 					</div>
 
@@ -48,7 +51,7 @@
 								<input class="form-control" required type="text" [formControlName]="i"
 									[ngClass]="{ 'is-invalid': tag.invalid && (tag.dirty || tag.touched) }">
 								<div class="input-group-append">
-									<button class="btn btn-danger" (click)="removeTag(i)"><span
+									<button class="btn custom-fa coloredBg no-focus" (click)="removeTag(i)"><span
 											class="fa fa-trash"></span></button>
 								</div>
 								<div *ngIf="tag.invalid && (tag.dirty || tag.touched) && tag.errors.required"
@@ -59,11 +62,12 @@
 						</div>
 					</div>
 					<div class="text-center row" style="margin-top: 20px">
-						<button type="submit" class="coloredTxt coloredBg btn btn-block send-button tx-tfm"
+						<button type="submit" class="coloredTxt coloredBg no-focus btn btn-block send-button tx-tfm"
 							[disabled]="!productForm.valid">Υποβολή</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
+</div>
 </div>

@@ -63,6 +63,16 @@
     margin-top: 0px !important;
     margin-bottom: 0px !important;
     }
+
+    .back-image:only-child {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -100;
+      height: 100vh;
+      width: 100%;
+    }
+
     @media screen and (max-width:480px){
     h1{
     font-size: 26px;

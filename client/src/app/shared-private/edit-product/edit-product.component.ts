@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
 	selector: 'app-edit-product',
 	templateUrl: './edit-product.component.html',
-	styleUrls: ['./edit-product.component.scss','../../login/login.component.scss']
+	styleUrls: ['./edit-product.component.scss','../../login/login.component.scss','../../home/home.component.scss']
 })
 export class EditProductComponent implements OnInit {
 
