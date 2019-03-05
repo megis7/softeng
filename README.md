@@ -30,3 +30,9 @@ cd softeng18b-rest-api-client &&
 gradle wrapper &&
 ./gradlew clean test --tests gr.ntua.ece.softeng18b.client.ObservatoryAPIFunctionalTest -Dusername=administrator -Dpassword=password -Dprotocol=https -DIGNORE_SSL_ERRORS=true -Dhost=localhost -Dport=8765 -Dtest.json=$1
 ```
+
+## Stack
+
+Frontend: Angular 7
+Backend: Node 11 and Express 4
+Database: MongoDB 4
