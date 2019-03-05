@@ -17,7 +17,6 @@ cd softeng/server &&
 npm install &&
 npm start
 ```
-<---
 
 ## Testing on Linux
 ```
@@ -29,4 +28,3 @@ cd softeng18b-rest-api-client &&
 gradle wrapper &&
 ./gradlew clean test --tests gr.ntua.ece.softeng18b.client.ObservatoryAPIFunctionalTest -Dusername=administrator -Dpassword=password -Dprotocol=https -DIGNORE_SSL_ERRORS=true -Dhost=localhost -Dport=8765 -Dtest.json=$1
 ```
---->
