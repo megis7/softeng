@@ -7,7 +7,7 @@
                 Αναζήτηση Καφέ
                 <ul style="list-style: none" class="ml-auto mb-auto">
                     <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary"
-                            (click)='gotoCharts()'><span class="fa fa-bar-chart"></span></button></li>
+                            (click)='showCharts=true' [disabled]="activePrices == null || activePrices.length == 0"><span class="fa fa-bar-chart"></span></button></li>
                     <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary"
                             (click)="refocusMapGreece()"><span class="fa fa-globe"></span></button></li>
                     <li style="display:inline; margin-right: 5px"><button class="ml-auto btn btn-outline-primary"
@@ -109,15 +109,15 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-center" style="height: 0">
+<div class="d-flex justify-content-center" style="height: 0" *ngIf="showCharts">
     <div>
         <div class="card bg-light mb-3 shadow" style="width: 60vw; margin-top: 20px; margin-right: 20px;">
-                <div class="card-header d-flex justify-content-center">
-                    <h5 class="card-title">Γράφημα τιμών καφέδων</h5>
-                    <button class="ml-auto"><span class="fa fa-close"></span></button>
+                <div class="card-header d-flex">
+                    <h5 class="card-title w-100 text-center">Μέση τιμή καφέδων ανά ημέρα</h5>
+                    <button class="ml-auto btn btn-outline-secondary" (click)="showCharts=false"><span class="fa fa-close"></span></button>
                 </div>
             <div class="card-body">
-                <app-charts class="w-100"></app-charts>
+                <app-charts [priceData]='activePrices' class="w-100"></app-charts>
             </div>
         </div>
     </div>

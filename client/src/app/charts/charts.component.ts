@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, AfterContentInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import * as annotationsPlugin from 'chartjs-plugin-annotation';
@@ -10,7 +10,8 @@ import { PriceResult } from 'src/models/price-result';
 	templateUrl: './charts.component.html',
 	styleUrls: ['./charts.component.scss']
 })
-export class ChartsComponent implements OnInit {
+export class ChartsComponent implements AfterContentInit {
+	
 
 	chartColors = [
 		'rgb(255, 99, 132)',
@@ -79,7 +80,7 @@ export class ChartsComponent implements OnInit {
 	public barChartLegend = true;
 	public barChartColors;
 
-	public priceData: PriceResult[];
+	@Input() public priceData: PriceResult[];
 
 	@ViewChild(BaseChartDirective) ch: BaseChartDirective;
 
@@ -104,9 +105,13 @@ export class ChartsComponent implements OnInit {
 
 	constructor() {
 		// Chart.pluginService.register(annotationsPlugin);
-		this.priceData = JSON.parse(localStorage.getItem('prices'))
+		// this.priceData = JSON.parse(localStorage.getItem('prices'))
 		// localStorage.removeItem('prices');
 
+		
+	}
+
+	ngAfterContentInit(): void {
 		const distinctCoffees = Array.from(new Set(this.priceData.map((item: PriceResult) => item.productName)))
 		const distinctDays = Array.from(new Set(this.priceData.map((item: PriceResult) => item.date)))
 
@@ -142,9 +147,6 @@ export class ChartsComponent implements OnInit {
 		})
 
 		this.refreshDataSeries(this.priceData, distinctCoffees, distinctDays, distinctDays);
-	}
-
-	ngOnInit() {
 	}
 
 	refreshDataSeries(data: PriceResult[], distinctNames: string[], distinctDates: Date[], xAxis: Date[]) {
