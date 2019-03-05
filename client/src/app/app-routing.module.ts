@@ -7,7 +7,8 @@ import { CoffeeComponent } from './coffee/coffee.component';
 import { RegisterComponent } from './register/register.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { NotfoundComponent } from './notfound/notfound.component';
-import { ChartsComponent } from './charts/charts.component';
+import { CrouwdsourcerOnlyGuard } from 'src/guards/crouwdsourcer-only.guard';
+import { AdminOnlyGuard } from 'src/guards/admin-only.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -19,19 +20,19 @@ const routes: Routes = [
 
   {
     path: 'admin',
-    loadChildren: './admin/admin.module#AdminModule'
+    loadChildren: './admin/admin.module#AdminModule',
+    canActivate: [AdminOnlyGuard]
   },
   {
     path: 'user',
-    loadChildren: './user/user.module#UserModule'
+    loadChildren: './user/user.module#UserModule',
+    canActivate: [CrouwdsourcerOnlyGuard]
   },
-
-  { path: 'charts', component: ChartsComponent },
 
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'notfound', component: NotfoundComponent },
 
-  { path: '**', redirectTo: 'not-found' }
+  { path: '**', redirectTo: 'notfound' }
 
 ];
 

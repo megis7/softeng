@@ -144,6 +144,8 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 
 				// this.shopForm.reset();
 				this.toasterService.success("Το κατάστημα δημιουργήθηκε", "Επιτυχία")
+				this.mapDisplay.setClickable(false);
+				this.showMapHelp = false;
 				
 			}, err => { console.warn(err); this.toasterService.error("Σφάλμα κατά τη δημιουργία", "Αποτυχία") })
 		else

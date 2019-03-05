@@ -27,6 +27,9 @@ export class CreateEntityComponent implements OnInit {
 
 	private updateState(newState: string, obj: any = null) {
 
+		if(this.state == "product" && newState == "shop" && this.createShop == false)
+			this.creationCompleted.next()
+
 		this.state = newState;
 		if(newState == "finish")
 			this.creationCompleted.next()

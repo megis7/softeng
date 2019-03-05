@@ -9,6 +9,7 @@ import { TestComponent } from './test/test.component';
 import { EntityNotFoundComponent } from './entity-not-found/entity-not-found.component'
 import { SharedPrivateModule } from '../shared-private/shared-private.module';
 import { CreateEntityComponent } from './create-entity/create-entity.component';
+import { GUARD_PROVIDERS } from 'src/guards/guards.export';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'crowdsource' },
