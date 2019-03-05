@@ -9,6 +9,8 @@
 
 ## Installing on Linux
 
+Create a .sh file in your download direcory and paste the following code:
+
 ```
 cd softeng/client &&
 npm install &&
