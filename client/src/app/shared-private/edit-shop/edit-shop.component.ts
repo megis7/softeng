@@ -93,13 +93,15 @@ export class EditShopComponent implements OnInit, AfterViewInit {
 		this.geocodeService.geocode(this.shopForm.value.address)
 						   .subscribe(
 							l => { 
+									this.updateShopCoords(l[0]);
+									if(this.mapDisplay) {
 									this.mapDisplay.removeAllPoints();
 									this.mapDisplay.addPoint(l[0]);
 									this.mapDisplay.setPosition(l[0]);
 									this.mapDisplay.setZoom(env.mapZoomed);
 									this.mapDisplay.setClickable(true);
-									this.updateShopCoords(l[0]);
 									this.showMapHelp = true;
+									}
 							}
 							,err => console.log(err));
 	}

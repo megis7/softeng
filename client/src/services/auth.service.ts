@@ -33,7 +33,6 @@ export class AuthService{
 
     login(username: string, password: string): Observable<{token: string}>{
         return this.http.post<{token: string}>(`${this.url}/login`,{username: username, password: password});
-        // return of({token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YzY1OGY2MjNlYTU3NTAyM2VmYWVkZWEiLCJ1c2VybmFtZSI6Im1hcmFraSIsInJvbGUiOiJ2b2x1bnRlZXIiLCJpYXQiOjE1NTAyMjkzMzgsImV4cCI6MTU1MDMxNTczOH0.PNbC9krllp7Ye5D5xRmjn4mGMMMAyH0ZHbW1doA0g1A'});
     }
 
     logout(): Observable<{messege: string}>{
@@ -43,8 +42,8 @@ export class AuthService{
     }
 
     register(username:string , password:string, role: string): Observable<{messege: string}>{
-        //const temp = this.http.post<{messege: string}>(`${this.url}/user`,{username: username, password: password, role: role});
-        const temp = of({messege: "ok"})
+        const temp = this.http.post<{messege: string}>(`${this.url}/users`,{username: username, password: password, role: role});
+        // const temp = of({messege: "ok"})
         return temp;
     }
 
