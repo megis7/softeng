@@ -12,8 +12,10 @@
 ```
 cd softeng/client &&
 npm install &&
-npm start &
-cd softeng/server &&
+ng build --prod --output-path public &&
+rm -rf ../server/public &&
+cp -r public ../server/public &&
+cd ../server &&
 npm install &&
 npm start
 ```
