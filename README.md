@@ -9,7 +9,7 @@
 
 ## Installing on Linux
 
-Create a .sh file in your download direcory and paste the following code:
+Create a .sh file in your download directory and paste the following lines:
 
 ```
 cd softeng/client &&
@@ -20,4 +20,4 @@ npm install &&
 npm start
 ```
 
-Run to build and start the server.
+Execute to build and start the server.
