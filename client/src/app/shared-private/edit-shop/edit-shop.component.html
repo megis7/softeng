@@ -36,7 +36,7 @@
 						καφετέρειας?<br>Επιλέξτε την επιθυμητή τοποθεσία κάνοντας κλικ στο χάρτη</small></p>
 
 				<div class="row" style="margin-bottom: 10px">
-					<label class="ml-1 mt-auto">Ετικέτες: &nbsp;</label><button class="btn btn-success btn-sm ml-auto"
+					<label class="ml-1 mt-auto coloredTxtNoHover">Ετικέτες: &nbsp;</label><button class="btn custom-fa-rev coloredBg-rev no-focus btn-sm ml-auto"
 						(click)="addTag()"><span class="fa fa-plus"></span></button>
 				</div>
 				<div formArrayName="tags">
@@ -45,11 +45,11 @@
 							<input class="form-control" required type="text" [formControlName]="i"
 								[ngClass]="{ 'is-invalid': tag.invalid && (tag.dirty || tag.touched) }">
 							<div class="input-group-append">
-								<button class="btn btn-danger btn-sm" (click)="removeTag(i)"><span
+								<button class="btn custom-fa coloredBg no-focus btn-sm" (click)="removeTag(i)"><span
 										class="fa fa-trash"></span></button>
 							</div>
 							<div *ngIf="tag.invalid && (tag.dirty || tag.touched) && tag.errors.required"
-								class="invalid-feedback" [ngClass]="{'coloredTxt coloredBg' : !isMap}">
+								class="invalid-feedback" >
 								<p>Παρακαλώ εισάγετε όνομα ετικέτας</p>
 							</div>
 						</div>
@@ -57,7 +57,7 @@
 				</div>
 
 				<div class="text-center row" style="margin-top: 10px">
-					<button type="submit" class=" btn btn-block send-button tx-tfm"
+					<button type="submit" class=" btn btn-block send-button tx-tfm" [ngClass]="{' btn btn-block send-button tx-tfm coloredTxt coloredBg no-focus' : !isMap}"
 						[disabled]="!shopForm.valid">Υποβολή</button>
 				</div>
 			</form>
