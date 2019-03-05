@@ -6,3 +6,14 @@
 | Ζώγας                 | Παναγιώτης | 3115191         |
 | Μεγγίσογλου           | Μιχαήλ     | 3115014         |
 | Στραϊτούρη            | Ελένη      | 3115068         |
+
+## Installing on Linux
+
+```
+cd softeng/client &&
+npm install &&
+npm start &
+cd softeng/server &&
+npm install &&
+npm start
+```
