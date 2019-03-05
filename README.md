@@ -9,8 +9,6 @@
 
 ## Installing on Linux
 
-Create a .sh file in your download directory and paste the following lines:
-
 ```
 cd softeng/client &&
 npm install &&
@@ -19,5 +17,16 @@ cd softeng/server &&
 npm install &&
 npm start
 ```
+<---
 
-Execute to build and start the server.
+## Testing on Linux
+```
+# git clone https://github.com/saikos/softeng18b-rest-api-client.git &&
+mongo server --eval "db.dropDatabase()" &&
+curl -i -X POST -H "Content-Type:application/json" https://localhost:8765/observatory/api/users -d '{"username":"administrator","password":"password","role":"administrator"}' -k &&
+source /etc/profile.d/gradle.sh &&
+cd softeng18b-rest-api-client &&
+gradle wrapper &&
+./gradlew clean test --tests gr.ntua.ece.softeng18b.client.ObservatoryAPIFunctionalTest -Dusername=administrator -Dpassword=password -Dprotocol=https -DIGNORE_SSL_ERRORS=true -Dhost=localhost -Dport=8765 -Dtest.json=$1
+```
+--->
