@@ -78,7 +78,7 @@ export class CoffeeComponent implements OnInit {
 		let newPrices = this.prices;
 
 		if (value.coffee.trim().length != 0) {
-			newPrices = newPrices.filter(p => p.productName.toLowerCase().indexOf(value.coffee) >= 0)
+			newPrices = newPrices.filter(p => p.productName.toLowerCase().indexOf(value.coffee.toLowerCase()) >= 0)
 		}
 
 		newPrices = newPrices.filter(p => p.shopDist < +value.maxDistance * this.DISTANCE_MULTIPLIER)
