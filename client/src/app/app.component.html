@@ -23,7 +23,6 @@
 		<ul class="navbar-nav mr-auto">
 		<li [class.active]="isActive('home')" class="nav-item coloredBg"><a class="nav-link" href="#" [routerLink]="['/home']"><b class="coloredTxt">Αρχική</b></a></li>
 		<li [class.active]="isActive('about')" class="nav-item coloredBg"><a class="nav-link" href="#" [routerLink]="['/about']"><b class="coloredTxt">Η Ομάδα μας</b></a></li>
-		<li [class.active]="isActive('user')" class="nav-item"><a class="nav-link" href="#" [routerLink]="['/user']"><b class="coloredTxt">User</b></a></li>
 		<li [class.active]="isActive('charts')" class="nav-item"><a class="nav-link" href="#" [routerLink]="['/charts']"><b class="coloredTxt">Γραφήματα</b></a></li>
 		<li [class.active]="isActive('admin')" class="nav-item dropdown coloredBg">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -39,8 +38,8 @@
 
 		<ul class="navbar-nav ml-auto"><!-- nav -->
 			<li class="nav-item" *ngIf = "authService.isLoggedIn()"><a class="nav-link no-select"><b class="coloredTxtNoHover">Καλώς ήρθατε, {{authService.User.username}}</b></a></li>
-			<li class="nav-item coloredBg" *ngIf = "!authService.isLoggedIn()"><a class="nav-link" [routerLink]="['/login']"><b class="coloredTxt">Login/Register</b></a></li>
-			<li class="nav-item coloredBg" *ngIf = "authService.isLoggedIn()"><a class="nav-link" (click) = "authService.logout()" [routerLink]="['/home']"><b class="coloredTxt">Logout</b></a></li>
+			<li class="nav-item coloredBg" *ngIf = "!authService.isLoggedIn()"><a class="nav-link" [routerLink]="['/login']"><b class="coloredTxt">Σύνδεση/Εγγραφή</b></a></li>
+			<li class="nav-item coloredBg" *ngIf = "authService.isLoggedIn()"><a class="nav-link" (click) = "authService.logout()" [routerLink]="['/home']"><b class="coloredTxt">Αποσύνδεση</b></a></li>
 		</ul>
 		<!-- <form class="form-inline my-2 my-lg-0">
 		<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

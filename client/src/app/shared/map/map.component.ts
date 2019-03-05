@@ -28,6 +28,7 @@ export class MapComponent implements OnInit, DoCheck {
 
 	private coordinates: Point[] = new Array<Point>();
 	private coffeeShopIconPath = "assets/images/coffee-shop.png"
+	private homePath = "assets/images/home-icon.png"
 	private isClickable = false;
 
 	private mapInitialized = false;
@@ -85,7 +86,7 @@ export class MapComponent implements OnInit, DoCheck {
 			const coords: [number, number] = ol.proj.fromLonLat([shopPrice.shopLng, shopPrice.shopLat]);
 
 			let feature = new ol.Feature(new ol.geom.Point(coords));
-			feature.setStyle(this.createIconStyle(this.coffeeShopIconPath, undefined));
+			feature.setStyle(this.createIconStyle(((shopPrice.type == "shop")?this.coffeeShopIconPath:this.homePath), undefined));
 			feature.setProperties({ shop: shopPrice });
 
 			this.vectorSource.addFeature(feature);

@@ -11,12 +11,20 @@ export class HomeComponent implements OnInit {
 	constructor(private router: Router) { }
 
 	Hovering: boolean = false;
+	Hovering1: boolean = false;
 	mouseEnter(): void{
 		this.Hovering = true;
 	 }
   
 	mouseLeave(): void{
 		this.Hovering = false;
+	}
+	mouseEnter1(): void{
+		this.Hovering1 = true;
+	 }
+  
+	mouseLeave1(): void{
+		this.Hovering1 = false;
 	}
 
 	ngOnInit() {

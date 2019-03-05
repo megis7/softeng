@@ -11,13 +11,28 @@
 			<p class="lead coloredTxtNoHover">Ξεκινήστε την ημέρα σας με τον πιο γλυκό καφέ!</p>
 		</div>
 		<div class="row justify-content-center">
-			<p class="lead">
+			
+				<ul>
+					<li>
+							<p class="lead">
 				<a class="coloredBg coloredTxt btn btn-lg d-flex align-items-center" (mouseenter) ="mouseEnter() "  (mouseleave) ="mouseLeave()" [routerLink]="['/coffee']" role="button"><!--btn-warning text-coffee-->
 					<span *ngIf = "Hovering"><img class="java-coffee1"></span>
 					<span *ngIf = "!Hovering"><img class="java-coffee2 "></span>
 					&nbsp;&nbsp; Βρες τον καφέ σου!
 				</a>
 			</p>
+			</li>
+			<li style="margin-left: 10px">
+					<p class="lead">
+				<a class="coloredBg coloredTxt btn btn-lg d-flex align-items-center" (mouseenter) ="mouseEnter1() "  (mouseleave) ="mouseLeave1()" href="#" [routerLink]="['/user']" role="button"><!--btn-warning text-coffee-->
+					<span *ngIf = "Hovering1"><img class="java-euro2"></span>
+					<span *ngIf = "!Hovering1"><img class="java-euro1"></span>
+					&nbsp;&nbsp; Καταχώρηση τιμής!
+				</a>
+			</p>
+			</li>
+				</ul>
+			
 		</div>
 	</div>
 </div>
