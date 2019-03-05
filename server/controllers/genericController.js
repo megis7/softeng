@@ -10,7 +10,7 @@ require('../models/price')
 function bodyCleanser(req, res, next) {
     if (req.endpoint === 'shops') {
         if (!('lng' in req.body) || !('lat' in req.body))
-            next(new error.BadRequestError('lng, lat'))
+            next(new error.BadRequestError('lng and lat are required'))
         req.body.location = {
             type: 'Point',
             coordinates: [req.body.lng, req.body.lat]

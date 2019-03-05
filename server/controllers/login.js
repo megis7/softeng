@@ -9,10 +9,10 @@ const error = require('../error')
 
 require('../models/user')
 
+const User = mongoose.model('User')
+
 const readFile = util.promisify(fs.readFile)
 const sign = util.promisify(jsonwebtoken.sign)
-
-const User = mongoose.model('User')
 
 async function postController(req, res, next) {
     try {
@@ -37,7 +37,7 @@ async function postController(req, res, next) {
             token: encoded
         })
     } catch (err) {
-        next(new error.InternalServerError(err))
+        next(new error.BadRequestError(err))
     }
 }
 

@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const mongooseIdValidator = require('mongoose-id-validator')
 
-// const dateFormat = /^\d\d\d\d-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/
-
 const priceSchema = new mongoose.Schema({
     price: {
         required: true,
@@ -10,11 +8,7 @@ const priceSchema = new mongoose.Schema({
     },
     date: {
         required: true,
-        type: Date,
-        // validate: {
-        //     validator: date =>
-        //         dateFormat.test(date)
-        // }
+        type: Date
     },
     productId: {
         ref: 'Product',

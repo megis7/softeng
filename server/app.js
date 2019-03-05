@@ -32,45 +32,9 @@ app.use(express.urlencoded({
 }))
 app.use(express.static(path.join(__dirname, 'public')))
 
-async function authenticatedUser(req, res, next) {
-    try {
-        const token = req.get('x-observatory-auth')
-        const data = await readFile(path.resolve(__dirname, 'controllers/secret'))
-        await verify(token, data)
-        next()
-    } catch (err) {
-        if (err.name === 'JsonWebTokenError')
-            next(new error.UnauthorizedError(err))
-        else
-            next(new error.InternalServerError(err))
-    }
-}
-
-function bodyCleanser(req, res, next) {
-    delete req.body.withdrawn
-    delete req.body._id
-    next()
-}
-
-function queryCleanser(req, res, next) {
-    req.query.start = Number(req.query.start) || 0
-    req.query.count = Number(req.query.count) || 20;
-    [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
-        req.query.sort.replace(/id/, '_id').split(/\|/) :
-        (req.endpoint === 'prices' ? ['price', 'ASC'] : ['_id', 'DESC'])
-    next()
-}
-
-function patchBodyChecker(req, res, next) {
-    if (Object.keys(req.body).length > 1)
-        next(new error.BadRequestError('patch updates only one field, baka'))
-    else
-        next()
-}
-
 app.use((req, res, next) => {
     if (req.query.format === 'xml')
-        next(new error.BadRequestError('xml'))
+        next(new error.BadRequestError('xml is not supported'))
     else
         next()
 })
@@ -84,13 +48,11 @@ app.use((req, res, next) => {
 })
 
 app.get(/.*/, queryCleanser)
-
+app.post(/\/logout/, authenticatedUser)
+app.post(/\/users/, bodyCleanser)
 app.post(/\/products|\/shops|\/prices/, [authenticatedUser, bodyCleanser])
-
 app.put(/.*/, [authenticatedUser, bodyCleanser])
-
 app.patch(/.*/, [authenticatedUser, patchBodyChecker, bodyCleanser])
-
 app.delete(/.*/, authenticatedUser)
 
 app.use('/observatory/api/login', loginRouter)
@@ -111,5 +73,38 @@ app.use((err, req, res, next) => {
         message: err.message
     })
 })
+
+async function authenticatedUser(req, res, next) {
+    try {
+        const token = req.get('x-observatory-auth')
+        const data = await readFile(path.resolve(__dirname, 'controllers/secret'))
+        await verify(token, data)
+        next()
+    } catch (err) {
+        next(new error.UnauthorizedError(err))
+    }
+}
+
+function bodyCleanser(req, res, next) {
+    delete req.body.withdrawn
+    delete req.body._id
+    next()
+}
+
+function queryCleanser(req, res, next) {
+    req.query.start = Number(req.query.start) || 0
+    req.query.count = Number(req.query.count) || 20;
+    [req.query.sortKey, req.query.sortValue] = 'sort' in req.query ?
+        req.query.sort.replace(/id/, '_id').split(/\|/) :
+        (req.endpoint === 'prices' ? ['price', 'ASC'] : ['_id', 'DESC'])
+    next()
+}
+
+function patchBodyChecker(req, res, next) {
+    if (Object.keys(req.body).length > 1)
+        next(new error.BadRequestError('patch allows updates on one field only'))
+    else
+        next()
+}
 
 module.exports = app

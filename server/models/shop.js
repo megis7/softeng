@@ -11,7 +11,6 @@ const shopSchema = new mongoose.Schema({
     },
     location: {
         coordinates: {
-            // required: true,
             type: [Number]
         },
         type: {
